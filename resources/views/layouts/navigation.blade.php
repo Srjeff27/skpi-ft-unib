@@ -3,7 +3,7 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center gap-3">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                    <a href="/" class="flex items-center gap-3">
                         <x-application-logo class="block h-9 w-auto fill-current text-white" />
                         {{-- Teks diperpendek dan tetap hanya muncul di desktop --}}
                         <span class=" text-white font-semibold">SKPI FT Universitas Bengkulu</span>

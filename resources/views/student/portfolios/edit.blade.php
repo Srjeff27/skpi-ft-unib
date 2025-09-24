@@ -5,74 +5,99 @@
             $greet = $hour < 11 ? 'Selamat Pagi' : ($hour < 15 ? 'Selamat Siang' : ($hour < 18 ? 'Selamat Sore' : 'Selamat Malam'));
             $name = auth()->user()?->name ?? 'Pengguna';
         @endphp
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ $greet }}, {{ $name }}</h2>
-        <p class="text-sm text-gray-400">Edit Portofolio</p>
+        <h2 class="font-semibold text-xl text-gray-900 leading-tight">{{ $greet }}, {{ $name }}</h2>
+        <p class="text-sm text-gray-500">Edit Portofolio</p>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    @if ($portfolio->status !== 'pending')
-                        <div class="mb-4 rounded border border-yellow-200 bg-yellow-50 p-3 text-yellow-800">Status {{ $portfolio->status }} — data tidak dapat diubah.</div>
+    @php
+        // Variabel untuk menentukan apakah form harus dikunci (disabled)
+        $isLocked = $portfolio->status !== 'pending';
+    @endphp
+
+    {{-- DIUBAH: Padding bawah ditambahkan untuk menghindari tumpang tindih dengan nav mobile --}}
+    <div class="pt-8 pb-24 md:pb-8">
+        {{-- DIUBAH: Padding horizontal ditambahkan untuk mobile --}}
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 sm:p-8 text-gray-900">
+
+                    {{-- Pesan Peringatan jika data sudah tidak bisa diubah --}}
+                    @if ($isLocked)
+                        <div class="mb-6 flex items-start gap-3 rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-yellow-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.636-1.21 2.27-1.21 2.906 0l4.25 8.103c.636 1.21-.213 2.748-1.453 2.748H5.46c-1.24 0-2.089-1.538-1.453-2.748l4.25-8.103zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <h3 class="font-semibold">Portofolio Dikunci</h3>
+                                <p class="text-sm">Portofolio dengan status "{{ ucfirst($portfolio->status) }}" tidak dapat diubah lagi.</p>
+                            </div>
+                        </div>
                     @endif
-                    <form method="POST" action="{{ route('student.portfolios.update', $portfolio) }}" class="space-y-4">
+
+                    <form method="POST" action="{{ route('student.portfolios.update', $portfolio) }}" class="space-y-6" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+
                         <div>
-                            <label class="block text-sm text-gray-700">Judul Kegiatan</label>
-                            <input name="judul_kegiatan" value="{{ old('judul_kegiatan', $portfolio->judul_kegiatan) }}" {{ $portfolio->status==='pending' ? '' : 'disabled' }} class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                            @error('judul_kegiatan')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-700">Kategori</label>
-                            <input name="kategori" value="{{ old('kategori', $portfolio->kategori) }}" {{ $portfolio->status==='pending' ? '' : 'disabled' }} class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                            @error('kategori')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-700">Tingkat Kegiatan</label>
-                            <select name="tingkat" {{ $portfolio->status==='pending' ? '' : 'disabled' }} class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]">
-                                <option value="">- Pilih Tingkat -</option>
-                                @php $t = old('tingkat', $portfolio->tingkat); @endphp
-                                <option value="regional" {{ $t==='regional' ? 'selected' : '' }}>Regional</option>
-                                <option value="nasional" {{ $t==='nasional' ? 'selected' : '' }}>Nasional</option>
-                                <option value="internasional" {{ $t==='internasional' ? 'selected' : '' }}>Internasional</option>
-                            </select>
-                            @error('tingkat')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-700">Penyelenggara</label>
-                            <input name="penyelenggara" value="{{ old('penyelenggara', $portfolio->penyelenggara) }}" {{ $portfolio->status==='pending' ? '' : 'disabled' }} class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                            @error('penyelenggara')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm text-gray-700">Tanggal Mulai</label>
-                                <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', $portfolio->tanggal_mulai) }}" {{ $portfolio->status==='pending' ? '' : 'disabled' }} class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                                @error('tanggal_mulai')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm text-gray-700">Tanggal Selesai</label>
-                                <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai', $portfolio->tanggal_selesai) }}" {{ $portfolio->status==='pending' ? '' : 'disabled' }} class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                                @error('tanggal_selesai')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-700">Deskripsi Kegiatan</label>
-                            <textarea name="deskripsi_kegiatan" rows="4" {{ $portfolio->status==='pending' ? '' : 'disabled' }} class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]">{{ old('deskripsi_kegiatan', $portfolio->deskripsi_kegiatan) }}</textarea>
-                            @error('deskripsi_kegiatan')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-700">Link Bukti (URL)</label>
-                            <input name="bukti_link" value="{{ old('bukti_link', $portfolio->bukti_link) }}" {{ $portfolio->status==='pending' ? '' : 'disabled' }} class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                            @error('bukti_link')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                            <x-input-label for="judul_kegiatan" :value="__('Judul Kegiatan')" />
+                            <x-text-input id="judul_kegiatan" name="judul_kegiatan" class="mt-1 block w-full" :value="old('judul_kegiatan', $portfolio->judul_kegiatan)" :disabled="$isLocked" required />
+                            <x-input-error :messages="$errors->get('judul_kegiatan')" class="mt-2" />
                         </div>
 
-                        <div class="pt-2 flex items-center gap-3">
-                            @if ($portfolio->status==='pending')
-                                <button class="inline-flex items-center rounded-md bg-[#fa7516] px-4 py-2 text-white hover:bg-[#e5670c]">Simpan</button>
+                        <div>
+                            <x-input-label for="kategori" :value="__('Kategori')" />
+                            <x-text-input id="kategori" name="kategori" class="mt-1 block w-full" :value="old('kategori', $portfolio->kategori)" :disabled="$isLocked" required />
+                            <x-input-error :messages="$errors->get('kategori')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="tingkat" :value="__('Tingkat Kegiatan')" />
+                            <select id="tingkat" name="tingkat" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-50" :disabled="$isLocked">
+                                <option value="">- Pilih Tingkat -</option>
+                                <option value="regional" @selected(old('tingkat', $portfolio->tingkat) === 'regional')>Regional</option>
+                                <option value="nasional" @selected(old('tingkat', $portfolio->tingkat) === 'nasional')>Nasional</option>
+                                <option value="internasional" @selected(old('tingkat', $portfolio->tingkat) === 'internasional')>Internasional</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('tingkat')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="penyelenggara" :value="__('Penyelenggara')" />
+                            <x-text-input id="penyelenggara" name="penyelenggara" class="mt-1 block w-full" :value="old('penyelenggara', $portfolio->penyelenggara)" :disabled="$isLocked" required />
+                            <x-input-error :messages="$errors->get('penyelenggara')" class="mt-2" />
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
+                                <x-text-input id="tanggal_mulai" type="date" name="tanggal_mulai" class="mt-1 block w-full" :value="old('tanggal_mulai', $portfolio->tanggal_mulai)" :disabled="$isLocked" required />
+                                <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="tanggal_selesai" :value="__('Tanggal Selesai (Opsional)')" />
+                                <x-text-input id="tanggal_selesai" type="date" name="tanggal_selesai" class="mt-1 block w-full" :value="old('tanggal_selesai', $portfolio->tanggal_selesai)" :disabled="$isLocked" />
+                                <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="deskripsi_kegiatan" :value="__('Deskripsi Singkat Kegiatan')" />
+                            <textarea id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-50" :disabled="$isLocked">{{ old('deskripsi_kegiatan', $portfolio->deskripsi_kegiatan) }}</textarea>
+                            <x-input-error :messages="$errors->get('deskripsi_kegiatan')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="bukti_file" :value="__('Ganti Sertifikat (PDF, JPG, PNG)')" />
+                            <input id="bukti_file" type="file" name="bukti_file" accept=".pdf,image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-[#fa7516] hover:file:bg-orange-100" :disabled="$isLocked" />
+                            <p class="text-xs text-gray-500 mt-1">Ukuran maks 2MB. Kosongkan jika tidak ingin mengubah bukti yang sudah ada.</p>
+                            <x-input-error :messages="$errors->get('bukti_file')" class="mt-2" />
+                        </div>
+
+                        <div class="pt-2 flex items-center gap-4">
+                            @if (!$isLocked)
+                                <x-primary-button>{{ __('Simpan Perubahan') }}</x-primary-button>
                             @endif
-                            <a href="{{ route('student.portfolios.index') }}" class="rounded-md border border-[#1b3985] px-4 py-2 text-[#1b3985] hover:bg-blue-50">Kembali</a>
+                            <a href="{{ route('student.portfolios.index') }}" class="text-sm text-gray-600 hover:text-gray-900">{{ __('Kembali') }}</a>
                         </div>
                     </form>
                 </div>

@@ -2,71 +2,101 @@
     <x-slot name="header">
         @php
             $hour = now()->timezone(config('app.timezone'))->format('H');
-            $greet = $hour < 11 ? 'Selamat Pagi' : ($hour < 15 ? 'Selamat Siang' : ($hour < 18 ? 'Selamat Sore' : 'Selamat Malam'));
+            $greet =
+                $hour < 11
+                    ? 'Selamat Pagi'
+                    : ($hour < 15
+                        ? 'Selamat Siang'
+                        : ($hour < 18
+                            ? 'Selamat Sore'
+                            : 'Selamat Malam'));
             $name = auth()->user()?->name ?? 'Pengguna';
         @endphp
         <h2 class="font-semibold text-xl text-gray-900 leading-tight">{{ $greet }}, {{ $name }}</h2>
-        <p class="text-sm text-gray-500">Upload Portofolio</p>
+        <p class="text-sm text-gray-500">{{ isset($portfolio) ? 'Edit Portofolio' : 'Upload Portofolio' }}</p>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+    {{-- DIUBAH: Padding bawah ditambahkan untuk menghindari tumpang tindih dengan nav mobile --}}
+    <div class="pt-8 pb-24 md:pb-8">
+        {{-- DIUBAH: Padding horizontal ditambahkan untuk mobile --}}
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('student.portfolios.store') }}" class="space-y-4" enctype="multipart/form-data">
+                <div class="p-6 sm:p-8 text-gray-900">
+                    <form method="POST"
+                        action="{{ isset($portfolio) ? route('student.portfolios.update', $portfolio) : route('student.portfolios.store') }}"
+                        class="space-y-6" enctype="multipart/form-data">
                         @csrf
+                        @if (isset($portfolio))
+                            @method('PUT')
+                        @endif
+
                         <div>
-                            <label class="block text-sm text-gray-900">Judul Kegiatan</label>
-                            <input name="judul_kegiatan" value="{{ old('judul_kegiatan') }}" required class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                            @error('judul_kegiatan')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                            <x-input-label for="judul_kegiatan" :value="__('Judul Kegiatan')" />
+                            <x-text-input id="judul_kegiatan" name="judul_kegiatan" class="mt-1 block w-full"
+                                :value="old('judul_kegiatan', $portfolio->judul_kegiatan ?? '')" required />
+                            <x-input-error :messages="$errors->get('judul_kegiatan')" class="mt-2" />
                         </div>
+
                         <div>
-                            <label class="block text-sm text-gray-900">Kategori</label>
-                            <input name="kategori" value="{{ old('kategori') }}" required class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                            @error('kategori')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                            <x-input-label for="kategori" :value="__('Kategori')" />
+                            <x-text-input id="kategori" name="kategori" class="mt-1 block w-full" :value="old('kategori', $portfolio->kategori ?? '')"
+                                required />
+                            <x-input-error :messages="$errors->get('kategori')" class="mt-2" />
                         </div>
+
                         <div>
-                            <label class="block text-sm text-gray-900">Tingkat Kegiatan</label>
-                            <select name="tingkat" class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]">
+                            <x-input-label for="tingkat" :value="__('Tingkat Kegiatan')" />
+                            <select id="tingkat" name="tingkat"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">- Pilih Tingkat -</option>
-                                <option value="regional" {{ old('tingkat')==='regional' ? 'selected' : '' }}>Regional</option>
-                                <option value="nasional" {{ old('tingkat')==='nasional' ? 'selected' : '' }}>Nasional</option>
-                                <option value="internasional" {{ old('tingkat')==='internasional' ? 'selected' : '' }}>Internasional</option>
+                                <option value="regional" @selected(old('tingkat', $portfolio->tingkat ?? '') === 'regional')>Regional</option>
+                                <option value="nasional" @selected(old('tingkat', $portfolio->tingkat ?? '') === 'nasional')>Nasional</option>
+                                <option value="internasional" @selected(old('tingkat', $portfolio->tingkat ?? '') === 'internasional')>Internasional</option>
                             </select>
-                            @error('tingkat')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                            <x-input-error :messages="$errors->get('tingkat')" class="mt-2" />
                         </div>
+
                         <div>
-                            <label class="block text-sm text-gray-900">Penyelenggara</label>
-                            <input name="penyelenggara" value="{{ old('penyelenggara') }}" required class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                            @error('penyelenggara')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                            <x-input-label for="penyelenggara" :value="__('Penyelenggara')" />
+                            <x-text-input id="penyelenggara" name="penyelenggara" class="mt-1 block w-full"
+                                :value="old('penyelenggara', $portfolio->penyelenggara ?? '')" required />
+                            <x-input-error :messages="$errors->get('penyelenggara')" class="mt-2" />
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm text-gray-900">Tanggal Mulai</label>
-                                <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                                @error('tanggal_mulai')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                                <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
+                                <x-text-input id="tanggal_mulai" type="date" name="tanggal_mulai"
+                                    class="mt-1 block w-full" :value="old('tanggal_mulai', $portfolio->tanggal_mulai ?? '')" required />
+                                <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
                             </div>
                             <div>
-                                <label class="block text-sm text-gray-900">Tanggal Selesai</label>
-                                <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai') }}" class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]"/>
-                                @error('tanggal_selesai')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                                <x-input-label for="tanggal_selesai" :value="__('Tanggal Selesai (Opsional)')" />
+                                <x-text-input id="tanggal_selesai" type="date" name="tanggal_selesai"
+                                    class="mt-1 block w-full" :value="old('tanggal_selesai', $portfolio->tanggal_selesai ?? '')" />
+                                <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
                             </div>
                         </div>
+
                         <div>
-                            <label class="block text-sm text-gray-900">Deskripsi Kegiatan</label>
-                            <textarea name="deskripsi_kegiatan" rows="4" class="mt-1 w-full rounded-md border-gray-300 focus:border-[#1b3985] focus:ring-[#1b3985]">{{ old('deskripsi_kegiatan') }}</textarea>
-                            @error('deskripsi_kegiatan')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                            <x-input-label for="deskripsi_kegiatan" :value="__('Deskripsi Singkat Kegiatan')" />
+                            <textarea id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="4"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('deskripsi_kegiatan', $portfolio->deskripsi_kegiatan ?? '') }}</textarea>
+                            <x-input-error :messages="$errors->get('deskripsi_kegiatan')" class="mt-2" />
                         </div>
+
                         <div>
-                            <label class="block text-sm text-gray-900">Upload Sertifikat (PDF/JPG/PNG)</label>
-                            <input type="file" name="bukti_file" accept=".pdf,image/*" class="mt-1 w-full text-sm" />
+                            <x-input-label for="bukti_file" :value="__('Upload Sertifikat (PDF, JPG, PNG)')" />
+                            <input id="bukti_file" type="file" name="bukti_file" accept=".pdf,image/*"
+                                class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-[#fa7516] hover:file:bg-orange-100" />
                             <p class="text-xs text-gray-500 mt-1">Ukuran maks 2MB.</p>
-                            @error('bukti_file')<div class="text-sm text-red-600">{{ $message }}</div>@enderror
+                            <x-input-error :messages="$errors->get('bukti_file')" class="mt-2" />
                         </div>
 
                         <div class="pt-2 flex items-center gap-3">
-                            <button class="inline-flex items-center rounded-md bg-[#fa7516] px-4 py-2 text-white hover:bg-[#e5670c]">Simpan</button>
-                            <a href="{{ route('student.portfolios.index') }}" class="rounded-md border border-[#1b3985] px-4 py-2 text-[#1b3985] hover:bg-blue-50">Batal</a>
+                            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
+                            <a href="{{ route('student.portfolios.index') }}"
+                                class="text-sm text-gray-600 hover:text-gray-900">{{ __('Batal') }}</a>
                         </div>
                     </form>
                 </div>
