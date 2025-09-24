@@ -56,19 +56,17 @@
     <main>
         <section id="beranda"
             class="relative overflow-hidden scroll-mt-24 bg-gradient-to-br from-[#0A2E73] via-[#1E3A8A] to-[#0F172A]">
-            {{-- DIUBAH: Padding dibuat lebih kecil di mobile --}}
             <div class="max-w-7xl mx-auto px-6 py-16 md:py-28 grid md:grid-cols-2 gap-10 items-center">
                 <div>
-                    {{-- DIUBAH: Ukuran font disesuaikan untuk layar kecil --}}
-                    <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white leading-tight">
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
                         Sistem Informasi<br>Surat Keterangan Pendamping Ijazah
                         <span class="text-[#F97316]">(SKPI)</span>
                     </h1>
-                    <p class="mt-6 text-white/90 md:text-lg">Mencatat, memverifikasi, dan menerbitkan SKPI secara
+                    <p class="mt-6 text-base text-white/90 md:text-lg">Mencatat, memverifikasi, dan menerbitkan SKPI
+                        secara
                         digital untuk mendukung mahasiswa unggul dan berdaya saing.</p>
                     <div class="mt-8 flex flex-col sm:flex-row gap-4">
                         @guest
-                            {{-- DIUBAH: Ukuran tombol dikecilkan di mobile --}}
                             <a href="{{ route('login') }}"
                                 class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base bg-[#F97316] text-white rounded-lg font-semibold hover:bg-[#FF7C1F] shadow-lg transition text-center">Mulai
                                 Sekarang</a>
@@ -77,7 +75,6 @@
                                 class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base bg-[#F97316] text-white rounded-lg font-semibold hover:bg-[#FF7C1F] shadow-lg transition text-center">Buka
                                 Dashboard</a>
                         @endguest
-                        {{-- DIUBAH: Ukuran tombol disamakan --}}
                         <a href="#tentang"
                             class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base border border-white/30 text-white rounded-lg font-semibold hover:bg-white/10 transition text-center">Pelajari</a>
                     </div>
@@ -97,7 +94,6 @@
             </div>
         </section>
 
-        {{-- Konten lainnya tetap sama --}}
         <section id="tentang" class="py-16 bg-white scroll-mt-24">
             <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
                 <div>
@@ -109,7 +105,7 @@
                         Bengkulu untuk mengelola portofolio mereka secara digital hingga proses penerbitan SKPI resmi
                         saat wisuda.</p>
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <div class="flex-1 bg-[#FF7C1F]/10 text-center p-4 rounded-lg">
                         <div class="text-[#F97316] font-semibold">Sertifikat</div>
                     </div>
@@ -156,7 +152,8 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">1</span></div>
+                                        <span class="font-bold text-blue-600">1</span>
+                                    </div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Pengajuan Akun</h4>
@@ -168,7 +165,8 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">2</span></div>
+                                        <span class="font-bold text-blue-600">2</span>
+                                    </div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Aktivasi Akun</h4>
@@ -180,7 +178,8 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">3</span></div>
+                                        <span class="font-bold text-blue-600">3</span>
+                                    </div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Mengisi Portofolio</h4>
@@ -197,7 +196,8 @@
                                             <path fill-rule="evenodd"
                                                 d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                 clip-rule="evenodd" />
-                                        </svg></div>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Penerbitan SKPI</h4>
