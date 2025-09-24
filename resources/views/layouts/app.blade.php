@@ -186,6 +186,16 @@
             });
         })();
     </script>
+    <script>
+        function passwordToggle() {
+            return {
+                showPassword: false,
+                togglePassword() {
+                    this.showPassword = !this.showPassword;
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>
