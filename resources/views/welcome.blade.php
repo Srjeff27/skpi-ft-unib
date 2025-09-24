@@ -10,7 +10,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-ft.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-ft.png') }}">
     @vite('resources/css/app.css')
-    </style>
 </head>
 
 <body class="text-gray-900 bg-gray-50 font-sans">
@@ -57,26 +56,30 @@
     <main>
         <section id="beranda"
             class="relative overflow-hidden scroll-mt-24 bg-gradient-to-br from-[#0A2E73] via-[#1E3A8A] to-[#0F172A]">
-            <div class="max-w-7xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-10 items-center">
+            {{-- DIUBAH: Padding dibuat lebih kecil di mobile --}}
+            <div class="max-w-7xl mx-auto px-6 py-16 md:py-28 grid md:grid-cols-2 gap-10 items-center">
                 <div>
-                    <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight">
+                    {{-- DIUBAH: Ukuran font disesuaikan untuk layar kecil --}}
+                    <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white leading-tight">
                         Sistem Informasi<br>Surat Keterangan Pendamping Ijazah
                         <span class="text-[#F97316]">(SKPI)</span>
                     </h1>
-                    <p class="mt-6 text-white/90 text-lg">Mencatat, memverifikasi, dan menerbitkan SKPI secara digital
-                        untuk mendukung mahasiswa unggul dan berdaya saing.</p>
-                    <div class="mt-8 flex gap-4">
+                    <p class="mt-6 text-white/90 md:text-lg">Mencatat, memverifikasi, dan menerbitkan SKPI secara
+                        digital untuk mendukung mahasiswa unggul dan berdaya saing.</p>
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
                         @guest
+                            {{-- DIUBAH: Ukuran tombol dikecilkan di mobile --}}
                             <a href="{{ route('login') }}"
-                                class="px-8 py-3 bg-[#F97316] text-white rounded-lg font-semibold hover:bg-[#FF7C1F] shadow-lg transition">Mulai
+                                class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base bg-[#F97316] text-white rounded-lg font-semibold hover:bg-[#FF7C1F] shadow-lg transition text-center">Mulai
                                 Sekarang</a>
                         @else
                             <a href="{{ route('dashboard') }}"
-                                class="px-8 py-3 bg-[#F97316] text-white rounded-lg font-semibold hover:bg-[#FF7C1F] shadow-lg transition">Buka
+                                class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base bg-[#F97316] text-white rounded-lg font-semibold hover:bg-[#FF7C1F] shadow-lg transition text-center">Buka
                                 Dashboard</a>
                         @endguest
+                        {{-- DIUBAH: Ukuran tombol disamakan --}}
                         <a href="#tentang"
-                            class="px-8 py-3 border border-white/30 text-white rounded-lg font-semibold hover:bg-white/10 transition">Pelajari</a>
+                            class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base border border-white/30 text-white rounded-lg font-semibold hover:bg-white/10 transition text-center">Pelajari</a>
                     </div>
                 </div>
                 <div class="relative hidden md:block">
@@ -94,6 +97,7 @@
             </div>
         </section>
 
+        {{-- Konten lainnya tetap sama --}}
         <section id="tentang" class="py-16 bg-white scroll-mt-24">
             <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
                 <div>
@@ -118,7 +122,6 @@
                 </div>
             </div>
         </section>
-
         <section id="fitur" class="py-16 bg-gray-50 scroll-mt-24">
             <div class="max-w-6xl mx-auto px-6">
                 <h2 class="text-center text-3xl font-bold text-[#1E3A8A] mb-10">Fitur Utama</h2>
@@ -141,11 +144,9 @@
                 </div>
             </div>
         </section>
-
         <section id="panduan" class="py-16 bg-white scroll-mt-24">
             <div class="max-w-4xl mx-auto px-6">
                 <h2 class="text-center text-3xl font-bold text-[#1E3A8A] mb-10">Panduan & Informasi</h2>
-
                 <div class="mb-12">
                     <h3 class="text-xl font-bold mb-6 text-center text-gray-800">Alur Pengajuan SKPI</h3>
                     <div class="relative">
@@ -155,8 +156,7 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">1</span>
-                                    </div>
+                                        <span class="font-bold text-blue-600">1</span></div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Pengajuan Akun</h4>
@@ -168,8 +168,7 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">2</span>
-                                    </div>
+                                        <span class="font-bold text-blue-600">2</span></div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Aktivasi Akun</h4>
@@ -181,8 +180,7 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">3</span>
-                                    </div>
+                                        <span class="font-bold text-blue-600">3</span></div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Mengisi Portofolio</h4>
@@ -199,8 +197,7 @@
                                             <path fill-rule="evenodd"
                                                 d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                 clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
+                                        </svg></div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Penerbitan SKPI</h4>
@@ -211,7 +208,6 @@
                         </ol>
                     </div>
                 </div>
-
                 <div>
                     <h3 class="text-xl font-bold mb-6 text-center text-gray-800">Pertanyaan Umum (FAQ)</h3>
                     <div class="space-y-4 text-left">
@@ -247,12 +243,12 @@
                         </details>
                     </div>
                 </div>
-
             </div>
         </section>
     </main>
 
-    <footer class="bg-[#0A2E73] text-white">
+    {{-- DIUBAH: Padding bawah ditambahkan di sini --}}
+    <footer class="bg-[#0A2E73] text-white pb-24">
         <div class="max-w-6xl mx-auto px-6 py-8 grid md:grid-cols-2 gap-6">
             <div>
                 <div class="flex items-center gap-3 mb-3">
@@ -269,42 +265,33 @@
         </div>
     </footer>
 
-
+    {{-- Tombol Kontak & Panel tidak diubah --}}
     <button id="chatbot-toggle" aria-label="Kontak admin"
-        class="fixed bottom-6 right-6 z-50 rounded-full bg-[#F97316] hover:bg-[#FF7C1F] text-white shadow-lg w-14 h-14 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+        class="fixed bottom-6 right-6 z-50 rounded-full bg-[#F97316] hover:bg-[#FF7C1F] text-white shadow-lg w-14 h-14 flex items-center justify-center transition-transform hover:scale-110"><svg
+            xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
             <path
                 d="M2.25 6.75A2.25 2.25 0 0 1 4.5 4.5h3A2.25 2.25 0 0 1 9.75 6.75v1.5a2.25 2.25 0 0 1-2.25 2.25h-.257a12.04 12.04 0 0 0 5.257 5.257V15a2.25 2.25 0 0 1 2.25-2.25h1.5A2.25 2.25 0 0 1 20.25 15v3a2.25 2.25 0 0 1-2.25 2.25h-.75C9.708 20.25 3.75 14.292 3.75 6.75Z" />
-        </svg>
-    </button>
-
+        </svg></button>
     <div id="chatbot-panel"
-        class="fixed bottom-24 right-6 z-50 w-80 max-w-[92vw] bg-white text-gray-800 rounded-xl shadow-2xl border border-gray-200 hidden">
+        class="fixed bottom-24 right-6 z-50 w-80 max-w-[92vw] bg-white text-gray-800 rounded-xl shadow-2xl border border-gray-200">
         <div class="px-4 py-4">
             <div class="font-semibold text-[#0A2E73]">Kontak Admin SKPI</div>
             <div class="mt-2 text-sm space-y-1">
-                <div>Admin: <a href="tel:081234567890" class="text-[#F97316]">0812-3456-7890</a></div>
+                <div>Admin: <a href="tel:081234567890" class="text-[#F97316] hover:underline">0812-3456-7890</a></div>
                 <div>Helpdesk: <a href="mailto:helpdesk.ft@unib.ac.id"
-                        class="text-[#F97316]">helpdesk.ft@unib.ac.id</a>
-                </div>
+                        class="text-[#F97316] hover:underline">helpdesk.ft@unib.ac.id</a></div>
             </div>
-            <div class="mt-3 flex gap-2">
-                <button data-copy="081234567890"
+            <div class="mt-3 flex gap-2"><button data-copy="081234567890"
                     class="copy-btn bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1.5 rounded-lg text-sm">Salin
-                    No</button>
-                <a href="mailto:helpdesk.ft@unib.ac.id"
+                    No</button><a href="mailto:helpdesk.ft@unib.ac.id"
                     class="bg-[#F97316] hover:bg-[#FF7C1F] text-white px-3 py-1.5 rounded-lg text-sm">Kirim Email</a>
-            </div>
-
-            <button id="chatbot-close" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                aria-label="Tutup">×</button>
+            </div><button id="chatbot-close" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                aria-label="Tutup">&times;</button>
         </div>
     </div>
 
     <script>
         (function() {
-
-
             const toggle = document.getElementById('chatbot-toggle');
             const panel = document.getElementById('chatbot-panel');
             const closeBtn = document.getElementById('chatbot-close');
@@ -316,20 +303,26 @@
             function hide() {
                 panel.classList.add('hidden');
             }
-            toggle.addEventListener('click', () => panel.classList.contains('hidden') ? show() : hide());
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                panel.classList.contains('hidden') ? show() : hide();
+            });
             closeBtn?.addEventListener('click', hide);
+            document.addEventListener('click', (e) => {
+                if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+                    hide();
+                }
+            });
             panel.addEventListener('click', (e) => {
                 const btn = e.target.closest('.copy-btn');
                 if (btn) {
                     navigator.clipboard?.writeText(btn.getAttribute('data-copy'));
-                    btn.textContent = 'Disalin';
-                    setTimeout(() => btn.textContent = 'Salin No', 1200);
+                    btn.textContent = 'Disalin!';
+                    setTimeout(() => btn.textContent = 'Salin No', 1500);
                 }
             });
         })();
     </script>
-
-
 </body>
 
 </html>

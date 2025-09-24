@@ -36,7 +36,7 @@
         right: auto;
         /* Aturan untuk membuatnya di tengah, sedikit ke bawah */
         left: 50%;
-        top: 80%;
+        top: 75%;
         transform: translate(-50%, -50%);
     }
 }
