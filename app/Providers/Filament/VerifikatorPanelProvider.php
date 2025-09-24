@@ -25,7 +25,10 @@ class VerifikatorPanelProvider extends PanelProvider
             ->id('verifikator')
             ->path('verifikator')
             ->brandName('Verifikator SKPI FT UNIB')
-            ->login()
+            ->brandLogo(asset('images/logo-ft.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('images/logo-ft.png'))
+            ->login(\App\Filament\Auth\VerifikatorLogin::class)
             ->colors([
                 'primary' => Color::Orange,
             ])

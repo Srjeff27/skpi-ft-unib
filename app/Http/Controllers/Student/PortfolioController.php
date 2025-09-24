@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Student\StorePortfolioRequest;
+use App\Http\Requests\Student\UpdatePortfolioRequest;
 use App\Models\Portfolio;
+use App\Services\PortfolioService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -24,30 +27,9 @@ class PortfolioController extends Controller
         return view('student.portfolios.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StorePortfolioRequest $request, PortfolioService $portfolioService): RedirectResponse
     {
-        $data = $request->validate([
-            'kategori' => ['required','string','max:255'],
-            'tingkat' => ['nullable','in:regional,nasional,internasional'],
-            'judul_kegiatan' => ['required','string','max:255'],
-            'penyelenggara' => ['required','string','max:255'],
-            'tanggal_mulai' => ['required','date'],
-            'tanggal_selesai' => ['nullable','date','after_or_equal:tanggal_mulai'],
-            'deskripsi_kegiatan' => ['nullable','string'],
-            'bukti_link' => ['nullable','url','max:255'],
-            'bukti_file' => ['nullable','file','mimetypes:application/pdf,image/jpeg,image/png,image/webp','max:2048'],
-        ]);
-
-        $data['user_id'] = $request->user()->id;
-        $data['status'] = 'pending';
-
-        if ($request->hasFile('bukti_file')) {
-            $path = $request->file('bukti_file')->store('certificates', 'public');
-            $data['bukti_link'] = asset('storage/'.$path);
-            unset($data['bukti_file']);
-        }
-
-        Portfolio::create($data);
+        $portfolioService->createForUser($request->user(), $request->validated(), $request->file('bukti_file'));
 
         return redirect()->route('student.portfolios.index')->with('status', 'Portofolio berhasil ditambahkan.');
     }
@@ -59,7 +41,7 @@ class PortfolioController extends Controller
         return view('student.portfolios.edit', compact('portfolio'));
     }
 
-    public function update(Request $request, Portfolio $portfolio): RedirectResponse
+    public function update(UpdatePortfolioRequest $request, Portfolio $portfolio, PortfolioService $portfolioService): RedirectResponse
     {
         abort_unless($portfolio->user_id === auth()->id(), 403);
 
@@ -67,25 +49,7 @@ class PortfolioController extends Controller
             return back()->with('status', 'Portofolio sudah diverifikasi, tidak dapat diedit.');
         }
 
-        $data = $request->validate([
-            'kategori' => ['required','string','max:255'],
-            'tingkat' => ['nullable','in:regional,nasional,internasional'],
-            'judul_kegiatan' => ['required','string','max:255'],
-            'penyelenggara' => ['required','string','max:255'],
-            'tanggal_mulai' => ['required','date'],
-            'tanggal_selesai' => ['nullable','date','after_or_equal:tanggal_mulai'],
-            'deskripsi_kegiatan' => ['nullable','string'],
-            'bukti_link' => ['nullable','url','max:255'],
-            'bukti_file' => ['nullable','file','mimetypes:application/pdf,image/jpeg,image/png,image/webp','max:2048'],
-        ]);
-
-        if ($request->hasFile('bukti_file')) {
-            $path = $request->file('bukti_file')->store('certificates', 'public');
-            $data['bukti_link'] = asset('storage/'.$path);
-            unset($data['bukti_file']);
-        }
-
-        $portfolio->update($data);
+        $portfolioService->updateForUser($portfolio, $request->validated(), $request->file('bukti_file'));
 
         return redirect()->route('student.portfolios.index')->with('status', 'Portofolio berhasil diperbarui.');
     }

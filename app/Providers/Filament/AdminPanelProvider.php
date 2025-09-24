@@ -28,7 +28,10 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->brandName('Admin SKPI FT UNIB')
-            ->login()
+            ->brandLogo(asset('images/logo-ft.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('images/logo-ft.png'))
+            ->login(\App\Filament\Auth\AdminLogin::class)
             ->colors([
                 'primary' => Color::Orange,
             ])
@@ -57,4 +60,3 @@ class AdminPanelProvider extends PanelProvider
             ]);
     }
 }
-

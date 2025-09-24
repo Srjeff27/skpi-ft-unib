@@ -2,7 +2,14 @@
     <x-slot name="header">
         @php
             $hour = now()->timezone(config('app.timezone'))->format('H');
-            $greet = $hour < 11 ? 'Selamat Pagi' : ($hour < 15 ? 'Selamat Siang' : ($hour < 18 ? 'Selamat Sore' : 'Selamat Malam'));
+            $greet =
+                $hour > 3 && $hour < 11
+                    ? 'Selamat Pagi'
+                    : ($hour > 11 && $hour < 15
+                        ? 'Selamat Siang'
+                        : ($hour > 15 && $hour < 18
+                            ? 'Selamat Sore'
+                            : 'Selamat Malam'));
             $name = auth()->user()?->name ?? 'Pengguna';
         @endphp
         <h2 class="font-semibold text-xl text-black leading-tight">{{ $greet }}, {{ $name }}</h2>
