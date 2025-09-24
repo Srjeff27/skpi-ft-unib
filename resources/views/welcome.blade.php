@@ -10,20 +10,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-ft.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-ft.png') }}">
     @vite('resources/css/app.css')
-    <style>
-        /* Menambahkan animasi untuk panel chat */
-        #chatbot-panel.active {
-            opacity: 1;
-            transform: translateY(0);
-            visibility: visible;
-        }
-
-        #chatbot-panel {
-            opacity: 0;
-            transform: translateY(1rem);
-            visibility: hidden;
-            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-        }
     </style>
 </head>
 
@@ -169,7 +155,8 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">1</span></div>
+                                        <span class="font-bold text-blue-600">1</span>
+                                    </div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Pengajuan Akun</h4>
@@ -181,7 +168,8 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">2</span></div>
+                                        <span class="font-bold text-blue-600">2</span>
+                                    </div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Aktivasi Akun</h4>
@@ -193,7 +181,8 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">3</span></div>
+                                        <span class="font-bold text-blue-600">3</span>
+                                    </div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Mengisi Portofolio</h4>
@@ -210,7 +199,8 @@
                                             <path fill-rule="evenodd"
                                                 d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                 clip-rule="evenodd" />
-                                        </svg></div>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Penerbitan SKPI</h4>
@@ -279,8 +269,9 @@
         </div>
     </footer>
 
+
     <button id="chatbot-toggle" aria-label="Kontak admin"
-        class="fixed bottom-6 right-6 z-50 rounded-full bg-[#F97316] hover:bg-[#FF7C1F] text-white shadow-lg w-14 h-14 flex items-center justify-center transition-transform hover:scale-110">
+        class="fixed bottom-6 right-6 z-50 rounded-full bg-[#F97316] hover:bg-[#FF7C1F] text-white shadow-lg w-14 h-14 flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
             <path
                 d="M2.25 6.75A2.25 2.25 0 0 1 4.5 4.5h3A2.25 2.25 0 0 1 9.75 6.75v1.5a2.25 2.25 0 0 1-2.25 2.25h-.257a12.04 12.04 0 0 0 5.257 5.257V15a2.25 2.25 0 0 1 2.25-2.25h1.5A2.25 2.25 0 0 1 20.25 15v3a2.25 2.25 0 0 1-2.25 2.25h-.75C9.708 20.25 3.75 14.292 3.75 6.75Z" />
@@ -288,13 +279,14 @@
     </button>
 
     <div id="chatbot-panel"
-        class="fixed bottom-24 right-6 z-50 w-80 max-w-[92vw] bg-white text-gray-800 rounded-xl shadow-2xl border border-gray-200">
+        class="fixed bottom-24 right-6 z-50 w-80 max-w-[92vw] bg-white text-gray-800 rounded-xl shadow-2xl border border-gray-200 hidden">
         <div class="px-4 py-4">
             <div class="font-semibold text-[#0A2E73]">Kontak Admin SKPI</div>
             <div class="mt-2 text-sm space-y-1">
-                <div>Admin: <a href="tel:081234567890" class="text-[#F97316] hover:underline">0812-3456-7890</a></div>
+                <div>Admin: <a href="tel:081234567890" class="text-[#F97316]">0812-3456-7890</a></div>
                 <div>Helpdesk: <a href="mailto:helpdesk.ft@unib.ac.id"
-                        class="text-[#F97316] hover:underline">helpdesk.ft@unib.ac.id</a></div>
+                        class="text-[#F97316]">helpdesk.ft@unib.ac.id</a>
+                </div>
             </div>
             <div class="mt-3 flex gap-2">
                 <button data-copy="081234567890"
@@ -303,50 +295,41 @@
                 <a href="mailto:helpdesk.ft@unib.ac.id"
                     class="bg-[#F97316] hover:bg-[#FF7C1F] text-white px-3 py-1.5 rounded-lg text-sm">Kirim Email</a>
             </div>
+
             <button id="chatbot-close" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                aria-label="Tutup">&times;</button>
+                aria-label="Tutup">×</button>
         </div>
     </div>
 
     <script>
         (function() {
+
+
             const toggle = document.getElementById('chatbot-toggle');
             const panel = document.getElementById('chatbot-panel');
             const closeBtn = document.getElementById('chatbot-close');
 
             function show() {
-                panel.classList.add('active');
+                panel.classList.remove('hidden');
             }
 
             function hide() {
-                panel.classList.remove('active');
+                panel.classList.add('hidden');
             }
-
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                panel.classList.contains('active') ? hide() : show();
-            });
-
+            toggle.addEventListener('click', () => panel.classList.contains('hidden') ? show() : hide());
             closeBtn?.addEventListener('click', hide);
-
-            // BARU: Logika untuk menutup panel saat klik di luar
-            document.addEventListener('click', (e) => {
-                if (!panel.contains(e.target) && !toggle.contains(e.target)) {
-                    hide();
-                }
-            });
-
-            // Logika tombol salin
             panel.addEventListener('click', (e) => {
                 const btn = e.target.closest('.copy-btn');
                 if (btn) {
                     navigator.clipboard?.writeText(btn.getAttribute('data-copy'));
-                    btn.textContent = 'Disalin!';
-                    setTimeout(() => btn.textContent = 'Salin No', 1500);
+                    btn.textContent = 'Disalin';
+                    setTimeout(() => btn.textContent = 'Salin No', 1200);
                 }
             });
         })();
     </script>
+
+
 </body>
 
 </html>
