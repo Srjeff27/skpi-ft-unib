@@ -28,6 +28,14 @@ class User extends Authenticatable implements FilamentUser
         'profile_photo_path',
         'role',
         'prodi_id',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'nomor_hp',
+        'tanggal_lulus',
+        'nomor_ijazah',
+        'nomor_skpi',
+        'gelar_id',
+        'gelar_en',
     ];
 
     /**
