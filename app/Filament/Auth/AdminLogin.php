@@ -32,14 +32,79 @@ class AdminLogin extends BaseLogin
         $form = parent::getFormContentComponent();
 
         return Group::make([
+            Html::make(function () {
+                $background = asset('images/background-ft.jpg');
+
+                return new HtmlString(<<<HTML
+                    <style>
+                        body {
+                            min-height: 100vh;
+                            background-image: linear-gradient(rgba(4, 26, 82, 0.7), rgba(5, 17, 47, 0.7)), url('{$background}');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+
+                        body .fi-simple-layout,
+                        body .fi-auth-simple,
+                        body .fi-auth-body,
+                        body .fi-simple-body {
+                            min-height: 100vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 1.5rem;
+                        }
+
+                        body .fi-simple-main,
+                        body .fi-auth-main {
+                            width: 100%;
+                            max-width: 28rem;
+                        }
+
+                        body .fi-auth-card,
+                        body .fi-simple-card,
+                        body .fi-simple-section,
+                        body .fi-auth-section,
+                        body .fi-login-card {
+                            width: 100%;
+                            background-color: #ffffff;
+                            border-radius: 1.5rem;
+                            border: 1px solid rgba(226, 232, 240, 0.9);
+                            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.16);
+                            padding: 2.25rem 2rem 2.5rem;
+                        }
+
+                        body .fi-form-fieldset,
+                        body form[data-livewire-id] {
+                            gap: 1.25rem !important;
+                        }
+
+                        body .fi-form-field-wrapper-label {
+                            color: #1b3985 !important;
+                            font-weight: 600 !important;
+                        }
+
+                        body input[type="email"],
+                        body input[type="password"],
+                        body input[type="text"] {
+                            border-radius: 0.75rem !important;
+                            border: 1px solid rgba(209, 213, 219, 0.9) !important;
+                            padding: 0.65rem 1rem !important;
+                        }
+
+                        body .fi-login-submit {
+                            background-color: #fa7516 !important;
+                            border-radius: 0.75rem !important;
+                        }
+
+                        body .fi-login-back {
+                            border-radius: 0.75rem !important;
+                        }
+                    </style>
+                HTML);
+            }),
             $form,
-            Html::make(new HtmlString(
-                '<div class="mt-3">'
-                . '<a href="/" class="inline-flex w-full items-center justify-center rounded-md border border-blue-900 px-4 py-2 text-blue-900 hover:bg-blue-50">'
-                . 'Kembali ke Beranda'
-                . '</a>'
-                . '</div>'
-            ))->visible(fn (): bool => blank($this->userUndertakingMultiFactorAuthentication)),
         ]);
     }
 }
