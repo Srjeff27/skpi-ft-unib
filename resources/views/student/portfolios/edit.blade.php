@@ -45,7 +45,7 @@
                         </div>
 
                         <div>
-                            <x-input-label for="kategori" :value="__('Kategori')" />
+                            <x-input-label for="kategori_portfolio" :value="__('Kategori')" />
                             <x-text-input id="kategori" name="kategori" class="mt-1 block w-full" :value="old('kategori', $portfolio->kategori)" :disabled="$isLocked" required />
                             <x-input-error :messages="$errors->get('kategori')" class="mt-2" />
                         </div>
@@ -87,7 +87,7 @@
                         </div>
 
                         <div>
-                            <x-input-label for="bukti_file" :value="__('Ganti Sertifikat (PDF, JPG, PNG)')" />
+                            <x-input-label for="link_sertifikat" :value="__('Ganti Sertifikat (PDF, JPG, PNG)')" />
                             <input id="bukti_file" type="file" name="bukti_file" accept=".pdf,image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-[#fa7516] hover:file:bg-orange-100" :disabled="$isLocked" />
                             <p class="text-xs text-gray-500 mt-1">Ukuran maks 2MB. Kosongkan jika tidak ingin mengubah bukti yang sudah ada.</p>
                             <x-input-error :messages="$errors->get('bukti_file')" class="mt-2" />

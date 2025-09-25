@@ -8,18 +8,24 @@ class Portfolio extends Model
 {
     protected $fillable = [
         'user_id',
-        'kategori',
-        'tingkat',
+        'kategori_portfolio',
         'judul_kegiatan',
         'penyelenggara',
-        'tanggal_mulai',
-        'tanggal_selesai',
+        'nomor_dokumen',
+        'tanggal_dokumen',
+        'nama_dokumen_id',
+        'nama_dokumen_en',
         'deskripsi_kegiatan',
-        'bukti_link',
+        'link_sertifikat',
         'status',
         'catatan_verifikator',
         'verified_by',
         'verified_at',
+    ];
+
+    protected $casts = [
+        'tanggal_dokumen' => 'date',
+        'verified_at' => 'datetime',
     ];
 
     // Relasi ke user mahasiswa

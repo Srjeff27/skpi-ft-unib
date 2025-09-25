@@ -74,7 +74,7 @@
                         <table class="min-w-full text-sm">
                             <thead class="text-left text-gray-500">
                                 <tr>
-                                    <th class="p-4 font-medium">Judul</th>
+                                    <th class="p-4 font-medium">Nama Dokumen</th>
                                     <th class="p-4 font-medium">Kategori</th>
                                     <th class="p-4 font-medium">Tanggal</th>
                                     <th class="p-4 font-medium">Status</th>
@@ -83,8 +83,8 @@
                             <tbody>
                                 @forelse ($recent as $p)
                                     <tr class="border-t border-gray-100">
-                                        <td class="p-4 align-top">{{ $p->judul_kegiatan }}</td>
-                                        <td class="p-4 align-top">{{ $p->kategori }}</td>
+                                        <td class="p-4 align-top">{{ $p->nama_dokumen_id }}</td>
+                                        <td class="p-4 align-top">{{ $p->kategori_portfolio}}</td>
                                         <td class="p-4 align-top whitespace-nowrap">
                                             {{ \Carbon\Carbon::parse($p->tanggal_mulai)->isoFormat('D MMM YYYY') }}{{ $p->tanggal_selesai ? ' - ' . \Carbon\Carbon::parse($p->tanggal_selesai)->isoFormat('D MMM YYYY') : '' }}
                                         </td>

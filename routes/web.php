@@ -32,12 +32,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Mahasiswa: Portofolio
-    Route::get('/portofolio', [\App\Http\Controllers\Student\PortfolioController::class, 'index'])->name('student.portfolios.index');
-    Route::get('/portofolio/create', [\App\Http\Controllers\Student\PortfolioController::class, 'create'])->name('student.portfolios.create');
-    Route::post('/portofolio', [\App\Http\Controllers\Student\PortfolioController::class, 'store'])->name('student.portfolios.store');
-    Route::get('/portofolio/{portfolio}/edit', [\App\Http\Controllers\Student\PortfolioController::class, 'edit'])->name('student.portfolios.edit');
-    Route::put('/portofolio/{portfolio}', [\App\Http\Controllers\Student\PortfolioController::class, 'update'])->name('student.portfolios.update');
-    Route::delete('/portofolio/{portfolio}', [\App\Http\Controllers\Student\PortfolioController::class, 'destroy'])->name('student.portfolios.destroy');
+    Route::get('/portofolio', [\App\Http\Controllers\PortfolioController::class, 'index'])->name('student.portfolios.index');
+    Route::get('/portofolio/create', [\App\Http\Controllers\PortfolioController::class, 'create'])->name('student.portfolios.create');
+    Route::post('/portofolio', [\App\Http\Controllers\PortfolioController::class, 'store'])->name('student.portfolios.store');
+    Route::get('/portofolio/{portfolio}/edit', [\App\Http\Controllers\PortfolioController::class, 'edit'])->name('student.portfolios.edit');
+    Route::put('/portofolio/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'update'])->name('student.portfolios.update');
+    Route::delete('/portofolio/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'destroy'])->name('student.portfolios.destroy');
 
     // Dokumen SKPI (placeholder)
     Route::get('/dokumen-skpi', function () {

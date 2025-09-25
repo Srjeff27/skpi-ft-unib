@@ -73,14 +73,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
     // Relasi ke Prodi
-public function prodi()
-{
-    return $this->belongsTo(Prodi::class);
-}
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class);
+    }
 
-// Relasi ke Portfolio
-public function portfolios()
-{
-    return $this->hasMany(Portfolio::class);
-}
+    // Relasi ke Portfolio
+    public function portfolios()
+    {
+        return $this->hasMany(Portfolio::class);
+    }
 }

@@ -33,64 +33,83 @@
                         <div>
                             <x-input-label for="judul_kegiatan" :value="__('Judul Kegiatan')" />
                             <x-text-input id="judul_kegiatan" name="judul_kegiatan" class="mt-1 block w-full"
-                                :value="old('judul_kegiatan', $portfolio->judul_kegiatan ?? '')" required />
+                                :value="old('judul_kegiatan', $portfolio->judul_kegiatan ?? '')" required placeholder="Contoh: FT FAIR 2024"/>
                             <x-input-error :messages="$errors->get('judul_kegiatan')" class="mt-2" />
                         </div>
 
                         <div>
-                            <x-input-label for="kategori" :value="__('Kategori')" />
-                            <x-text-input id="kategori" name="kategori" class="mt-1 block w-full" :value="old('kategori', $portfolio->kategori ?? '')"
-                                required />
-                            <x-input-error :messages="$errors->get('kategori')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="tingkat" :value="__('Tingkat Kegiatan')" />
-                            <select id="tingkat" name="tingkat"
+                            <x-input-label for="kategori_portfolio" :value="__('Kategori Portofolio')" />
+                            <select id="kategori_portfolio" name="kategori_portfolio"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">- Pilih Tingkat -</option>
-                                <option value="regional" @selected(old('tingkat', $portfolio->tingkat ?? '') === 'regional')>Regional</option>
-                                <option value="nasional" @selected(old('tingkat', $portfolio->tingkat ?? '') === 'nasional')>Nasional</option>
-                                <option value="internasional" @selected(old('tingkat', $portfolio->tingkat ?? '') === 'internasional')>Internasional</option>
+                                <option value="">- Pilih Kategori -</option>
+                                <option value="Penghargaan dan Pemenang Kejuaraan" @selected(old('kategori_portfolio', $portfolio->kategori_portfolio ?? '') === 'Penghargaan dan Pemenang Kejuaraan')>Penghargaan dan Pemenang Kejuaraan</option>
+                                <option value="Pengalaman Organisasi" @selected(old('kategori_portfolio', $portfolio->kategori_portfolio ?? '') === 'Pengalaman Organisasi')>Pengalaman Organisasi</option>
+                                <option value="Spesifikasi Tugas Akhir" @selected(old('kategori_portfolio', $portfolio->kategori_portfolio ?? '') === 'Spesifikasi Tugas Akhir')>Spesifikasi Tugas Akhir</option>
+                                <option value="Bahasa Internasional" @selected(old('kategori_portfolio', $portfolio->kategori_portfolio ?? '') === 'Bahasa Internasional')>Bahasa Internasional</option>
+                                <option value="Magang Industri" @selected(old('kategori_portfolio', $portfolio->kategori_portfolio ?? '') === 'Magang Industri')>Magang Industri</option>
+                                <option value="Pendidikan Karakter" @selected(old('kategori_portfolio', $portfolio->kategori_portfolio ?? '') === 'Pendidikan Karakter')>Pendidikan Karakter</option>
                             </select>
-                            <x-input-error :messages="$errors->get('tingkat')" class="mt-2" />
+                            <x-input-error :messages="$errors->get('kategori_portfolio')" class="mt-2" />
                         </div>
 
                         <div>
                             <x-input-label for="penyelenggara" :value="__('Penyelenggara')" />
                             <x-text-input id="penyelenggara" name="penyelenggara" class="mt-1 block w-full"
-                                :value="old('penyelenggara', $portfolio->penyelenggara ?? '')" required />
+                                :value="old('penyelenggara', $portfolio->penyelenggara ?? '')" required placeholder="Contoh: Universitas XYZ"/>
                             <x-input-error :messages="$errors->get('penyelenggara')" class="mt-2" />
                         </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
-                                <x-text-input id="tanggal_mulai" type="date" name="tanggal_mulai"
-                                    class="mt-1 block w-full" :value="old('tanggal_mulai', $portfolio->tanggal_mulai ?? '')" required />
-                                <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
+                                <x-input-label for="nomor_dokumen" :value="__('Nomor Dokumen')" />
+                                <x-text-input id="nomor_dokumen" name="nomor_dokumen" class="mt-1 block w-full"
+                                    :value="old('nomor_dokumen', $portfolio->nomor_dokumen ?? '')" />
+                                <x-input-error :messages="$errors->get('nomor_dokumen')" class="mt-2" />
                             </div>
                             <div>
-                                <x-input-label for="tanggal_selesai" :value="__('Tanggal Selesai (Opsional)')" />
-                                <x-text-input id="tanggal_selesai" type="date" name="tanggal_selesai"
-                                    class="mt-1 block w-full" :value="old('tanggal_selesai', $portfolio->tanggal_selesai ?? '')" />
-                                <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
+                                <x-input-label for="tanggal_dokumen" :value="__('Tanggal Dokumen')" />
+                                <x-text-input id="tanggal_dokumen" type="date" name="tanggal_dokumen"
+                                    class="mt-1 block w-full" :value="old('tanggal_dokumen', $portfolio->tanggal_dokumen ?? '')" />
+                                <x-input-error :messages="$errors->get('tanggal_dokumen')" class="mt-2" />
                             </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="nama_dokumen_id" :value="__('Nama Dokumen (ID)')" />
+                            <x-text-input id="nama_dokumen_id" name="nama_dokumen_id" class="mt-1 block w-full"
+                                :value="old('nama_dokumen_id', $portfolio->nama_dokumen_id ?? '')" placeholder="Contoh: Penghargaan Juara 1 Lomba Ngoding FT UNIB Fair 2024"/>
+                            <x-input-error :messages="$errors->get('nama_dokumen_id')" class="mt-2"/>
+                        </div>
+
+                        <div>
+                            <x-input-label for="nama_dokumen_en" :value="__('Nama Dokumen (EN)')" />
+                            <x-text-input id="nama_dokumen_en" name="nama_dokumen_en" class="mt-1 block w-full"
+                                :value="old('nama_dokumen_en', $portfolio->nama_dokumen_en ?? '')" placeholder="Example: 1st Place in the 2024 UNIB Fair FT Coding Competition"/>
+                            <x-input-error :messages="$errors->get('nama_dokumen_en')" class="mt-2" />
                         </div>
 
                         <div>
                             <x-input-label for="deskripsi_kegiatan" :value="__('Deskripsi Singkat Kegiatan')" />
                             <textarea id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="4"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('deskripsi_kegiatan', $portfolio->deskripsi_kegiatan ?? '') }}</textarea>
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Contoh: Mengikuti Lomba Coding FT UNIB 2024">{{ old('deskripsi_kegiatan', $portfolio->deskripsi_kegiatan ?? '') }}</textarea>
                             <x-input-error :messages="$errors->get('deskripsi_kegiatan')" class="mt-2" />
                         </div>
 
                         <div>
-                            <x-input-label for="bukti_file" :value="__('Upload Sertifikat (PDF, JPG, PNG)')" />
-                            <input id="bukti_file" type="file" name="bukti_file" accept=".pdf,image/*"
-                                class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-[#fa7516] hover:file:bg-orange-100" />
-                            <p class="text-xs text-gray-500 mt-1">Ukuran maks 2MB.</p>
-                            <x-input-error :messages="$errors->get('bukti_file')" class="mt-2" />
+                            <x-input-label for="link_sertifikat" :value="__('Link Sertifikat (G-Drive)')" />
+                            <x-text-input id="link_sertifikat" name="link_sertifikat" type="url" class="mt-1 block w-full"
+                                :value="old('link_sertifikat', $portfolio->link_sertifikat ?? '')" placeholder="https://..." />
+                            <x-input-error :messages="$errors->get('link_sertifikat')" class="mt-2" />
+                            <p class="mt-1 text-sm text-gray-500">
+                                Pastikan URL sertifikat dapat diakses publik.
+                            </p>
+                        </div>
+
+                        <div class="mt-4 rounded-md bg-blue-50 p-4 text-sm text-blue-700">
+                            <p class="font-bold">Info!</p>
+                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                <li>Jika Anda tidak memiliki sertifikat, silahkan unggah surat tugas atau dokumen lain yang dapat memvalidasi Portofolio Anda.</li>
+                                <li>Tidak semua prestasi akan ditampilkan pada SKPI, hanya data yang lolos validasi oleh verifikator yang akan ditampilkan.</li>
+                            </ul>
                         </div>
 
                         <div class="pt-2 flex items-center gap-3">
