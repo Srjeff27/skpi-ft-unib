@@ -32,6 +32,7 @@ class VerifikatorPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Orange,
             ])
+            ->darkMode(false)
             // Daftar resource yang relevan untuk verifikator
             ->resources([
                 \App\Filament\Resources\Portfolios\PortfolioResource::class,
