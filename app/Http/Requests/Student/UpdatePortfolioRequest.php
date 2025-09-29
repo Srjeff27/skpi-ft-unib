@@ -14,17 +14,18 @@ class UpdatePortfolioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kategori' => ['required','string','max:255'],
-            'tingkat' => ['nullable','in:regional,nasional,internasional'],
+            'kategori_portfolio' => ['required','string','max:255'],
             'judul_kegiatan' => ['required','string','max:255'],
             'penyelenggara' => ['required','string','max:255'],
-            'tanggal_mulai' => ['required','date'],
-            'tanggal_selesai' => ['nullable','date','after_or_equal:tanggal_mulai'],
+            'tanggal_dokumen' => ['required','date'],
+            'nomor_dokumen' => ['nullable','string','max:255'],
+            'nama_dokumen_id' => ['nullable','string','max:255'],
+            'nama_dokumen_en' => ['nullable','string','max:255'],
             'deskripsi_kegiatan' => ['nullable','string'],
-            'bukti_link' => ['nullable','url','max:255'],
-            'bukti_file' => ['nullable','file','mimetypes:application/pdf,image/jpeg,image/png,image/webp','max:2048'],
+            'link_sertifikat' => ['required','url','max:255'],
         ];
     }
 }
+
 
 

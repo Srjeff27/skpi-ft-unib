@@ -74,7 +74,7 @@
                                             <div class="flex items-center justify-end gap-4">
                                                 <a href="{{ $p->link_sertifikat }}" target="_blank"
                                                     class="text-blue-600 hover:underline">Lihat Sertifikat</a>
-                                                @if ($p->status !== 'verified')
+                                                @if ($p->status === 'pending')
                                                     <a href="{{ route('student.portfolios.edit', $p) }}"
                                                         class="text-indigo-600 hover:underline">Edit</a>
                                                     <form action="{{ route('student.portfolios.destroy', $p) }}"
@@ -140,7 +140,7 @@
                                     <div class="flex items-center justify-center divide-x divide-gray-200 text-sm">                                        
                                         <a href="{{ $p->link_sertifikat }}" target="_blank"
                                             class="flex-1 p-2 text-blue-600 font-medium">Lihat Sertifikat</a>
-                                        @if ($p->status !== 'verified')
+                                        @if ($p->status === 'pending')
                                             <a href="{{ route('student.portfolios.edit', $p) }}"
                                                 class="flex-1 p-2 text-indigo-600 font-medium">Edit</a>
                                             <form action="{{ route('student.portfolios.destroy', $p) }}" method="POST"

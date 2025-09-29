@@ -32,6 +32,6 @@ class PortfolioPolicy
 
     public function delete(User $user, Portfolio $portfolio): bool
     {
-        return $user->id === $portfolio->user_id && $portfolio->status !== 'verified';
+        return $user->id === $portfolio->user_id;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Portfolio;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Schema;
 
 class PortfolioService
 {
@@ -38,9 +39,37 @@ class PortfolioService
 
         if ($evidenceFile !== null) {
             $path = $evidenceFile->store('certificates', 'public');
-            $data['bukti_link'] = asset('storage/' . $path);
+            // simpan ke kolom baru link_sertifikat
+            $data['link_sertifikat'] = asset('storage/' . $path);
             unset($data['bukti_file']);
         }
+
+        // jika user mengisi bukti_link manual (url), map ke kolom baru
+        if (isset($data['bukti_link'])) {
+            $data['link_sertifikat'] = $data['bukti_link'];
+            unset($data['bukti_link']);
+        }
+
+        // Backward-compat: map to legacy columns if needed
+        // mapping ke kolom baru kategori_portfolio jika tersedia
+        if (Schema::hasColumn('portfolios', 'kategori_portfolio') && isset($data['kategori'])) {
+            $data['kategori_portfolio'] = $data['kategori'];
+            unset($data['kategori']);
+        }
+
+        // Jika ada input tanggal_mulai, gunakan sebagai tanggal_dokumen
+        if (isset($data['tanggal_mulai'])) {
+            $data['tanggal_dokumen'] = $data['tanggal_mulai'];
+            unset($data['tanggal_mulai']);
+        }
+        
+        // Hapus kolom yang sudah tidak ada di tabel
+        unset($data['tanggal_selesai']);
+        unset($data['tingkat']);
+
+        // Only keep keys that exist as columns to avoid SQL errors
+        $columns = Schema::getColumnListing('portfolios');
+        $data = array_intersect_key($data, array_flip($columns));
 
         return $data;
     }

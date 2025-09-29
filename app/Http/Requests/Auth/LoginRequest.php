@@ -42,7 +42,6 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        // Hanya izinkan login melalui Breeze untuk role mahasiswa
         $user = User::where('email', $this->string('email'))
             ->first();
 

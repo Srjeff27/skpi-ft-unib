@@ -9,14 +9,14 @@ class Portfolio extends Model
     protected $fillable = [
         'user_id',
         'kategori_portfolio',
-        'judul_kegiatan',
-        'penyelenggara',
+        'link_sertifikat',
         'nomor_dokumen',
         'tanggal_dokumen',
         'nama_dokumen_id',
         'nama_dokumen_en',
+        'judul_kegiatan',
+        'penyelenggara',
         'deskripsi_kegiatan',
-        'link_sertifikat',
         'status',
         'catatan_verifikator',
         'verified_by',
@@ -28,15 +28,13 @@ class Portfolio extends Model
         'verified_at' => 'datetime',
     ];
 
-    // Relasi ke user mahasiswa
-public function user()
-{
-    return $this->belongsTo(User::class, 'user_id');
-}
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-// Relasi ke user verifikator
-public function verifikator()
-{
-    return $this->belongsTo(User::class, 'verified_by');
-}
+    public function verifikator()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
 }

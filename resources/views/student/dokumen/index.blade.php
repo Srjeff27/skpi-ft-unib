@@ -17,11 +17,22 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-4">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-700">
-                    <p>Halaman dokumen SKPI akan menampilkan berkas SKPI final/preview setelah diverifikasi. (Admin)</p>
+                <div class="p-4 text-gray-700">
+                    <div class="text-sm text-gray-500 mb-2">Preview SKPI</div>
+                    <div class="aspect-[3/4] w-full border rounded-md overflow-hidden bg-gray-50">
+                        <iframe src="{{ route('student.skpi.download') }}" class="w-full h-[80vh]" title="Preview SKPI"></iframe>
+                    </div>
                 </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <form method="POST" action="{{ route('student.skpi.apply') }}" onsubmit="return confirm('Ajukan SKPI sekarang?')">
+                    @csrf
+                    <button class="inline-flex items-center rounded-md bg-[#1b3985] text-white px-4 py-2 text-sm">Ajukan SKPI</button>
+                </form>
+                <a href="{{ route('student.skpi.download') }}" target="_blank" class="inline-flex items-center rounded-md border border-[#1b3985] text-[#1b3985] px-4 py-2 text-sm hover:bg-blue-50">Buka di Tab Baru</a>
             </div>
         </div>
     </div>

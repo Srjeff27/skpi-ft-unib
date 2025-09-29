@@ -127,7 +127,7 @@
         </div>
     </nav>
 
-
+    @if(auth()->check() && auth()->user()->role === 'mahasiswa')
     <button id="chatbot-toggle" aria-label="Kontak admin"
         class="fixed bottom-6 right-6 z-50 rounded-full bg-[#F97316] hover:bg-[#FF7C1F] text-white shadow-lg w-14 h-14 flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
@@ -158,7 +158,9 @@
                 aria-label="Tutup">×</button>
         </div>
     </div>
+    @endif
 
+    @if(auth()->check() && auth()->user()->role === 'mahasiswa')
     <script>
         (function() {
 
@@ -186,6 +188,7 @@
             });
         })();
     </script>
+    @endif
     <script>
         function passwordToggle() {
             return {
