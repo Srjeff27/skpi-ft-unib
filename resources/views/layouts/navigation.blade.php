@@ -7,7 +7,6 @@
                 <div class="shrink-0 flex items-center gap-3">
                     <a href="/" class="flex items-center gap-3">
                         <x-application-logo class="block h-9 w-auto fill-current text-white" />
-                        {{-- DIUBAH: Menggunakan dua span untuk teks responsif --}}
                         <span class="text-white font-semibold sm:hidden">SKPI FT UNIB</span>
                         <span class="hidden sm:inline text-white font-semibold">SKPI FT Universitas Bengkulu</span>
                     </a>
@@ -35,48 +34,90 @@
                         </a>
 
                         <x-dropdown align="right" width="80">
+                            {{-- TRIGGER (Tombol Lonceng) --}}
                             <x-slot name="trigger">
                                 <button
-                                    class="relative inline-flex items-center justify-center rounded-full w-9 h-9 hover:bg-white/10">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-5 h-5">
-                                        <path
-                                            d="M8.625 4.5c0-1.243 1.007-2.25 2.25-2.25s2.25 1.007 2.25 2.25V5.25c2.485 0 4.5 2.015 4.5 4.5v2.25l1.5 1.5v.75h-16.5v-.75l1.5-1.5v-2.25c0-2.485 2.015-4.5 4.5-4.5V4.5Z" />
-                                        <path d="M9.75 18a2.25 2.25 0 1 0 4.5 0h-4.5Z" />
+                                    class="relative inline-flex items-center justify-center rounded-full w-9 h-9 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white">
+
+                                    {{-- DIUBAH: Ikon Lonceng SVG Outline --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
                                     </svg>
+
+                                    {{-- Badge Notifikasi Belum Dibaca --}}
                                     @if ($unread > 0)
-                                        <span
-                                            class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-orange-500 text-[10px] font-semibold">{{ $unread }}</span>
+                                        <span class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-orange-500 text-[10px] font-semibold text-white">{{ $unread }}</span>
                                     @endif
                                 </button>
                             </x-slot>
 
+                            {{-- KONTEN DROPDOWN --}}
                             <x-slot name="content">
-                                <div class="px-4 py-2 text-sm text-gray-600 font-semibold">Notifikasi</div>
-                                <div class="max-h-80 overflow-auto">
-                                    @php $listNotifs = Auth::user()->notifications()->latest()->take(5)->get(); @endphp
-                                    @forelse($listNotifs as $n)
-                                        @php $data = $n->data; @endphp
-                                        <div
-                                            class="px-4 py-2 border-t text-sm {{ is_null($n->read_at) ? 'bg-orange-50' : '' }}">
-                                            <div class="flex items-center justify-between">
-                                                <div class="font-medium">{{ $data['title'] ?? 'Notifikasi' }}</div>
-                                                <div class="text-xs text-gray-500">
-                                                    {{ optional($n->created_at)->diffForHumans() }}</div>
+                                <div class="bg-white rounded-md shadow-lg border border-gray-200">
+                                    {{-- Header Dropdown --}}
+                                    <div class="px-4 py-3 border-b border-gray-200">
+                                        <p class="text-lg font-bold text-gray-800">Notifikasi</p>
+                                    </div>
+
+                                    {{-- Daftar Notifikasi --}}
+                                    <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                                        @php $listNotifs = Auth::user()->notifications()->latest()->take(10)->get(); @endphp
+                                        @forelse($listNotifs as $n)
+                                            @php
+                                                $data = $n->data;
+                                                // Logika untuk menentukan ikon dan warna berdasarkan judul notifikasi
+                                                $icon = 'heroicon-o-bell';
+                                                $color = 'text-gray-400 bg-gray-100';
+                                                if (Str::contains(strtolower($data['title'] ?? ''), 'ditolak')) {
+                                                    $icon = 'heroicon-o-x-circle';
+                                                    $color = 'text-red-500 bg-red-50';
+                                                } elseif (Str::contains(strtolower($data['title'] ?? ''), 'perbaikan')) {
+                                                    $icon = 'heroicon-o-pencil-square';
+                                                    $color = 'text-amber-500 bg-amber-50';
+                                                } elseif (Str::contains(strtolower($data['title'] ?? ''), ['diterima', 'disetujui', 'verified'])) {
+                                                    $icon = 'heroicon-o-check-circle';
+                                                    $color = 'text-green-500 bg-green-50';
+                                                }
+                                            @endphp
+                                            <div
+                                                class="flex items-start gap-4 px-4 py-3 hover:bg-gray-50 transition-colors duration-150 {{ is_null($n->read_at) ? 'bg-blue-50' : '' }}">
+                                                {{-- Ikon Notifikasi --}}
+                                                <div
+                                                    class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center {{ $color }}">
+                                                    <x-dynamic-component :component="$icon" class="w-5 h-5" />
+                                                </div>
+
+                                                {{-- Konten Teks Notifikasi --}}
+                                                <div class="flex-grow text-sm">
+                                                    <div class="flex justify-between items-baseline">
+                                                        <p class="font-semibold text-gray-900">
+                                                            {{ $data['title'] ?? 'Notifikasi' }}</p>
+                                                        <p class="text-xs text-gray-400 flex-shrink-0 ml-2">
+                                                            {{ optional($n->created_at)->diffForHumans() }}</p>
+                                                    </div>
+                                                    @if (!empty($data['judul_kegiatan']))
+                                                        <p class="text-gray-700 mt-0.5">
+                                                            {{ Str::limit($data['judul_kegiatan'], 40) }}</p>
+                                                    @endif
+                                                    @if (!empty($data['message']))
+                                                        <p class="text-xs text-gray-500 mt-1">
+                                                            {{ Str::limit($data['message'], 50) }}</p>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            @if (!empty($data['judul_kegiatan']))
-                                                <div class="text-gray-700">{{ $data['judul_kegiatan'] }}</div>
-                                            @endif
-                                            @if (!empty($data['message']))
-                                                <div class="text-xs text-gray-500">{{ $data['message'] }}</div>
-                                            @endif
-                                        </div>
-                                    @empty
-                                        <div class="px-4 py-6 text-sm text-gray-500">Belum ada notifikasi.</div>
-                                    @endforelse
-                                    <div class="px-4 py-2 text-right">
-                                        <a class="text-[#1b3985] underline"
-                                            href="{{ route('student.notifications.index') }}">Lihat semua</a>
+                                        @empty
+                                            <div class="px-4 py-10 text-center">
+                                                <p class="text-sm text-gray-500">Belum ada notifikasi baru.</p>
+                                            </div>
+                                        @endforelse
+                                    </div>
+
+                                    {{-- Footer Dropdown --}}
+                                    <div class="px-4 py-2 bg-gray-50 border-t border-gray-200 text-center rounded-b-md">
+                                        <a class="text-sm font-semibold text-blue-600 hover:underline"
+                                            href="{{ route('student.notifications.index') }}">
+                                            Lihat semua notifikasi
+                                        </a>
                                     </div>
                                 </div>
                             </x-slot>
@@ -127,12 +168,12 @@
                 @if (Auth::user()->role === 'mahasiswa')
                     <a href="{{ route('student.notifications.index') }}"
                         class="relative inline-flex items-center justify-center rounded-full w-8 h-8 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5">
-                            <path
-                                d="M8.625 4.5c0-1.243 1.007-2.25 2.25-2.25s2.25 1.007 2.25 2.25V5.25c2.485 0 4.5 2.015 4.5 4.5v2.25l1.5 1.5v.75h-16.5v-.75l1.5-1.5v-2.25c0-2.485 2.015-4.5 4.5-4.5V4.5Z" />
-                            <path d="M9.75 18a2.25 2.25 0 1 0 4.5 0h-4.5Z" />
+
+                        {{-- DIUBAH: Ikon Lonceng SVG Outline --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
                         </svg>
+
                         @if (isset($unread) && $unread > 0)
                             <span
                                 class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-orange-500 text-[10px] font-semibold">{{ $unread }}</span>

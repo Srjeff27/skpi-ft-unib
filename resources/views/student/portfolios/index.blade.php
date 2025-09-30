@@ -1,170 +1,87 @@
 <x-app-layout>
     <x-slot name="header">
-        @php
-            $hour = now()->timezone(config('app.timezone'))->format('H');
-            $greet =
-                $hour > 3 && $hour < 11
-                    ? 'Selamat Pagi'
-                    : ($hour > 11 && $hour < 15
-                        ? 'Selamat Siang'
-                        : ($hour > 15 && $hour < 18
-                            ? 'Selamat Sore'
-                            : 'Selamat Malam'));
-            $name = auth()->user()?->name ?? 'Pengguna';
-        @endphp
-        <h2 class="font-semibold text-xl text-gray-900 leading-tight">{{ $greet }}, {{ $name }}</h2>
-        <p class="text-sm text-gray-500">Portfolio</p>
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    @php
+                        $hour = now()->timezone(config('app.timezone'))->format('H');
+                        $greet =
+                            $hour < 11
+                                ? 'Selamat Pagi'
+                                : ($hour < 15
+                                    ? 'Selamat Siang'
+                                    : ($hour < 18
+                                        ? 'Selamat Sore'
+                                        : 'Selamat Malam'));
+                        $name = auth()->user()?->name ?? 'Pengguna';
+                    @endphp
+                    <h2 class="font-bold text-2xl text-gray-800 leading-tight">{{ $greet }}, {{ $name }}!</h2>
+                    <p class="text-sm text-gray-500 mt-1">Kelola semua portofolio kegiatan Anda di halaman ini.</p>
+                </div>
+                <a href="{{ route('student.portfolios.create') }}"
+                    class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-[#1b3985] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <x-heroicon-o-plus-circle class="w-5 h-5 mr-2" />
+                    Upload Portofolio
+                </a>
+            </div>
+        </div>
     </x-slot>
 
-    {{-- DIUBAH: Padding bawah ditambahkan untuk menghindari tumpang tindih dengan nav mobile --}}
-    <div class="pt-8 pb-24 md:pb-8">
-        {{-- DIUBAH: Padding horizontal ditambahkan untuk mobile --}}
+    <div class="pt-6 pb-24 sm:pt-8 sm:pb-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {{-- DIUBAH: Header dibuat responsif (vertikal di mobile, horizontal di desktop) --}}
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
-                <div class="text-gray-900">Kelola portofolio kegiatan Anda.</div>
-                <a href="{{ route('student.portfolios.create') }}"
-                    class="w-full sm:w-auto text-center inline-flex items-center justify-center rounded-md bg-[#fa7516] px-4 py-2 text-white hover:bg-[#e5670c]">+
-                    Upload Portofolio</a>
-            </div>
-
             @if (session('status'))
-                <div class="mb-4 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-800">
-                    {{ session('status') }}</div>
+                <div class="mb-6 rounded-lg border border-green-300 bg-green-50 p-4 text-sm text-green-800 shadow-sm">
+                    {{ session('status') }}
+                </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-
-                <div class="hidden sm:block">
+            @if ($portfolios->isEmpty())
+                {{-- Tampilan jika tidak ada portofolio --}}
+                <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl text-center p-12">
+                    <x-heroicon-o-document-duplicate class="mx-auto w-12 h-12 text-gray-300" />
+                    <h3 class="mt-4 text-lg font-semibold text-gray-800">Anda Belum Memiliki Portofolio</h3>
+                    <p class="mt-1 text-sm text-gray-500">Mulai kumpulkan prestasi dan pengalaman Anda sekarang.</p>
+                    <a href="{{ route('student.portfolios.create') }}"
+                        class="mt-6 inline-flex items-center rounded-lg bg-[#1b3985] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 transition-colors">
+                        <x-heroicon-o-plus-circle class="w-5 h-5 mr-2" />
+                        Upload Portofolio Pertama
+                    </a>
+                </div>
+            @else
+                {{-- TAMPILAN TABLET BESAR & DESKTOP --}}
+                <div class="hidden md:block bg-white overflow-hidden shadow-lg sm:rounded-xl">
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
-                            <thead class="text-left text-gray-500 bg-gray-50">
+                            <thead class="text-left text-gray-500 bg-gray-50/75 border-b border-gray-200">
                                 <tr>
-                                    <th class="p-4 font-medium">Nama Dokumen</th>
-                                    <th class="p-4 font-medium">Kategori</th>
-                                    <th class="p-4 font-medium">Nomor Dokumen</th>
-                                    <th class="p-4 font-medium">Tanggal</th>
-                                    <th class="p-4 font-medium">Status</th>
-                                    <th class="p-4 font-medium text-right">Aksi</th>
+                                    <th class="p-4 font-semibold">Judul Kegiatan</th>
+                                    <th class="p-4 font-semibold">Kategori</th>
+                                    <th class="p-4 font-semibold">Tanggal</th>
+                                    <th class="p-4 font-semibold">Status</th>
+                                    <th class="p-4 font-semibold text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                @forelse ($portfolios as $p)
-                                    <tr>
-                                        <td class="p-4 align-top">{{ $p->nama_dokumen_id }}</td>
-                                        <td class="p-4 align-top">{{ $p->kategori_portfolio }}</td>
-                                        <td class="p-4 align-top">{{ $p->nomor_dokumen }}</td>
-                                        <td class="p-4 align-top whitespace-nowrap">
-                                            {{ $p->tanggal_dokumen ? \Carbon\Carbon::parse($p->tanggal_dokumen)->isoFormat('D MMM YYYY') : '-' }}
-                                        </td>                                        
-                                        <td class="p-4 align-top">
-                                            @php $colors = ['pending'=>'bg-yellow-100 text-yellow-800','verified'=>'bg-green-100 text-green-800','rejected'=>'bg-red-100 text-red-800']; @endphp
-                                            <span
-                                                class="px-2 py-1 rounded-full text-xs font-medium {{ $colors[$p->status] ?? 'bg-gray-100 text-gray-800' }}">
-                                                {{ $p->status === 'verified' ? 'Disetujui' : ($p->status === 'rejected' ? 'Ditolak' : 'Menunggu') }}
-                                            </span>
-                                            @if ($p->status === 'rejected' && $p->catatan_verifikator)
-                                                <div class="text-xs text-red-600 mt-1"
-                                                    title="{{ $p->catatan_verifikator }}">Alasan:
-                                                    {{ Str::limit($p->catatan_verifikator, 30) }}</div>
-                                            @endif
-                                        </td>
-                                        <td class="p-4 align-top text-right whitespace-nowrap">
-                                            <div class="flex items-center justify-end gap-4">
-                                                <a href="{{ $p->link_sertifikat }}" target="_blank"
-                                                    class="text-blue-600 hover:underline">Lihat Sertifikat</a>
-                                                @if ($p->status === 'pending')
-                                                    <a href="{{ route('student.portfolios.edit', $p) }}"
-                                                        class="text-indigo-600 hover:underline">Edit</a>
-                                                    <form action="{{ route('student.portfolios.destroy', $p) }}"
-                                                        method="POST" class="inline"
-                                                        onsubmit="return confirm('Anda yakin ingin menghapus portofolio ini?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="text-red-600 hover:underline">Hapus</button>
-                                                    </form>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td class="p-6 text-center text-gray-500" colspan="6">Belum ada portofolio.
-                                        </td>
-                                    </tr>
-                                @endforelse
+                            <tbody class="divide-y divide-gray-200">
+                                @foreach ($portfolios as $p)
+                                    @include('student.portfolios._portfolio-row', ['portfolio' => $p])
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
-                    @if ($portfolios->hasPages())
-                        <div class="p-4 border-t border-gray-100">{{ $portfolios->links() }}</div>
-                    @endif
                 </div>
 
-                <div class="block sm:hidden">
-                    <div class="p-4 space-y-4">
-                        @forelse ($portfolios as $p)
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="p-4 space-y-3">
-                                    <div class="flex justify-between items-start gap-4">
-                                        <h4 class="font-semibold text-gray-800">{{ $p->nama_dokumen_id }}</h4>
-                                        @php $colors = ['pending'=>'bg-yellow-100 text-yellow-800','verified'=>'bg-green-100 text-green-800','rejected'=>'bg-red-100 text-red-800']; @endphp
-                                        <span
-                                            class="flex-shrink-0 px-2 py-1 rounded-full text-xs font-medium {{ $colors[$p->status] ?? 'bg-gray-100 text-gray-800' }}">{{ $p->status === 'verified' ? 'Disetujui' : ($p->status === 'rejected' ? 'Ditolak' : 'Menunggu') }}</span>
-                                    </div>
-
-                                    @if ($p->status === 'rejected' && $p->catatan_verifikator)
-                                        <div class="text-xs border-l-4 border-red-200 bg-red-50 p-2 text-red-800">
-                                            <b>Alasan Ditolak:</b> {{ $p->catatan_verifikator }}
-                                        </div>
-                                    @endif
-                                    
-                                    <div>
-                                        <div class="text-xs text-gray-500">Kategori</div>
-                                        <div class="text-sm text-gray-700">{{ $p->kategori_portfolio }}</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-gray-500">Nomor Dokumen</div>
-                                        <div class="text-sm text-gray-700">
-                                            {{ $p->nomor_dokumen ? ucfirst($p->nomor_dokumen) : '-' }}</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-gray-500">Tanggal</div>
-                                        <div class="text-sm text-gray-700">
-                                            {{ \Carbon\Carbon::parse($p->tanggal_mulai)->isoFormat('D MMM YYYY') }}{{ $p->tanggal_selesai ? ' - ' . \Carbon\Carbon::parse($p->tanggal_selesai)->isoFormat('D MMM YYYY') : '' }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="p-2 border-t border-gray-100 bg-gray-50 text-center">
-                                    <div class="flex items-center justify-center divide-x divide-gray-200 text-sm">                                        
-                                        <a href="{{ $p->link_sertifikat }}" target="_blank"
-                                            class="flex-1 p-2 text-blue-600 font-medium">Lihat Sertifikat</a>
-                                        @if ($p->status === 'pending')
-                                            <a href="{{ route('student.portfolios.edit', $p) }}"
-                                                class="flex-1 p-2 text-indigo-600 font-medium">Edit</a>
-                                            <form action="{{ route('student.portfolios.destroy', $p) }}" method="POST"
-                                                class="flex-1 inline"
-                                                onsubmit="return confirm('Anda yakin ingin menghapus portofolio ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="w-full p-2 text-red-600 font-medium">Hapus</button>
-                                            </form>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="py-12 text-center text-gray-500">
-                                <p>Belum ada portofolio.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                    @if ($portfolios->hasPages())
-                        <div class="p-4 border-t border-gray-100">{{ $portfolios->links() }}</div>
-                    @endif
+                {{-- TAMPILAN MOBILE & TABLET KECIL --}}
+                <div class="block md:hidden space-y-4">
+                    @foreach ($portfolios as $p)
+                        @include('student.portfolios._portfolio-card', ['portfolio' => $p])
+                    @endforeach
                 </div>
-            </div>
+
+                @if ($portfolios->hasPages())
+                    <div class="mt-8">{{ $portfolios->links() }}</div>
+                @endif
+            @endif
         </div>
     </div>
 </x-app-layout>

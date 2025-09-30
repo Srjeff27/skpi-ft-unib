@@ -52,8 +52,8 @@
         @forelse ($verifiedPortfolios as $p)
             <tr>
                 <td>{{ $p->judul_kegiatan }}</td>
-                <td>{{ $p->kategori }}</td>
-                <td>{{ optional($p->tanggal_mulai)->format('d/m/Y') }}@if($p->tanggal_selesai) - {{ $p->tanggal_selesai->format('d/m/Y') }}@endif</td>
+                <td>{{ $p->kategori_portfolio }}</td>
+                <td>{{ optional($p->tanggal_dokumen)->format('d/m/Y') }}</td>
                 <td>{{ $p->deskripsi_kegiatan }}</td>
             </tr>
         @empty

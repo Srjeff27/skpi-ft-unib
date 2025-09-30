@@ -56,8 +56,8 @@
                             <tr class="border-t">
                                 <td class="p-3">{{ $pf->user->name }}</td>
                                 <td class="p-3">{{ optional($pf->user->prodi)->nama_prodi ?? '-' }}</td>
-                                <td class="p-3">{{ $pf->kategori }}</td>
-                                <td class="p-3">{{ optional($pf->tanggal_mulai)->isoFormat('D MMM YYYY') }}@if($pf->tanggal_selesai) - {{ optional($pf->tanggal_selesai)->isoFormat('D MMM YYYY') }}@endif</td>
+                                <td class="p-3">{{ $pf->kategori_portfolio }}</td>
+                                <td class="p-3">{{ optional($pf->tanggal_dokumen)->isoFormat('D MMM YYYY') }}</td>
                                 <td class="p-3">{{ ucfirst($pf->status) }}</td>
                                 <td class="p-3">
                                     @if($pf->status === 'pending')
