@@ -88,7 +88,7 @@
         const prestasiData = {
             labels: [
                 @foreach($prestasiProdi as $data)
-                    '{{ optional($data->user->prodi)->nama_prodi ?? "Tidak ada prodi" }}',
+                    '{{ $data->nama_prodi }}',
                 @endforeach
             ],
             datasets: [{

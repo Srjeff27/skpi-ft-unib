@@ -19,7 +19,7 @@
         </div>
     </x-slot>
 
-    {{-- DIUBAH: Padding bawah untuk mobile diperbesar --}}
+
     <div class="pt-6 pb-24 sm:pb-12">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6 px-4">
 

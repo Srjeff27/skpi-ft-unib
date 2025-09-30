@@ -22,12 +22,12 @@ class DashboardController extends Controller
         $pending = Portfolio::where('status','pending')->count();
         
         // Data prestasi per prodi
-        $prestasiProdi = Portfolio::where('status', 'verified')
+        $prestasiProdi = Portfolio::where('portfolios.status', 'verified')
             ->join('users', 'portfolios.user_id', '=', 'users.id')
             ->join('prodis', 'users.prodi_id', '=', 'prodis.id')
-            ->select('users.prodi_id', DB::raw('count(*) as total'))
-            ->groupBy('users.prodi_id')
-            ->with('user.prodi')
+            ->select('prodis.nama_prodi', DB::raw('count(*) as total'))
+            ->groupBy('prodis.nama_prodi')
+            ->orderBy('total', 'desc')
             ->get();
 
         return view('admin.dashboard', compact('totalUsers','totalMahasiswa','totalVerifikator','totalPortfolios','verified','rejected','pending','prestasiProdi'));

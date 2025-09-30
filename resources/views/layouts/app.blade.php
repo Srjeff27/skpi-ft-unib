@@ -89,18 +89,19 @@
 
             <a href="{{ route('student.portfolios.index') }}"
                 class="flex flex-col items-center justify-center py-2 transition-colors duration-200 {{ request()->routeIs('student.portfolios.*') ? 'text-[#1b3985]' : 'text-gray-500 hover:text-[#1b3985]' }}">
+                
                 @if (request()->routeIs('student.portfolios.*'))
+                    {{-- Ikon Solid untuk state Aktif --}}
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path d="M5.625 3.75a2.625 2.625 0 1 0 0 5.25h12.75a2.625 2.625 0 1 0 0-5.25H5.625Z" />
-                        <path fill-rule="evenodd"
-                            d="M3.75 9.75A.75.75 0 0 1 4.5 9h15a.75.75 0 0 1 .75.75v8.25a.75.75 0 0 1-.75.75h-15a.75.75 0 0 1-.75-.75V9.75Zm1.5.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1-.75-.75v-1.5Zm4.125-.75a.75.75 0 0 1 .75.75v5.25a.75.75 0 0 1-1.5 0v-5.25a.75.75 0 0 1 .75-.75Zm3.375 0a.75.75 0 0 1 .75.75v5.25a.75.75 0 0 1-1.5 0v-5.25a.75.75 0 0 1 .75-.75Z"
-                            clip-rule="evenodd" />
+                        <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z" />
+                        <path fill-rule="evenodd" d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0110 12h4a.75.75 0 010 1.5h-4a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
                     </svg>
                 @else
+                    {{-- Ikon Outline untuk state Normal --}}
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                            d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.906 59.906 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0l-2.658-.813m2.658.814l2.658.813m0 0l2.658.813m0 0l2.658.813m0 0l2.658.813m0 0l2.658.813m0 0l2.658.813m-2.658-.814l2.658.813m-2.658-.814a60.438 60.438 0 00-2.658-.813m15.482 0a60.438 60.438 0 00-2.658-.813m0 0l-2.658.813m0 0l-2.658.813m0 0l-2.658.813m0 0l-2.658.813m0 0l-2.658.813m0 0l-2.658.813" />
                     </svg>
                 @endif
                 <span>Portfolio</span>
