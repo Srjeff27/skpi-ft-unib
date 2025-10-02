@@ -147,11 +147,31 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Additional Admin Pages
     Route::get('finalisasi', [AdminPagesController::class, 'finalisasi'])->name('finalisasi.index');
-    Route::get('penerbitan', [AdminPagesController::class, 'penerbitan'])->name('penerbitan.index');
+    Route::post('finalisasi/set-official', [AdminPagesController::class, 'setOfficial'])->name('finalisasi.set_official');
+    Route::post('finalisasi/lock', [AdminPagesController::class, 'lock'])->name('finalisasi.lock');
+    // Penerbitan SKPI (resmi)
+    Route::get('penerbitan', [\App\Http\Controllers\Admin\PenerbitanController::class, 'index'])->name('penerbitan.index');
+    Route::post('penerbitan/publish', [\App\Http\Controllers\Admin\PenerbitanController::class, 'publishBulk'])->name('penerbitan.publish_bulk');
+    Route::post('penerbitan/publish/{user}', [\App\Http\Controllers\Admin\PenerbitanController::class, 'publishSingle'])->name('penerbitan.publish_single');
+    Route::get('penerbitan/download/{user}', [\App\Http\Controllers\Admin\PenerbitanController::class, 'download'])->name('penerbitan.download');
+    Route::get('penerbitan/verify/{user}', [\App\Http\Controllers\Admin\PenerbitanController::class, 'verify'])->name('penerbitan.verify');
     Route::get('pengaturan', [AdminPagesController::class, 'pengaturan'])->name('pengaturan.index');
+    Route::post('pengaturan/save-permissions', [AdminPagesController::class, 'savePermissions'])->name('security.save_permissions');
+    Route::post('pengaturan/save-advanced', [AdminPagesController::class, 'saveAdvanced'])->name('security.save_advanced');
     Route::get('cetak-skpi', [CetakSkpiController::class, 'index'])->name('cetak_skpi.index');
+    Route::get('cetak-skpi/preview/{user}', [CetakSkpiController::class, 'preview'])->name('cetak_skpi.preview');
+    Route::get('cetak-skpi/print/{user}', [CetakSkpiController::class, 'printSingle'])->name('cetak_skpi.print_single');
+    Route::post('cetak-skpi/print-bulk', [CetakSkpiController::class, 'printBulk'])->name('cetak_skpi.print_bulk');
     Route::get('pejabat', [PejabatController::class, 'index'])->name('pejabat.index');
+    Route::get('pejabat/create', [PejabatController::class, 'create'])->name('pejabat.create');
+    Route::post('pejabat', [PejabatController::class, 'store'])->name('pejabat.store');
+    Route::get('pejabat/{pejabat}/edit', [PejabatController::class, 'edit'])->name('pejabat.edit');
+    Route::put('pejabat/{pejabat}', [PejabatController::class, 'update'])->name('pejabat.update');
+    Route::delete('pejabat/{pejabat}', [PejabatController::class, 'destroy'])->name('pejabat.destroy');
     Route::get('pengaturan-sistem', [SystemSettingsController::class, 'index'])->name('system_settings.index');
+    Route::post('pengaturan-sistem/institusi', [SystemSettingsController::class, 'updateInstitution'])->name('system_settings.institution');
+    Route::post('pengaturan-sistem/narasi', [SystemSettingsController::class, 'updateNarratives'])->name('system_settings.narratives');
+    Route::post('pengaturan-sistem/umum', [SystemSettingsController::class, 'updateGeneral'])->name('system_settings.general');
 
     // Admin mapping: Manajemen Data SKPI & Verifikasi menggunakan controller verifikator
     Route::get('portofolio', [PortfolioReviewController::class, 'index'])->name('portfolios.index');

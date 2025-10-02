@@ -56,6 +56,16 @@
                 class="mt-1 block rounded px-3 py-2 {{ request()->routeIs('admin.pengaturan.*') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Keamanan
                 & Pengaturan</a>
         @elseif($isVerifierArea)
+            @php $userRole = auth()->user()->role ?? null; @endphp
+            @if ($userRole === 'admin')
+                <a href="{{ route('admin.dashboard') }}"
+                    class="block rounded px-3 py-2 bg-orange-500 text-white hover:bg-orange-600 mb-3 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Kembali Ke Beranda Admin
+                </a>
+            @endif
             <a href="{{ route('verifikator.dashboard') }}"
                 class="block rounded px-3 py-2 {{ request()->routeIs('verifikator.dashboard') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Dashboard</a>
             <a href="{{ route('verifikator.portfolios.index') }}"
