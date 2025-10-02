@@ -56,9 +56,17 @@
                     </div>
                 @endif
             </div>
+
+            @if((auth()->user()->role ?? null) === 'verifikator')
+            <div>
+                <x-input-label value="Program Studi" />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50" :value="optional($user->prodi)->nama_prodi ?? '-'" disabled />
+            </div>
+            @endif
         </div>
     </div>
 
+    @if((auth()->user()->role ?? null) === 'mahasiswa')
     {{-- KARTU 2: DATA AKADEMIK --}}
     <div class="bg-white sm:rounded-lg pt-8 mt-8 border-t">
         <header>
@@ -136,6 +144,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     {{-- FOOTER AKSI --}}
     <div class="flex items-center justify-end gap-4 pt-6 mt-6 border-t">

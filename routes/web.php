@@ -100,6 +100,8 @@ Route::middleware(['auth', 'role:verifikator,admin'])->prefix('verifikasi')->nam
     Route::post('/portofolio/{portfolio}/approve', [PortfolioReviewController::class, 'approve'])->name('portfolios.approve');
     Route::post('/portofolio/{portfolio}/reject', [PortfolioReviewController::class, 'reject'])->name('portfolios.reject');
     Route::post('/portofolio/{portfolio}/request-edit', [PortfolioReviewController::class, 'requestEdit'])->name('portfolios.request_edit');
+    // Data Mahasiswa (khusus verifikator melihat mahasiswa di prodi-nya)
+    Route::get('/mahasiswa', [\App\Http\Controllers\Verifikator\StudentController::class, 'index'])->name('students.index');
 });
 
 // Admin Only Routes

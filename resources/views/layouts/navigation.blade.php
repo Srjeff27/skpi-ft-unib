@@ -2,12 +2,16 @@
     {{-- Primary Navigation Menu --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-            <div class="flex">
+            <div class="flex items-center">
                 {{-- Admin mobile hamburger --}}
-                @if(auth()->check() && request()->routeIs('admin.*'))
-                    <button id="admin-menu-btn" class="md:hidden mr-2 -ml-1 flex items-center justify-center w-10 h-10 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white" aria-label="Menu Admin">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                @if (auth()->check() && request()->routeIs('admin.*'))
+                    <button id="admin-menu-btn"
+                        class="md:hidden mr-2 -ml-1 flex items-center justify-center w-10 h-10 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white"
+                        aria-label="Menu Admin">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
                         </svg>
                     </button>
                 @endif
@@ -48,13 +52,16 @@
                                     class="relative inline-flex items-center justify-center rounded-full w-9 h-9 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white">
 
                                     {{-- DIUBAH: Ikon Lonceng SVG Outline --}}
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
                                     </svg>
 
                                     {{-- Badge Notifikasi Belum Dibaca --}}
                                     @if ($unread > 0)
-                                        <span class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-orange-500 text-[10px] font-semibold text-white">{{ $unread }}</span>
+                                        <span
+                                            class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-orange-500 text-[10px] font-semibold text-white">{{ $unread }}</span>
                                     @endif
                                 </button>
                             </x-slot>
@@ -79,10 +86,18 @@
                                                 if (Str::contains(strtolower($data['title'] ?? ''), 'ditolak')) {
                                                     $icon = 'heroicon-o-x-circle';
                                                     $color = 'text-red-500 bg-red-50';
-                                                } elseif (Str::contains(strtolower($data['title'] ?? ''), 'perbaikan')) {
+                                                } elseif (
+                                                    Str::contains(strtolower($data['title'] ?? ''), 'perbaikan')
+                                                ) {
                                                     $icon = 'heroicon-o-pencil-square';
                                                     $color = 'text-amber-500 bg-amber-50';
-                                                } elseif (Str::contains(strtolower($data['title'] ?? ''), ['diterima', 'disetujui', 'verified'])) {
+                                                } elseif (
+                                                    Str::contains(strtolower($data['title'] ?? ''), [
+                                                        'diterima',
+                                                        'disetujui',
+                                                        'verified',
+                                                    ])
+                                                ) {
                                                     $icon = 'heroicon-o-check-circle';
                                                     $color = 'text-green-500 bg-green-50';
                                                 }
@@ -155,9 +170,16 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+                        @php $roleNav = Auth::user()->role ?? null; @endphp
+                        @if (in_array($roleNav, ['admin', 'verifikator']))
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Informasi Akun') }}
+                            </x-dropdown-link>
+                        @else
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Profile') }}
+                            </x-dropdown-link>
+                        @endif
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -178,8 +200,10 @@
                         class="relative inline-flex items-center justify-center rounded-full w-8 h-8 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white">
 
                         {{-- DIUBAH: Ikon Lonceng SVG Outline --}}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
                         </svg>
 
                         @if (isset($unread) && $unread > 0)
@@ -207,9 +231,16 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
+                @php $roleNav = Auth::user()->role ?? null; @endphp
+                @if (in_array($roleNav, ['admin', 'verifikator']))
+                    <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+                        {{ __('Informasi Akun') }}
+                    </x-responsive-nav-link>
+                @else
+                    <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+                        {{ __('Profile') }}
+                    </x-responsive-nav-link>
+                @endif
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

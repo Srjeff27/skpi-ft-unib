@@ -19,6 +19,7 @@
         @elseif($isVerifierArea)
             <a href="{{ route('verifikator.dashboard') }}" class="block rounded px-3 py-2 {{ request()->routeIs('verifikator.dashboard') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Dashboard</a>
             <a href="{{ route('verifikator.portfolios.index') }}" class="mt-1 block rounded px-3 py-2 {{ request()->routeIs('verifikator.portfolios.*') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Verifikasi Portofolio</a>
+            <a href="{{ route('verifikator.students.index') }}" class="mt-1 block rounded px-3 py-2 {{ request()->routeIs('verifikator.students.*') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Data Mahasiswa</a>
         @else
             @php $role = auth()->user()->role ?? null; @endphp
             @if($role === 'mahasiswa')
@@ -28,11 +29,14 @@
                 <a href="{{ route('student.documents.index') }}" class="mt-1 block rounded px-3 py-2 {{ request()->routeIs('student.documents.*') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Dokumen SKPI</a>
                 <a href="{{ route('student.notifications.index') }}" class="mt-1 block rounded px-3 py-2 {{ request()->routeIs('student.notifications.*') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Notifikasi</a>
             @else
-                <a href="{{ route('profile.edit') }}" class="block rounded px-3 py-2 {{ request()->routeIs('profile.*') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Profil</a>
-                @if($role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}" class="mt-1 block rounded px-3 py-2 text-gray-900 hover:bg-blue-50">Ke Admin</a>
-                @elseif($role === 'verifikator')
-                    <a href="{{ route('verifikator.dashboard') }}" class="mt-1 block rounded px-3 py-2 text-gray-900 hover:bg-blue-50">Ke Verifikator</a>
+                {{-- On profile page for admin/verifikator, only show back-to-dashboard link --}}
+                @if(in_array($role, ['admin','verifikator']))
+                    @php
+                        $backRoute = $role === 'admin' ? route('admin.dashboard') : route('verifikator.dashboard');
+                    @endphp
+                    <a href="{{ $backRoute }}" class="block rounded px-3 py-2 text-gray-900 hover:bg-blue-50">Kembali Keberanda</a>
+                @else
+                    <a href="{{ route('profile.edit') }}" class="block rounded px-3 py-2 {{ request()->routeIs('profile.*') ? 'bg-[#1b3985] text-white' : 'text-gray-900 hover:bg-blue-50' }}">Profil</a>
                 @endif
             @endif
         @endif
