@@ -10,315 +10,361 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-ft.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-ft.png') }}">
     @vite('resources/css/app.css')
+    <style>
+        /* Custom style for FAQ chevron rotation */
+        details[open] summary svg.chevron {
+            transform: rotate(180deg);
+        }
+    </style>
 </head>
 
-<body class="text-gray-900 bg-gray-50 font-sans">
+<body class="bg-gray-50 font-sans text-gray-800 antialiased">
 
-    <header class="bg-white/90 backdrop-blur sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+    {{-- Header --}}
+    <header class="sticky top-0 z-50 border-b border-gray-200/80 bg-white/90 backdrop-blur-lg">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
             <a href="#beranda" class="flex items-center gap-3">
-                <img src="{{ asset('images/logo-ft.png') }}" alt="Logo FT UNIB" class="w-9 h-9">
+                <img src="{{ asset('images/logo-ft.png') }}" alt="Logo FT UNIB" class="h-9 w-9">
                 <span class="font-semibold text-[#0A2E73]">Fakultas Teknik UNIB</span>
             </a>
-            <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-                <a href="#tentang" class="text-gray-700 hover:text-[#F97316] transition">Tentang</a>
-                <a href="#fitur" class="text-gray-700 hover:text-[#F97316] transition">Fitur</a>
-                <a href="#panduan" class="text-gray-700 hover:text-[#F97316] transition">Panduan</a>
+            <nav class="hidden items-center gap-8 text-sm font-medium md:flex">
+                <a href="#tentang" class="text-gray-600 transition hover:text-[#F97316]">Tentang</a>
+                <a href="#fitur" class="text-gray-600 transition hover:text-[#F97316]">Fitur</a>
+                <a href="#panduan" class="text-gray-600 transition hover:text-[#F97316]">Panduan</a>
                 @guest
                     <a href="{{ route('login') }}"
-                        class="bg-[#F97316] text-white px-6 py-2 rounded-full hover:bg-[#FF7C1F] shadow transition">Login</a>
+                        class="rounded-full bg-[#F97316] px-6 py-2 text-white shadow-sm transition hover:bg-[#E8630B]">Login</a>
                 @else
                     <a href="{{ route('dashboard') }}"
-                        class="bg-[#F97316] text-white px-6 py-2 rounded-full hover:bg-[#FF7C1F] shadow transition">Dashboard</a>
+                        class="rounded-full bg-[#F97316] px-6 py-2 text-white shadow-sm transition hover:bg-[#E8630B]">Dashboard</a>
                 @endguest
             </nav>
-            <details class="md:hidden relative">
-                <summary
-                    class="list-none cursor-pointer px-3 py-2 rounded-lg border text-sm font-medium text-[#0A2E73]">Menu
-                </summary>
-                <div
-                    class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg p-3 flex flex-col gap-2 text-sm z-50">
-                    <a href="#tentang" class="py-1 hover:text-[#F97316]">Tentang</a>
-                    <a href="#fitur" class="py-1 hover:text-[#F97316]">Fitur</a>
-                    <a href="#panduan" class="py-1 hover:text-[#F97316]">Panduan</a>
-                    @guest
-                        <a href="{{ route('login') }}"
-                            class="mt-1 bg-[#F97316] text-white px-4 py-2 rounded-lg text-center hover:bg-[#FF7C1F]">Login</a>
-                    @else
-                        <a href="{{ route('dashboard') }}"
-                            class="mt-1 bg-[#F97316] text-white px-4 py-2 rounded-lg text-center hover:bg-[#FF7C1F]">Dashboard</a>
-                    @endguest
-                </div>
-            </details>
+            <div class="md:hidden">
+                <details class="relative">
+                    <summary class="list-none cursor-pointer rounded-lg border px-3 py-2 text-sm font-medium text-[#0A2E73] hover:bg-gray-100">Menu</summary>
+                    <div class="absolute right-0 z-50 mt-2 flex w-48 flex-col gap-2 rounded-lg bg-white p-3 shadow-xl">
+                        <a href="#tentang" class="rounded-md px-3 py-2 hover:bg-gray-100 hover:text-[#F97316]">Tentang</a>
+                        <a href="#fitur" class="rounded-md px-3 py-2 hover:bg-gray-100 hover:text-[#F97316]">Fitur</a>
+                        <a href="#panduan" class="rounded-md px-3 py-2 hover:bg-gray-100 hover:text-[#F97316]">Panduan</a>
+                        <hr class="my-1">
+                        @guest
+                            <a href="{{ route('login') }}" class="mt-1 rounded-lg bg-[#F97316] px-4 py-2 text-center text-white hover:bg-[#E8630B]">Login</a>
+                        @else
+                            <a href="{{ route('dashboard') }}" class="mt-1 rounded-lg bg-[#F97316] px-4 py-2 text-center text-white hover:bg-[#E8630B]">Dashboard</a>
+                        @endguest
+                    </div>
+                </details>
+            </div>
         </div>
     </header>
 
     <main>
-        <section id="beranda"
-            class="relative overflow-hidden scroll-mt-24 bg-gradient-to-br from-[#0A2E73] via-[#1E3A8A] to-[#0F172A]">
-            <div class="max-w-7xl mx-auto px-6 py-16 md:py-28 grid md:grid-cols-2 gap-10 items-center">
+
+        {{-- Section: Beranda (Hero) --}}
+        <section id="beranda" class="relative overflow-hidden scroll-mt-24 bg-gradient-to-br from-[#0A2E73] via-[#1E3A8A] to-[#0F172A]">
+            <div class="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-28">
                 <div>
-                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+                    <h1 class="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
                         Sistem Informasi<br>Surat Keterangan Pendamping Ijazah
                         <span class="text-[#F97316]">(SKPI)</span>
                     </h1>
                     <p class="mt-6 text-base text-white/90 md:text-lg">Mencatat, memverifikasi, dan menerbitkan SKPI
-                        secara
-                        digital untuk mendukung mahasiswa unggul dan berdaya saing.</p>
-                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        secara digital untuk mendukung mahasiswa unggul dan berdaya saing.</p>
+                    <div class="mt-8 flex flex-col gap-4 sm:flex-row">
                         @guest
                             <a href="{{ route('login') }}"
-                                class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base bg-[#F97316] text-white rounded-lg font-semibold hover:bg-[#FF7C1F] shadow-lg transition text-center">Mulai
+                                class="transform rounded-lg bg-[#F97316] px-8 py-3 text-center text-sm font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-[#E8630B] sm:text-base">Mulai
                                 Sekarang</a>
                         @else
                             <a href="{{ route('dashboard') }}"
-                                class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base bg-[#F97316] text-white rounded-lg font-semibold hover:bg-[#FF7C1F] shadow-lg transition text-center">Buka
+                                class="transform rounded-lg bg-[#F97316] px-8 py-3 text-center text-sm font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-[#E8630B] sm:text-base">Buka
                                 Dashboard</a>
                         @endguest
                         <a href="#tentang"
-                            class="px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base border border-white/30 text-white rounded-lg font-semibold hover:bg-white/10 transition text-center">Pelajari</a>
+                            class="transform rounded-lg border border-white/30 px-8 py-3 text-center text-sm font-semibold text-white transition hover:-translate-y-1 hover:bg-white/10 sm:text-base">Pelajari
+                            Lebih Lanjut</a>
                     </div>
                 </div>
                 <div class="relative hidden md:block">
                     <img src="{{ asset('images/background-ft.jpg') }}" alt="Gedung FT UNIB"
-                        class="rounded-2xl shadow-2xl ring-1 ring-black/10 w-full max-w-md mx-auto">
-                    <div class="absolute -bottom-6 -left-6 bg-white rounded-lg shadow p-4 max-w-[180px]">
-                        <div class="font-semibold text-[#0A2E73] leading-snug">Upload Portofolio</div>
-                        <p class="text-xs text-gray-600 leading-relaxed">Prestasi, Pelatihan, Organisasi</p>
+                        class="mx-auto w-full max-w-md rounded-2xl shadow-2xl ring-1 ring-black/10">
+                    <div
+                        class="absolute -bottom-6 -left-6 flex items-center gap-3 rounded-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm max-w-[200px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#1E3A8A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                        <div>
+                            <div class="font-semibold leading-snug text-[#0A2E73]">Upload Portofolio</div>
+                            <p class="text-xs leading-relaxed text-gray-600">Prestasi, Pelatihan, Organisasi</p>
+                        </div>
                     </div>
-                    <div class="absolute -top-6 -right-6 bg-white rounded-lg shadow p-4 w-40">
-                        <div class="font-semibold text-[#0A2E73]">Verifikasi Data</div>
-                        <p class="text-xs text-gray-600">Valid / Invalid</p>
+                    <div class="absolute -right-6 -top-6 flex items-center gap-3 rounded-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm w-44">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <div>
+                             <div class="font-semibold text-[#0A2E73]">Verifikasi Data</div>
+                             <p class="text-xs text-gray-600">Valid / Invalid</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="tentang" class="py-16 bg-white scroll-mt-24">
-            <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+        {{-- Section: Tentang --}}
+        <section id="tentang" class="scroll-mt-24 bg-white py-16 sm:py-20">
+            <div class="mx-auto grid max-w-6xl items-center gap-10 px-6 md:grid-cols-2 lg:gap-16">
                 <div>
-                    <h2 class="text-3xl font-bold text-[#1E3A8A] mb-4">Apa itu SKPI?</h2>
-                    <p class="text-gray-600 leading-relaxed mb-3">SKPI adalah dokumen resmi yang memuat rekam jejak
-                        kemampuan, pengetahuan, dan sikap mahasiswa selama perkuliahan, baik di bidang akademik maupun
-                        non-akademik.</p>
-                    <p class="text-gray-600 leading-relaxed">Sistem ini membantu mahasiswa Fakultas Teknik Universitas
-                        Bengkulu untuk mengelola portofolio mereka secara digital hingga proses penerbitan SKPI resmi
-                        saat wisuda.</p>
+                    <h2 class="text-3xl font-bold text-[#1E3A8A]">Apa itu SKPI?</h2>
+                    <p class="mt-4 leading-relaxed text-gray-600">SKPI (Surat Keterangan Pendamping Ijazah) adalah dokumen resmi yang memuat rekam jejak kemampuan, pengetahuan, dan sikap mahasiswa selama perkuliahan, baik di bidang akademik maupun non-akademik.</p>
+                    <p class="mt-3 leading-relaxed text-gray-600">Sistem ini membantu mahasiswa Fakultas Teknik Universitas Bengkulu untuk mengelola portofolio mereka secara digital hingga proses penerbitan SKPI resmi saat wisuda.</p>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="flex-1 bg-[#FF7C1F]/10 text-center p-4 rounded-lg">
-                        <div class="text-[#F97316] font-semibold">Sertifikat</div>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div class="rounded-lg bg-orange-50 p-5 text-center ring-1 ring-orange-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        <div class="mt-2 font-semibold text-orange-600">Sertifikat</div>
                     </div>
-                    <div class="flex-1 bg-[#FF7C1F]/10 text-center p-4 rounded-lg">
-                        <div class="text-[#F97316] font-semibold">Prestasi</div>
+                    <div class="rounded-lg bg-orange-50 p-5 text-center ring-1 ring-orange-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+                        <div class="mt-2 font-semibold text-orange-600">Prestasi</div>
                     </div>
-                    <div class="flex-1 bg-[#FF7C1F]/10 text-center p-4 rounded-lg">
-                        <div class="text-[#F97316] font-semibold">Organisasi</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="fitur" class="py-16 bg-gray-50 scroll-mt-24">
-            <div class="max-w-6xl mx-auto px-6">
-                <h2 class="text-center text-3xl font-bold text-[#1E3A8A] mb-10">Fitur Utama</h2>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
-                        <h3 class="text-lg font-semibold text-[#1E3A8A] mb-2">Upload Portofolio</h3>
-                        <p class="text-gray-600 text-sm">Mahasiswa dapat dengan mudah mengunggah bukti prestasi,
-                            keikutsertaan organisasi, pelatihan, dan sertifikat.</p>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
-                        <h3 class="text-lg font-semibold text-[#1E3A8A] mb-2">Verifikasi Online</h3>
-                        <p class="text-gray-600 text-sm">Tim verifikator memeriksa setiap dokumen yang diunggah dan
-                            memberikan status validasi secara transparan.</p>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
-                        <h3 class="text-lg font-semibold text-[#1E3A8A] mb-2">Penerbitan Otomatis</h3>
-                        <p class="text-gray-600 text-sm">Sistem secara otomatis merekap data terverifikasi dan
-                            menghasilkan dokumen SKPI yang siap dicetak.</p>
+                    <div class="rounded-lg bg-orange-50 p-5 text-center ring-1 ring-orange-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        <div class="mt-2 font-semibold text-orange-600">Organisasi</div>
                     </div>
                 </div>
             </div>
         </section>
-        <section id="panduan" class="py-16 bg-white scroll-mt-24">
-            <div class="max-w-4xl mx-auto px-6">
-                <h2 class="text-center text-3xl font-bold text-[#1E3A8A] mb-10">Panduan & Informasi</h2>
-                <div class="mb-12">
-                    <h3 class="text-xl font-bold mb-6 text-center text-gray-800">Alur Pengajuan SKPI</h3>
+
+        {{-- Section: Fitur --}}
+        <section id="fitur" class="scroll-mt-24 bg-gray-50 py-16 sm:py-20">
+            <div class="mx-auto max-w-6xl px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-[#1E3A8A]">Fitur Utama Sistem</h2>
+                    <p class="mx-auto mt-3 max-w-2xl text-gray-600">Dirancang untuk menyederhanakan proses, dari pengumpulan data hingga penerbitan dokumen akhir.</p>
+                </div>
+                <div class="mt-12 grid gap-6 md:grid-cols-3 lg:gap-8">
+                    <div class="transform rounded-xl bg-white p-6 shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#F97316]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                        <h3 class="mt-4 text-lg font-semibold text-[#1E3A8A]">Upload Portofolio</h3>
+                        <p class="mt-2 text-sm text-gray-600">Mahasiswa dapat dengan mudah mengunggah bukti prestasi, keikutsertaan organisasi, pelatihan, dan sertifikat.</p>
+                    </div>
+                    <div class="transform rounded-xl bg-white p-6 shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#F97316]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <h3 class="mt-4 text-lg font-semibold text-[#1E3A8A]">Verifikasi Online</h3>
+                        <p class="mt-2 text-sm text-gray-600">Tim verifikator memeriksa setiap dokumen yang diunggah dan memberikan status validasi secara transparan.</p>
+                    </div>
+                    <div class="transform rounded-xl bg-white p-6 shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#F97316]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                        <h3 class="mt-4 text-lg font-semibold text-[#1E3A8A]">Penerbitan Otomatis</h3>
+                        <p class="mt-2 text-sm text-gray-600">Sistem secara otomatis merekap data terverifikasi dan menghasilkan dokumen SKPI yang siap dicetak.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{-- Section: Panduan & FAQ --}}
+        <section id="panduan" class="scroll-mt-24 bg-white py-16 sm:py-20">
+            <div class="mx-auto max-w-4xl px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-[#1E3A8A]">Panduan & Informasi</h2>
+                    <p class="mx-auto mt-3 max-w-2xl text-gray-600">Pahami alur pengajuan dan temukan jawaban dari pertanyaan yang sering diajukan.</p>
+                </div>
+                <div class="mt-12">
+                    <h3 class="mb-8 text-center text-xl font-bold text-gray-800">Alur Pengajuan SKPI</h3>
                     <div class="relative">
                         <div class="absolute left-4 top-0 h-full w-0.5 bg-gray-200" aria-hidden="true"></div>
                         <ol class="relative space-y-8">
                             <li class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <div
-                                        class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">1</span>
-                                    </div>
-                                </div>
+                                <div class="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-white ring-8 ring-white"><span class="font-bold">1</span></div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Pengajuan Akun</h4>
-                                    <p class="mt-1 text-sm text-gray-600">Mahasiswa mengajukan pembuatan akun SKPI
-                                        kepada Admin Fakultas.</p>
+                                    <p class="mt-1 text-sm text-gray-600">Mahasiswa mengajukan pembuatan akun SKPI kepada Admin Fakultas.</p>
                                 </div>
                             </li>
-                            <li class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <div
-                                        class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">2</span>
-                                    </div>
-                                </div>
+                             <li class="flex items-start">
+                                <div class="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-white ring-8 ring-white"><span class="font-bold">2</span></div>
                                 <div class="ml-6">
-                                    <h4 class="font-semibold text-gray-800">Aktivasi Akun</h4>
-                                    <p class="mt-1 text-sm text-gray-600">Admin memverifikasi dan mengaktivasi akun
-                                        mahasiswa.</p>
+                                    <h4 class="font-semibold text-gray-800">Aktivasi Akun & Login</h4>
+                                    <p class="mt-1 text-sm text-gray-600">Admin memverifikasi dan mengaktivasi akun, kemudian mahasiswa dapat login.</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <div
-                                        class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 ring-8 ring-white">
-                                        <span class="font-bold text-blue-600">3</span>
-                                    </div>
-                                </div>
+                                <div class="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-white ring-8 ring-white"><span class="font-bold">3</span></div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Mengisi Portofolio</h4>
-                                    <p class="mt-1 text-sm text-gray-600">Mahasiswa login dan mengisi data portofolio
-                                        (prestasi, organisasi, dll).</p>
+                                    <p class="mt-1 text-sm text-gray-600">Mahasiswa mengisi data portofolio secara berkala (prestasi, organisasi, dll).</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <div
-                                        class="flex items-center justify-center h-8 w-8 rounded-full bg-green-100 ring-8 ring-white">
-                                        <svg class="h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
+                                <div class="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-500 text-white ring-8 ring-white">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                                 </div>
                                 <div class="ml-6">
                                     <h4 class="font-semibold text-gray-800">Penerbitan SKPI</h4>
-                                    <p class="mt-1 text-sm text-gray-600">SKPI resmi diterbitkan dan dicetak bersama
-                                        ijazah & transkrip nilai.</p>
+                                    <p class="mt-1 text-sm text-gray-600">SKPI resmi diterbitkan dan dicetak bersama ijazah & transkrip nilai.</p>
                                 </div>
                             </li>
                         </ol>
                     </div>
                 </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-6 text-center text-gray-800">Pertanyaan Umum (FAQ)</h3>
+                <div class="mt-16">
+                     <h3 class="mb-8 text-center text-xl font-bold text-gray-800">Pertanyaan Umum (FAQ)</h3>
                     <div class="space-y-4 text-left">
-                        <details class="group bg-gray-100 rounded-lg shadow-sm p-4 open:shadow-md transition">
-                            <summary class="cursor-pointer font-semibold text-[#0A2E73]">Apa Itu SKPI?</summary>
-                            <div class="mt-3 text-gray-600 text-sm space-y-2">
-                                <p>Surat Keterangan Pendamping Ijazah (SKPI) adalah dokumen resmi yang memuat informasi
-                                    tentang pencapaian akademik dan kualifikasi lulusan, termasuk prestasi,
-                                    keterampilan, dan pengalaman selama menjadi mahasiswa.</p>
+                        <details class="group rounded-lg bg-gray-100 p-4 transition-all duration-300 open:bg-white open:shadow-lg">
+                            <summary class="flex cursor-pointer items-center justify-between font-semibold text-[#0A2E73]">
+                                Apa Itu SKPI?
+                                <svg class="chevron h-5 w-5 text-gray-500 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                            </summary>
+                            <div class="mt-3 space-y-2 text-sm text-gray-600">
+                                <p>Surat Keterangan Pendamping Ijazah (SKPI) adalah dokumen resmi yang memuat informasi tentang pencapaian akademik dan kualifikasi lulusan, termasuk prestasi, keterampilan, dan pengalaman selama menjadi mahasiswa.</p>
                             </div>
                         </details>
-                        <details class="group bg-gray-100 rounded-lg shadow-sm p-4 open:shadow-md transition">
-                            <summary class="cursor-pointer font-semibold text-[#0A2E73]">Apa Tujuan & Manfaat SKPI?
+                        <details class="group rounded-lg bg-gray-100 p-4 transition-all duration-300 open:bg-white open:shadow-lg">
+                            <summary class="flex cursor-pointer items-center justify-between font-semibold text-[#0A2E73]">
+                                Apa Tujuan & Manfaat SKPI?
+                                <svg class="chevron h-5 w-5 text-gray-500 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                             </summary>
-                            <div class="mt-3 text-gray-600 text-sm space-y-2">
-                                <p>Tujuan utamanya adalah memberikan penjelasan yang objektif mengenai kompetensi
-                                    seorang lulusan. Manfaatnya antara lain:</p>
-                                <ul class="list-disc list-inside space-y-1">
+                            <div class="mt-3 space-y-2 text-sm text-gray-600">
+                                <p>Tujuan utamanya adalah memberikan penjelasan yang objektif mengenai kompetensi seorang lulusan. Manfaatnya antara lain:</p>
+                                <ul class="list-inside list-disc space-y-1">
                                     <li>Meningkatkan kelayakan kerja (*employability*) di mata perusahaan.</li>
-                                    <li>Menjadi dokumen pendukung untuk melanjutkan studi ke jenjang yang lebih tinggi.
-                                    </li>
-                                    <li>Memberikan gambaran lengkap tentang profil alumni yang kompeten dan berdaya
-                                        saing.</li>
+                                    <li>Menjadi dokumen pendukung untuk melanjutkan studi ke jenjang yang lebih tinggi.</li>
+                                    <li>Memberikan gambaran lengkap tentang profil alumni yang kompeten dan berdaya saing.</li>
                                 </ul>
                             </div>
                         </details>
-                        <details class="group bg-gray-100 rounded-lg shadow-sm p-4 open:shadow-md transition">
-                            <summary class="cursor-pointer font-semibold text-[#0A2E73]">Bagaimana Cara Mengisinya?
+                        <details class="group rounded-lg bg-gray-100 p-4 transition-all duration-300 open:bg-white open:shadow-lg">
+                            <summary class="flex cursor-pointer items-center justify-between font-semibold text-[#0A2E73]">
+                                Bagaimana Cara Mengisinya?
+                                <svg class="chevron h-5 w-5 text-gray-500 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                             </summary>
-                            <p class="mt-3 text-gray-600 text-sm">Mahasiswa dapat login ke sistem melalui laman ini.
-                                Pengisian data capaian dan kegiatan dilakukan sejak semester pertama dengan mengunggah
-                                dokumen bukti yang sah.</p>
+                            <p class="mt-3 text-sm text-gray-600">Mahasiswa dapat login ke sistem melalui laman ini. Pengisian data capaian dan kegiatan dilakukan sejak semester pertama dengan mengunggah dokumen bukti yang sah.</p>
                         </details>
                     </div>
                 </div>
             </div>
         </section>
+
     </main>
 
-    {{-- DIUBAH: Padding bawah ditambahkan di sini --}}
-    <footer class="bg-[#0A2E73] text-white pb-24">
-        <div class="max-w-6xl mx-auto px-6 py-8 grid md:grid-cols-2 gap-6">
-            <div>
-                <div class="flex items-center gap-3 mb-3">
-                    <img src="{{ asset('images/logo-ft.png') }}" class="w-8 h-8" alt="Logo FT">
-                    <span class="font-semibold">Fakultas Teknik UNIB</span>
+    {{-- Footer --}}
+    <footer class="bg-[#0A2E73] pt-12 text-white sm:pt-16">
+        <div class="mx-auto max-w-7xl px-6">
+            <div class="grid grid-cols-1 gap-8 border-t border-white/20 pt-10 md:grid-cols-2 lg:grid-cols-4">
+
+                {{-- Kolom 1: Tentang Fakultas --}}
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ asset('images/logo-ft.png') }}" class="h-10 w-10" alt="Logo FT">
+                        <div>
+                            <p class="font-bold leading-tight text-lg">Fakultas Teknik</p>
+                            <p class="text-sm text-white/80">Universitas Bengkulu</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-white/80">
+                        © {{ date('Y') }} Fakultas Teknik, Universitas Bengkulu. All rights reserved.
+                    </p>
                 </div>
-                <p class="text-sm text-white/80">© {{ date('Y') }} Fakultas Teknik, Universitas Bengkulu</p>
+
+                {{-- Kolom 2: Alamat --}}
+                <div class="text-sm">
+                    <h3 class="mb-3 font-semibold text-white">Alamat</h3>
+                    <address class="not-italic space-y-2 text-white/80">
+                        <p>
+                            DEKANAT FAKULTAS TEKNIK<br>
+                            Jalan WR. Supratman, Kandang Limun<br>
+                            Kec. Muara Bangkahulu, Kota Bengkulu<br>
+                            Bengkulu, 38371A, INDONESIA
+                        </p>
+                        <p>
+                            Email: <a href="mailto:ft@unib.ac.id" class="underline hover:text-orange-400">ft@unib.ac.id</a>
+                        </p>
+                    </address>
+                </div>
+
+                {{-- Kolom 3: Program Studi --}}
+                <div class="text-sm">
+                    <h3 class="mb-3 font-semibold text-white">Program Studi</h3>
+                    <ul class="space-y-2 text-white/80">
+                        <li><a href="#" class="transition-colors hover:text-orange-400">Informatika</a></li>
+                        <li><a href="#" class="transition-colors hover:text-orange-400">Teknik Sipil</a></li>
+                        <li><a href="#" class="transition-colors hover:text-orange-400">Teknik Elektro</a></li>
+                        <li><a href="#" class="transition-colors hover:text-orange-400">Teknik Mesin</a></li>
+                        <li><a href="#" class="transition-colors hover:text-orange-400">Arsitektur</a></li>
+                        <li><a href="#" class="transition-colors hover:text-orange-400">Sistem Informasi</a></li>
+                    </ul>
+                </div>
+
+                {{-- Kolom 4: Media Sosial --}}
+                <div class="text-sm">
+                    <h3 class="mb-3 font-semibold text-white">Media Sosial</h3>
+                    <div class="flex items-center gap-4">
+                        <a href="#" aria-label="Facebook" class="text-white/80 transition-colors hover:text-orange-400">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg>
+                        </a>
+                        <a href="#" aria-label="Instagram" class="text-white/80 transition-colors hover:text-orange-400">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zm0 1.62c-2.403 0-2.73.01-3.69.058-1.01.048-1.597.2-1.995.368a3.262 3.262 0 00-1.18 1.18c-.168.398-.32.985-.368 1.995-.048.96-.058 1.287-.058 3.69s.01 2.73.058 3.69c.048 1.01.2 1.597.368 1.995a3.262 3.262 0 001.18 1.18c.398.168.985.32 1.995.368.96.048 1.287.058 3.69.058s2.73-.01 3.69-.058c1.01-.048 1.597-.2 1.995-.368a3.262 3.262 0 001.18-1.18c.168-.398.32-.985.368-1.995.048-.96.058-1.287.058-3.69s-.01-2.73-.058-3.69c-.048-1.01-.2-1.597-.368-1.995a3.262 3.262 0 00-1.18-1.18c-.398-.168-.985-.32-1.995-.368C15.045 3.63 14.715 3.62 12.315 3.62zM12 7.188a4.813 4.813 0 100 9.625 4.813 4.813 0 000-9.625zM12 15a3 3 0 110-6 3 3 0 010 6zm6.406-11.845a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" clip-rule="evenodd" /></svg>
+                        </a>
+                        <a href="#" aria-label="Twitter" class="text-white/80 transition-colors hover:text-orange-400">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                        </a>
+                        <a href="#" aria-label="YouTube" class="text-white/80 transition-colors hover:text-orange-400">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.78 22 12 22 12s0 3.22-.42 4.814a2.506 2.506 0 0 1-1.768 1.768c-1.593.42-7.81.42-7.81.42s-6.217 0-7.81-.42a2.506 2.506 0 0 1-1.768-1.768C2 15.22 2 12 2 12s0-3.22.42-4.814a2.506 2.506 0 0 1 1.768-1.768C5.783 5 12 5 12 5s6.217 0 7.812.418ZM15.196 12 10 14.734V9.266z" clip-rule="evenodd" /></svg>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="text-sm">
-                <div class="font-medium mb-1">Kontak</div>
-                <p>Jl. W.R. Supratman, Kandang Limun, Kota Bengkulu</p>
-                <p>Email: ft@unib.ac.id | Telp: (0736) 000000</p>
+             <div class="mt-8 py-6 text-center text-xs text-white/60">
+                <p>Dikembangkan oleh Tim IT Fakultas Teknik Universitas Bengkulu</p>
             </div>
         </div>
     </footer>
 
-    {{-- chatbhot --}}
-     <button id="chatbot-toggle" aria-label="Kontak admin"
-        class="fixed bottom-6 right-6 z-50 rounded-full bg-[#F97316] hover:bg-[#FF7C1F] text-white shadow-lg w-14 h-14 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
-            <path
-                d="M2.25 6.75A2.25 2.25 0 0 1 4.5 4.5h3A2.25 2.25 0 0 1 9.75 6.75v1.5a2.25 2.25 0 0 1-2.25 2.25h-.257a12.04 12.04 0 0 0 5.257 5.257V15a2.25 2.25 0 0 1 2.25-2.25h1.5A2.25 2.25 0 0 1 20.25 15v3a2.25 2.25 0 0 1-2.25 2.25h-.75C9.708 20.25 3.75 14.292 3.75 6.75Z" />
-        </svg>
+
+    {{-- Chatbot --}}
+    <button id="chatbot-toggle" aria-label="Kontak admin"
+        class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#F97316] text-white shadow-lg transition-transform hover:scale-110 hover:bg-[#E8630B]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
     </button>
 
     <div id="chatbot-panel"
-        class="fixed bottom-24 right-6 z-50 w-80 max-w-[92vw] bg-white text-gray-800 rounded-xl shadow-2xl border border-gray-200 hidden">
-        <div class="px-4 py-4">
+        class="fixed bottom-24 right-6 z-50 hidden w-80 max-w-[92vw] rounded-xl border border-gray-200 bg-white text-gray-800 shadow-2xl">
+        <div class="relative p-4">
             <div class="font-semibold text-[#0A2E73]">Kontak Admin SKPI</div>
-            <div class="mt-2 text-sm space-y-1">
-                <div>Admin: <a href="tel:081234567890" class="text-[#F97316]">0812-3456-7890</a></div>
-                <div>Helpdesk: <a href="mailto:helpdesk.ft@unib.ac.id" class="text-[#F97316]">helpdesk.ft@unib.ac.id</a>
-                </div>
+            <div class="mt-2 space-y-1 text-sm">
+                <div>Admin: <a href="tel:081234567890" class="text-[#F97316] hover:underline">0812-3456-7890</a></div>
+                <div>Helpdesk: <a href="mailto:helpdesk.ft@unib.ac.id" class="text-[#F97316] hover:underline">helpdesk.ft@unib.ac.id</a></div>
             </div>
             <div class="mt-3 flex gap-2">
-                <button data-copy="081234567890"
-                    class="copy-btn bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1.5 rounded-lg text-sm">Salin
-                    No</button>
-                <a href="mailto:helpdesk.ft@unib.ac.id"
-                    class="bg-[#F97316] hover:bg-[#FF7C1F] text-white px-3 py-1.5 rounded-lg text-sm">Kirim Email</a>
+                <button data-copy="081234567890" class="copy-btn rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-800 hover:bg-gray-200">Salin No</button>
+                <a href="mailto:helpdesk.ft@unib.ac.id" class="rounded-lg bg-[#F97316] px-3 py-1.5 text-sm text-white hover:bg-[#E8630B]">Kirim Email</a>
             </div>
-
-            <button id="chatbot-close" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                aria-label="Tutup">×</button>
+            <button id="chatbot-close" class="absolute right-2 top-2 text-gray-500 hover:text-gray-800" aria-label="Tutup">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
         </div>
     </div>
 
     <script>
         (function() {
-
-
             const toggle = document.getElementById('chatbot-toggle');
             const panel = document.getElementById('chatbot-panel');
             const closeBtn = document.getElementById('chatbot-close');
 
-            function show() {
-                panel.classList.remove('hidden');
-            }
+            if (!toggle || !panel || !closeBtn) return;
 
-            function hide() {
-                panel.classList.add('hidden');
-            }
+            const show = () => panel.classList.remove('hidden');
+            const hide = () => panel.classList.add('hidden');
+
             toggle.addEventListener('click', () => panel.classList.contains('hidden') ? show() : hide());
-            closeBtn?.addEventListener('click', hide);
+            closeBtn.addEventListener('click', hide);
+
             panel.addEventListener('click', (e) => {
                 const btn = e.target.closest('.copy-btn');
-                if (btn) {
-                    navigator.clipboard?.writeText(btn.getAttribute('data-copy'));
-                    btn.textContent = 'Disalin';
-                    setTimeout(() => btn.textContent = 'Salin No', 1200);
+                if (btn && navigator.clipboard) {
+                    navigator.clipboard.writeText(btn.getAttribute('data-copy'));
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Disalin!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 1500);
                 }
             });
         })();

@@ -3,6 +3,14 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
+                {{-- Admin mobile hamburger --}}
+                @if(auth()->check() && request()->routeIs('admin.*'))
+                    <button id="admin-menu-btn" class="md:hidden mr-2 -ml-1 flex items-center justify-center w-10 h-10 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white" aria-label="Menu Admin">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                        </svg>
+                    </button>
+                @endif
                 {{-- Logo --}}
                 <div class="shrink-0 flex items-center gap-3">
                     <a href="/" class="flex items-center gap-3">

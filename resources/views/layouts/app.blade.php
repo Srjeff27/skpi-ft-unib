@@ -23,6 +23,11 @@
     <div class="min-h-screen">
         @include('layouts.navigation')
 
+        {{-- Admin mobile sidebar (offcanvas) --}}
+        @if(auth()->check() && request()->routeIs('admin.*'))
+            @include('layouts.admin-mobile-sidebar')
+        @endif
+
         <!-- Page Heading -->
         @isset($header)
             <header class="bg-white shadow">
@@ -43,6 +48,7 @@
         </main>
     </div>
 
+    @if(auth()->check() && (auth()->user()->role === 'mahasiswa'))
     <nav
         class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
         {{-- DIUBAH: Menjadi 5 kolom untuk memberi ruang pada tombol tengah --}}
@@ -127,6 +133,7 @@
 
         </div>
     </nav>
+    @endif
 
     @if(auth()->check() && auth()->user()->role === 'mahasiswa')
     <button id="chatbot-toggle" aria-label="Kontak admin"
@@ -200,6 +207,33 @@
             }
         }
     </script>
+
+    {{-- Admin mobile sidebar toggle script --}}
+    @if(auth()->check() && request()->routeIs('admin.*'))
+    <script>
+        (function() {
+            const btn = document.getElementById('admin-menu-btn');
+            const panel = document.getElementById('admin-sidebar');
+            const backdrop = document.getElementById('admin-sidebar-backdrop');
+            const closeBtn = document.getElementById('admin-sidebar-close');
+
+            if(!btn || !panel || !backdrop) return;
+
+            const open = () => {
+                panel.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            };
+            const close = () => {
+                panel.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            };
+
+            btn.addEventListener('click', open);
+            backdrop.addEventListener('click', close);
+            closeBtn?.addEventListener('click', close);
+        })();
+    </script>
+    @endif
 </body>
 
 </html>
