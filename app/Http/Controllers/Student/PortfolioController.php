@@ -53,15 +53,7 @@ class PortfolioController extends Controller
     {
         $portfolio = Portfolio::findOrFail($id);
         
-        // Debug: Log informasi portfolio dan user
-        \Log::info('Edit Portfolio Debug', [
-            'portfolio_id' => $portfolio->id,
-            'portfolio_user_id' => $portfolio->user_id,
-            'auth_user_id' => auth()->id(),
-            'auth_user_role' => auth()->user()->role ?? 'not_logged_in'
-        ]);
-        
-        abort_unless($portfolio->user_id === auth()->id(), 403);
+        $this->authorize('view', $portfolio);
         
         $categories = \App\Models\PortfolioCategory::orderBy('name')->pluck('name');
         return view('student.portfolios.edit', compact('portfolio','categories'));
@@ -69,11 +61,7 @@ class PortfolioController extends Controller
 
     public function update(UpdatePortfolioRequest $request, Portfolio $portfolio, PortfolioService $portfolioService): RedirectResponse
     {
-        abort_unless($portfolio->user_id === auth()->id(), 403);
-
-        if ($portfolio->status !== 'pending') {
-            return back()->with('status', 'Portofolio sudah diverifikasi, tidak dapat diedit.');
-        }
+        $this->authorize('update', $portfolio);
 
         $portfolioService->updateForUser($portfolio, $request->validated(), $request->file('bukti_file'));
 
@@ -82,9 +70,8 @@ class PortfolioController extends Controller
 
     public function destroy(Portfolio $portfolio): RedirectResponse
     {
-        abort_unless($portfolio->user_id === auth()->id(), 403);
+        $this->authorize('delete', $portfolio);
 
-        // Menghapus batasan status, mahasiswa dapat menghapus portofolio apapun statusnya
         $portfolio->delete();
         return redirect()->route('student.portfolios.index')->with('status', 'Portofolio berhasil dihapus.');
     }
