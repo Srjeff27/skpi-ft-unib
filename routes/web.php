@@ -28,6 +28,10 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\PagesController as AdminPagesController;
+use App\Http\Controllers\Admin\CplController;
+use App\Http\Controllers\Admin\CetakSkpiController;
+use App\Http\Controllers\Admin\PejabatController;
+use App\Http\Controllers\Admin\SystemSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +89,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('studen
     Route::post('/notifikasi/{notification}/read', [StudentNotificationController::class, 'markRead'])->name('notifications.read');
     Route::post('/notifikasi/{notification}/unread', [StudentNotificationController::class, 'markUnread'])->name('notifications.unread');
     Route::post('/notifikasi/read-all', [StudentNotificationController::class, 'markAllRead'])->name('notifications.read_all');
+    Route::post('/notifikasi/delete-all', [StudentNotificationController::class, 'deleteAll'])->name('notifications.delete_all');
 
     // Dokumen SKPI (placeholder)
     Route::get('/dokumen-skpi', function () {
@@ -116,6 +121,17 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('prodis', ProdiController::class);
     Route::resource('portfolio-categories', PortfolioCategoryController::class);
     Route::resource('announcements', AnnouncementController::class)->only(['index', 'create', 'store', 'destroy']);
+    // Academic Management
+    Route::get('cpl', [CplController::class, 'index'])->name('cpl.index');
+    Route::get('cpl/kelola/{curriculum}', [CplController::class, 'manage'])->name('cpl.manage');
+    Route::post('cpl/curricula', [CplController::class, 'storeCurriculum'])->name('cpl.curricula.store');
+    Route::delete('cpl/curricula/{curriculum}', [CplController::class, 'destroyCurriculum'])->name('cpl.curricula.destroy');
+    Route::get('cpl/curricula/{curriculum}/edit', [CplController::class, 'editCurriculum'])->name('cpl.curricula.edit');
+    Route::put('cpl/curricula/{curriculum}', [CplController::class, 'updateCurriculum'])->name('cpl.curricula.update');
+    Route::post('cpl/{curriculum}/items', [CplController::class, 'storeItem'])->name('cpl.items.store');
+    Route::delete('cpl/items/{item}', [CplController::class, 'destroyItem'])->name('cpl.items.destroy');
+    Route::get('cpl/items/{item}/edit', [CplController::class, 'editItem'])->name('cpl.items.edit');
+    Route::put('cpl/items/{item}', [CplController::class, 'updateItem'])->name('cpl.items.update');
 
     // Reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
@@ -133,6 +149,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('finalisasi', [AdminPagesController::class, 'finalisasi'])->name('finalisasi.index');
     Route::get('penerbitan', [AdminPagesController::class, 'penerbitan'])->name('penerbitan.index');
     Route::get('pengaturan', [AdminPagesController::class, 'pengaturan'])->name('pengaturan.index');
+    Route::get('cetak-skpi', [CetakSkpiController::class, 'index'])->name('cetak_skpi.index');
+    Route::get('pejabat', [PejabatController::class, 'index'])->name('pejabat.index');
+    Route::get('pengaturan-sistem', [SystemSettingsController::class, 'index'])->name('system_settings.index');
 
     // Admin mapping: Manajemen Data SKPI & Verifikasi menggunakan controller verifikator
     Route::get('portofolio', [PortfolioReviewController::class, 'index'])->name('portfolios.index');

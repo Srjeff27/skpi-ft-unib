@@ -38,5 +38,10 @@ class NotificationController extends Controller
         $request->user()->unreadNotifications->markAsRead();
         return back();
     }
-}
 
+    public function deleteAll(Request $request): RedirectResponse
+    {
+        $request->user()->notifications()->delete();
+        return back()->with('status','Semua notifikasi dihapus.');
+    }
+}

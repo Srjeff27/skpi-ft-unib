@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Services\ActivityLogger;
+use App\Models\User;
+use App\Notifications\AnnouncementNotification;
 
 class AnnouncementController extends Controller
 {
@@ -31,12 +33,18 @@ class AnnouncementController extends Controller
         ]);
         $data['published_at'] = $data['published_at'] ?? now();
 
-        Announcement::create($data);
+        $announcement = Announcement::create($data);
+        // Kirim notifikasi ke semua mahasiswa
+        User::where('role','mahasiswa')->select('id')->chunkById(500, function($users) use ($announcement) {
+            foreach ($users as $u) {
+                $u->notify(new AnnouncementNotification($announcement));
+            }
+        });
         ActivityLogger::log($request->user(), 'admin.announcements.store');
         return redirect()->route('admin.announcements.index')->with('status','Pengumuman dibuat');
     }
 
-    public function destroy(Announcement $announcement): RedirectResponse
+    public function destroy(Request $request, Announcement $announcement): RedirectResponse
     {
         $announcement->delete();
         ActivityLogger::log($request->user(), 'admin.announcements.destroy', $announcement);

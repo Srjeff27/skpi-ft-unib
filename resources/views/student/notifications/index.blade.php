@@ -6,17 +6,27 @@
                 Notifikasi
             </h2>
 
-            {{-- Tombol Aksi (Hanya tampil jika ada notifikasi) --}}
-            @if ($notifications->count() > 0)
-                <form method="POST" action="{{ route('student.notifications.read_all') }}" class="mt-3 sm:mt-0">
-                    @csrf
-                    <button
-                        class="inline-flex items-center gap-2 w-full sm:w-auto justify-center px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <x-heroicon-o-check-circle class="w-5 h-5" />
-                        Tandai semua sudah dibaca
-                    </button>
-                </form>
-            @endif
+            <div class="mt-3 sm:mt-0 flex items-center gap-2 flex-wrap max-[350px]:flex-col max-[350px]:items-stretch">
+                {{-- Tombol Aksi (Hanya tampil jika ada notifikasi) --}}
+                @if ($notifications->count() > 0)
+                    <form method="POST" action="{{ route('student.notifications.read_all') }}">
+                        @csrf
+                        <button
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 max-[350px]:w-full">
+                            <x-heroicon-o-check-circle class="w-5 h-5" />
+                            Tandai semua sudah dibaca
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('student.notifications.delete_all') }}" onsubmit="return confirm('Hapus semua notifikasi?')">
+                        @csrf
+                        <button
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-sm font-semibold shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 max-[350px]:w-full">
+                            <x-heroicon-o-trash class="w-5 h-5" />
+                            Hapus semua
+                        </button>
+                    </form>
+                @endif
+            </div>
         </div>
     </x-slot>
 
