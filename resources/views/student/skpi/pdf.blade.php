@@ -17,7 +17,7 @@
             font-family: 'Poppins', 'Arial', sans-serif;
             font-size: 10pt;
             color: #333;
-            line-height: 1.5;
+            line-height: 1.15;
             background-color: #fff;
             position: relative;
         }
@@ -64,7 +64,8 @@
             text-transform: uppercase;
             margin-top: 3px;
         }
-         .header .faculty {
+
+        .header .faculty {
             font-size: 13pt;
         }
 
@@ -156,10 +157,12 @@
             margin: 0;
             list-style-type: '•  ';
         }
+
         .cpl-list li {
             margin-bottom: 8px;
             padding-left: 5px;
         }
+
         .cpl-list .en {
             display: block;
         }
@@ -181,7 +184,7 @@
         }
 
         .data-table thead {
-             background-color: #f8f9fa;
+            background-color: #f8f9fa;
         }
 
         .data-table th {
@@ -200,25 +203,50 @@
         }
 
         .data-table .no-data {
-             text-align: center;
-             padding: 20px;
-             color: #777;
-             font-style: italic;
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-style: italic;
         }
 
         /* --- Endorsement Section --- */
         .endorsement-table {
             width: 100%;
             margin-top: 20px;
+            text-align: center;
         }
 
-        .endorsement-table td {
+        .endorsement-content {
             vertical-align: top;
         }
 
+        .signature-box {
+            height: 70px;
+            margin: 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signature-box img {
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .signature-box .placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .official-name {
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+
         .qr-section {
-            width: 35%;
-            text-align: left;
+            margin-top: 15px;
         }
 
         .qr-section img {
@@ -229,37 +257,6 @@
         .qr-section .qr-label {
             font-size: 8pt;
             margin-top: 5px;
-        }
-
-        .signature-section {
-            width: 65%;
-            text-align: left;
-            padding-left: 20px;
-        }
-
-        .signature-box {
-            height: 70px;
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .signature-box img {
-            height: 70px;
-            object-fit: contain;
-        }
-
-        .signature-box .placeholder {
-             color: #aaa;
-             font-style: italic;
-        }
-
-        .official-name {
-            font-weight: 700;
-            text-decoration: underline;
-            text-decoration-thickness: 1px;
-            text-underline-offset: 3px;
         }
 
         /* --- Footer --- */
@@ -281,50 +278,58 @@
 
 <body>
     @php
-    use App\Models\Setting;
-    use App\Models\Curriculum;
-    use App\Models\CplItem;
-    use App\Models\Finalization;
-    use App\Models\Official;
-    use Carbon\Carbon;
+        use App\Models\Setting;
+        use App\Models\Curriculum;
+        use App\Models\CplItem;
+        use App\Models\Finalization;
+        use App\Models\Official;
+        use Carbon\Carbon;
 
-    // Settings (institution)
-    $univ = Setting::get('univ_name', 'Universitas Bengkulu');
-    $faculty = Setting::get('faculty_name', 'Fakultas Teknik');
-    $skpt = Setting::get('sk_pt');
-    $grading = Setting::get('grading');
-    $admission = Setting::get('admission');
-    $languages = Setting::get('languages', 'Indonesia & English');
-    $contact = Setting::get('contact');
-    $logoPath = Setting::get('logo_path');
+        // Settings (institution)
+        $univ = Setting::get('univ_name', 'Universitas Bengkulu');
+        $faculty = Setting::get('faculty_name', 'Fakultas Teknik');
+        $skpt = Setting::get('sk_pt');
+        $grading = Setting::get('grading');
+        $admission = Setting::get('admission');
+        $languages = Setting::get('languages', 'Indonesia & English');
+        $contact = Setting::get('contact');
+        $logoPath = Setting::get('logo_path');
 
-    // Finalization & Official for graduation period
-    $periodYm = $user->tanggal_lulus ? date('Y-m', strtotime($user->tanggal_lulus)) : null;
-    $fin = $periodYm ? Finalization::where('period_ym', $periodYm)->with('official')->first() : null;
-    $official = $fin?->official ?: Official::where('is_active', true)->first();
-    $signatureSrc = null;
-    if ($official?->signature_path) {
-        $local = storage_path('app/public/' . $official->signature_path);
-        if (is_file($local)) $signatureSrc = 'data:image/png;base64,' . base64_encode(file_get_contents($local));
-    }
+        // Finalization & Official for graduation period
+        $periodYm = $user->tanggal_lulus ? date('Y-m', strtotime($user->tanggal_lulus)) : null;
+        $fin = $periodYm ? Finalization::where('period_ym', $periodYm)->with('official')->first() : null;
+        $official = $fin?->official ?: Official::where('is_active', true)->first();
+        $signatureSrc = null;
+        if ($official?->signature_path) {
+            $local = storage_path('app/public/' . $official->signature_path);
+            if (is_file($local)) {
+                $signatureSrc = 'data:image/png;base64,' . base64_encode(file_get_contents($local));
+            }
+        }
 
-    // Active curriculum & CPL
-    $activeCurr = $user->prodi_id ? Curriculum::where('prodi_id', $user->prodi_id)->where('is_active', true)->first() : null;
-    $cpl = collect();
-    if ($activeCurr) {
-        $cpl = CplItem::where('curriculum_id', $activeCurr->id)
-            ->orderBy('category')->orderBy('order')->get()->groupBy('category');
-    }
+        // Active curriculum & CPL
+        $activeCurr = $user->prodi_id
+            ? Curriculum::where('prodi_id', $user->prodi_id)->where('is_active', true)->first()
+            : null;
+        $cpl = collect();
+        if ($activeCurr) {
+            $cpl = CplItem::where('curriculum_id', $activeCurr->id)
+                ->orderBy('category')
+                ->orderBy('order')
+                ->get()
+                ->groupBy('category');
+        }
 
-    // Set locale for date formatting
-    Carbon::setLocale('id');
+        // Set locale for date formatting
+        Carbon::setLocale('id');
 
     @endphp
 
     @if ($logoPath && is_file(storage_path('app/public/' . $logoPath)))
-    <div class="watermark">
-        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $logoPath))) }}" width="350" />
-    </div>
+        <div class="watermark">
+            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $logoPath))) }}"
+                width="350" />
+        </div>
     @endif
 
     <footer>
@@ -333,9 +338,10 @@
 
     <header class="header">
         @if ($logoPath && is_file(storage_path('app/public/' . $logoPath)))
-        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $logoPath))) }}" alt="Logo">
+            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $logoPath))) }}"
+                alt="Logo">
         @endif
-        <div class="ministry">KEMENTERIAN PENDIDIKAN TINGGI, SAINS, DAN TEKNOLOGI</div>
+        <div class="ministry">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI</div>
         <div class="university">{{ $univ }}</div>
         <div class="faculty">{{ $faculty }}</div>
         <div class="contact">{!! nl2br(e($contact)) !!}</div>
@@ -349,7 +355,8 @@
         </div>
 
         <div class="section">
-            <div class="section-title">1. INFORMASI MENGENAI IDENTITAS PEMEGANG SKPI <span class="en">/ Information Identifying the Holder of the Diploma Supplement</span></div>
+            <div class="section-title">1. INFORMASI MENGENAI IDENTITAS PEMEGANG SKPI <span class="en">/ Information
+                    Identifying the Holder of the Diploma Supplement</span></div>
             <div class="section-content">
                 <table class="info-table">
                     <tr>
@@ -360,7 +367,8 @@
                     <tr>
                         <td>Tempat & Tgl. Lahir <br><span class="en">Place & Date of Birth</span></td>
                         <td>:</td>
-                        <td>{{ trim($user->tempat_lahir . ' ' . ($user->tanggal_lahir ? ', ' . Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : '')) ?: '-' }}</td>
+                        <td>{{ trim($user->tempat_lahir . ' ' . ($user->tanggal_lahir ? ', ' . Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : '')) ?: '-' }}
+                        </td>
                     </tr>
                     <tr>
                         <td>NIM <br><span class="en">Student ID Number</span></td>
@@ -370,7 +378,8 @@
                     <tr>
                         <td>Tanggal Lulus <br><span class="en">Date of Graduation</span></td>
                         <td>:</td>
-                        <td>{{ $user->tanggal_lulus ? Carbon::parse($user->tanggal_lulus)->translatedFormat('d F Y') : '-' }}</td>
+                        <td>{{ $user->tanggal_lulus ? Carbon::parse($user->tanggal_lulus)->translatedFormat('d F Y') : '-' }}
+                        </td>
                     </tr>
                     <tr>
                         <td>No. Ijazah <br><span class="en">Diploma Number</span></td>
@@ -380,14 +389,15 @@
                     <tr>
                         <td>Gelar <br><span class="en">Title</span></td>
                         <td>:</td>
-                        <td>{{ optional($user->prodi)->gelar ?? '-' }}</td>
+                        <td>{{ $user->gelar ?? '-' }}</td>
                     </tr>
                 </table>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">2. INFORMASI MENGENAI IDENTITAS PENYELENGGARA PROGRAM <span class="en">/ Information Identifying the Awarding Institution</span></div>
+            <div class="section-title">2. INFORMASI MENGENAI IDENTITAS PENYELENGGARA PROGRAM <span class="en">/
+                    Information Identifying the Awarding Institution</span></div>
             <div class="section-content">
                 <table class="info-table">
                     <tr>
@@ -398,7 +408,8 @@
                     <tr>
                         <td>Program Studi <br><span class="en">Study Program</span></td>
                         <td>:</td>
-                        <td>{{ optional($user->prodi)->nama_prodi ?? '-' }} ({{ optional($user->prodi)->jenjang ?? '-' }})</td>
+                        <td>{{ optional($user->prodi)->nama_prodi ?? '-' }}
+                            ({{ optional($user->prodi)->jenjang ?? '-' }})</td>
                     </tr>
                     <tr>
                         <td>Persyaratan Penerimaan <br><span class="en">Entry Requirements</span></td>
@@ -420,34 +431,38 @@
         </div>
 
         <div class="section">
-            <div class="section-title">3. INFORMASI MENGENAI KUALIFIKASI DAN HASIL YANG DICAPAI <span class="en">/ Information on the Qualification and Outcomes</span></div>
+            <div class="section-title">3. INFORMASI MENGENAI KUALIFIKASI DAN HASIL YANG DICAPAI <span class="en">/
+                    Information on the Qualification and Outcomes</span></div>
             <div class="section-content">
                 @if ($activeCurr)
-                <div style="font-size: 10pt; margin-bottom: 10px;">Kurikulum <span class="en">/ Curriculum</span>: <strong>{{ $activeCurr->name }} ({{ $activeCurr->year ?? '-' }})</strong></div>
+                    <div style="font-size: 10pt; margin-bottom: 10px;">Kurikulum <span class="en">/
+                            Curriculum</span>: <strong>{{ $activeCurr->name }}
+                            ({{ $activeCurr->year ?? '-' }})</strong></div>
                 @endif
                 @php
-                $cplLabels = [
-                    'sikap' => 'a. Sikap dan Tata Nilai / a. Attitude and Values',
-                    'pengetahuan' => 'b. Penguasaan Pengetahuan / b. Knowledge',
-                    'umum' => 'c. Keterampilan Umum / c. General Skills',
-                    'khusus' => 'd. Keterampilan Khusus / d. Specific Skills',
-                ];
+                    $cplLabels = [
+                        'sikap' => 'a. Sikap dan Tata Nilai / a. Attitude and Values',
+                        'pengetahuan' => 'b. Penguasaan Pengetahuan / b. Knowledge',
+                        'umum' => 'c. Keterampilan Umum / c. General Skills',
+                        'khusus' => 'd. Keterampilan Khusus / d. Specific Skills',
+                    ];
                 @endphp
                 @foreach ($cplLabels as $cat => $label)
-                <div class="cpl-category">{{ $label }}</div>
-                <ul class="cpl-list">
-                    @forelse(($cpl[$cat] ?? collect()) as $it)
-                    <li>{!! e($it->desc_id) !!}<span class="en">{!! e($it->desc_en) !!}</span></li>
-                    @empty
-                    <li><span class="en">- Not Available -</span></li>
-                    @endforelse
-                </ul>
+                    <div class="cpl-category">{{ $label }}</div>
+                    <ul class="cpl-list">
+                        @forelse(($cpl[$cat] ?? collect()) as $it)
+                            <li>{!! e($it->desc_id) !!}<span class="en">{!! e($it->desc_en) !!}</span></li>
+                        @empty
+                            <li><span class="en">- Not Available -</span></li>
+                        @endforelse
+                    </ul>
                 @endforeach
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">4. PRESTASI DAN PENGHARGAAN <span class="en">/ Achievements and Awards</span></div>
+            <div class="section-title">4. PRESTASI DAN PENGHARGAAN <span class="en">/ Achievements and Awards</span>
+            </div>
             <div class="section-content">
                 <table class="data-table">
                     <thead>
@@ -458,17 +473,19 @@
                     </thead>
                     <tbody>
                         @forelse($verifiedPortfolios as $p)
-                        <tr>
-                            <td>
-                                <strong>{{ $p->judul_kegiatan }}</strong>
-                                <span class="en">{{ $p->kategori_portfolio }}</span>
-                            </td>
-                            <td>{{ $p->tanggal_dokumen ? Carbon::parse($p->tanggal_dokumen)->translatedFormat('d M Y') : '-' }}</td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <strong>{{ $p->judul_kegiatan }}</strong>
+                                    <span class="en">{{ $p->kategori_portfolio }}</span>
+                                </td>
+                                <td>{{ $p->tanggal_dokumen ? Carbon::parse($p->tanggal_dokumen)->translatedFormat('d M Y') : '-' }}
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="2" class="no-data"><span class="en">No verified achievements recorded.</span></td>
-                        </tr>
+                            <tr>
+                                <td colspan="2" class="no-data"><span class="en">No verified achievements
+                                        recorded.</span></td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -480,13 +497,7 @@
             <div class="section-content">
                 <table class="endorsement-table">
                     <tr>
-                        <td class="qr-section">
-                             @if (isset($qrBase64) && $qrBase64)
-                                <img src="{{ $qrBase64 }}" alt="QR Code" />
-                                <div class="qr-label">Verifikasi Keaslian Dokumen <br><span class="en">Verify Document Authenticity</span></div>
-                             @endif
-                        </td>
-                        <td class="signature-section">
+                        <td class="endorsement-content">
                             Bengkulu, {{ Carbon::now()->translatedFormat('d F Y') }}
                             <br>
                             {{ $official->jabatan ?? 'Pejabat Berwenang' }}
@@ -499,6 +510,14 @@
                             </div>
                             <div class="official-name">{{ $official->display_name ?? '-' }}</div>
                             <div>NIP. {{ $official->nip ?? '-' }}</div>
+
+                            <div class="qr-section">
+                                @if (isset($qrBase64) && $qrBase64)
+                                    <img src="{{ $qrBase64 }}" alt="QR Code" />
+                                    <div class="qr-label">Verifikasi Keaslian Dokumen <br><span class="en">Verify
+                                            Document Authenticity</span></div>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                 </table>
