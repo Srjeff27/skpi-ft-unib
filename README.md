@@ -18,7 +18,7 @@ Projek ini adalah aplikasi **Surat Keterangan Pendamping Ijazah (SKPI)** untuk F
 
 | Komponen          | Teknologi                        |
 | ----------------- | -------------------------------- |
-| Framework Backend | Laravel 12 + Livewire + Filament |
+| Framework Backend | Laravel 12 + Livewire            |
 | Frontend          | Blade + Tailwind CSS + Vite      |
 | Database          | MySQL                            |
 | Autentikasi       | Laravel Breeze                   |
