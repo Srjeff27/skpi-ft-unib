@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    image: dunglas/frankenphp:1.1-php8.3
+    container_name: skpi-franken
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      APP_ENV: local
+      APP_DEBUG: true
+      APP_URL: http://localhost:8000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: skpi_ft_unib
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    command: |
+      sh -c "composer install && php artisan key:generate && php artisan migrate --seed && frankenphp run --workers=4 --port=80"
+
+  db:
+    image: mysql:8.0
+    container_name: skpi-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: skpi_ft_unib
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+
+volumes:
+  db_data:
