@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -8,7 +6,13 @@ services:
     container_name: skpi-app
     restart: unless-stopped
     working_dir: /var/www/html
+    working_dir: /var/www/html
     volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
       - .:/var/www/html
     ports:
       - "8000:80"
@@ -19,7 +23,6 @@ services:
       APP_DEBUG: true
       DB_CONNECTION: mysql
       DB_HOST: db
-      DB_PORT: 3306
       DB_DATABASE: skpi_ft_unib
       DB_USERNAME: root
       DB_PASSWORD: root
@@ -27,7 +30,6 @@ services:
   db:
     image: mysql:8.0
     container_name: skpi-db
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: skpi_ft_unib
