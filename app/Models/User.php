@@ -24,6 +24,7 @@ class User extends Authenticatable
         'nim',
         'angkatan',
         'profile_photo_path',
+        'avatar',
         'role',
         'prodi_id',
         'tempat_lahir',
@@ -56,6 +57,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'tanggal_lahir' => 'date',
+            'tanggal_lulus' => 'date',
         ];
     }
 
@@ -69,5 +72,29 @@ class User extends Authenticatable
     public function portfolios()
     {
         return $this->hasMany(Portfolio::class);
+    }
+
+    // Computed URL for selected avatar (fallback based on role)
+    public function getAvatarUrlAttribute(): string
+    {
+        $map = [
+            'mahasiswa_male' => 'student-male.svg',
+            'mahasiswa_female' => 'student-female.svg',
+            'dosen' => 'lecturer.svg',
+            'verifikator' => 'verifikator.svg',
+            'admin' => 'admin.svg',
+        ];
+
+        $key = $this->avatar;
+
+        if (!$key) {
+            // Reasonable defaults by role
+            if ($this->role === 'admin') $key = 'admin';
+            elseif ($this->role === 'verifikator') $key = 'verifikator';
+            else $key = 'mahasiswa_male';
+        }
+
+        $filename = $map[$key] ?? $map['mahasiswa_male'];
+        return asset('avatars/' . $filename);
     }
 }

@@ -120,7 +120,7 @@
                             <div>
                                 <x-input-label for="tanggal_dokumen" value="Tanggal Dokumen" />
                                 <x-text-input id="tanggal_dokumen" name="tanggal_dokumen" type="date"
-                                    class="mt-1 block w-full" :value="old('tanggal_dokumen', $portfolio->tanggal_dokumen)" :disabled="$isLocked" required />
+                                    class="mt-1 block w-full" :value="old('tanggal_dokumen', optional($portfolio->tanggal_dokumen)->format('Y-m-d'))" :disabled="$isLocked" required />
                                 <x-input-error :messages="$errors->get('tanggal_dokumen')" class="mt-2" />
                             </div>
                             <div>
@@ -150,25 +150,23 @@
                         </div>
                     </div>
 
-                    {{-- DIUBAH: Area tombol aksi dibuat responsif dan lebih aman --}}
-                    <div
-                        class="bg-gray-50 px-6 py-4 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 rounded-b-xl">
+                    {{-- DIUBAH: Area tombol aksi dibuat responsif dan aman (tanpa nested form) --}}
+                    <div class="bg-gray-50 px-6 py-4 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 rounded-b-xl">
                         {{-- Aksi Destruktif (Hapus) --}}
-                        <form action="{{ route('student.portfolios.destroy', $portfolio) }}" method="POST"
-                            onsubmit="return confirm('Anda yakin ingin menghapus portofolio ini? Tindakan ini tidak dapat dibatalkan.');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="w-full sm:w-auto inline-flex items-center justify-center rounded-md text-sm font-semibold text-red-600 hover:bg-red-50 px-3 py-2 transition-colors">
-                                <x-heroicon-o-trash class="w-5 h-5 mr-2" />
-                                Hapus Portofolio
-                            </button>
-                        </form>
+                        <x-confirm :action="route('student.portfolios.destroy', $portfolio)" method="DELETE" type="error"
+                                   title="Hapus Portofolio" message="Anda yakin ingin menghapus portofolio ini? Tindakan ini tidak dapat dibatalkan.">
+                            <x-slot name="trigger">
+                                <button type="button" class="w-full sm:w-auto inline-flex items-center justify-center rounded-md text-sm font-semibold text-red-600 hover:bg-red-50 px-3 py-2 transition-colors">
+                                    <x-heroicon-o-trash class="w-5 h-5 mr-2" />
+                                    Hapus Portofolio
+                                </button>
+                            </x-slot>
+                        </x-confirm>
 
                         {{-- Aksi Utama (Simpan & Kembali) --}}
                         <div class="flex items-center gap-4 flex-col-reverse sm:flex-row">
                             <a href="{{ route('student.portfolios.index') }}"
-                                class="w-full sm:w-auto inline-flex justify-center rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-200 px-4 py-2 transition-colors border border-gray-300 bg-white">
+                               class="w-full sm:w-auto inline-flex justify-center rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-200 px-4 py-2 transition-colors border border-gray-300 bg-white">
                                 Kembali
                             </a>
                             <x-primary-button :disabled="$isLocked">
@@ -178,6 +176,8 @@
                         </div>
                     </div>
                 </form>
+
+                {{-- Konfirmasi hapus ditangani oleh komponen <x-confirm> di atas --}}
             </div>
         </div>
     </div>

@@ -16,11 +16,6 @@
                             <x-text-input name="name" class="w-full" value="{{ old('name',$category->name) }}" required />
                             <x-input-error :messages="$errors->get('name')" />
                         </div>
-                        <div>
-                            <x-input-label value="Maks Upload (KB)" />
-                            <x-text-input name="max_upload_kb" class="w-full" value="{{ old('max_upload_kb',$category->max_upload_kb) }}" required />
-                            <x-input-error :messages="$errors->get('max_upload_kb')" />
-                        </div>
                     </div>
 
                     <div class="mt-6 flex gap-3">
@@ -32,4 +27,3 @@
         </div>
     </div>
 </x-app-layout>
-

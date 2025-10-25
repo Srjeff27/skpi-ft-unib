@@ -8,7 +8,5 @@ class PortfolioCategory extends Model
 {
     protected $fillable = [
         'name',
-        'max_upload_kb',
     ];
 }
-

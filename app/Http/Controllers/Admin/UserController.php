@@ -38,6 +38,7 @@ class UserController extends Controller
             'nim' => ['nullable','string','max:50'],
             'angkatan' => ['nullable','integer'],
             'prodi_id' => ['nullable','exists:prodis,id'],
+            'avatar' => ['nullable','in:mahasiswa_male,mahasiswa_female,dosen,verifikator,admin'],
         ]);
         $data['password'] = Hash::make($data['password']);
 
@@ -62,6 +63,7 @@ class UserController extends Controller
             'angkatan' => ['nullable','integer'],
             'prodi_id' => ['nullable','exists:prodis,id'],
             'password' => ['nullable','min:8'],
+            'avatar' => ['nullable','in:mahasiswa_male,mahasiswa_female,dosen,verifikator,admin'],
         ]);
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);

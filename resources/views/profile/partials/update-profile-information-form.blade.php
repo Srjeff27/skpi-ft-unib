@@ -1,6 +1,6 @@
 <form id="send-verification" method="post" action="{{ route('verification.send') }}">@csrf</form>
 
-<form method="post" action="{{ route('profile.update') }}" class="space-y-8" enctype="multipart/form-data">
+<form method="post" action="{{ route('profile.update') }}" class="space-y-8">
     @csrf
     @method('patch')
 
@@ -12,32 +12,43 @@
         </header>
 
         <div class="mt-6 space-y-6">
-            {{-- Foto Profil --}}
-            <div x-data="{ photoName: null, photoPreview: null }">
-                <x-input-label for="photo" value="Foto Profil" />
-                <div class="mt-2 flex items-center gap-5">
-                    <div class="flex-shrink-0">
-                        <img x-show="!photoPreview"
-                            src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=1b3985&color=fff' }}"
-                            alt="Foto Profil" class="h-20 w-20 rounded-full object-cover">
-                        <div x-show="photoPreview" class="h-20 w-20 rounded-full bg-cover bg-center"
-                            :style="'background-image: url(\'' + photoPreview + '\');'" x-cloak></div>
-                    </div>
-                    <div>
-                        <input id="photo" name="photo" type="file" accept="image/*" class="hidden"
-                            x-ref="photo"
-                            @change="
-                            photoName = $refs.photo.files[0].name;
-                            const reader = new FileReader();
-                            reader.onload = (e) => { photoPreview = e.target.result; };
-                            reader.readAsDataURL($refs.photo.files[0]);
-                        ">
-                        <x-secondary-button type="button" @click.prevent="$refs.photo.click()">Ganti
-                            Foto</x-secondary-button>
-                        <p class="text-xs text-gray-500 mt-2">JPG, PNG, atau WEBP. Maks 2MB.</p>
-                    </div>
+            {{-- Avatar Profil (tanpa upload) --}}
+            <div x-data="{ selectedAvatar: '{{ old('avatar', $user->avatar ?? '') }}' }">
+                <x-input-label for="avatar" value="Avatar Profil" />
+                <div class="mt-3 flex items-center gap-5">
+                    <img src="{{ $user->avatar_url }}" alt="Avatar Saat Ini" class="h-20 w-20 rounded-full object-cover">
+                    <p class="text-sm text-gray-600">Pilih avatar berikut.</p>
                 </div>
-                <x-input-error class="mt-2" :messages="$errors->get('photo')" />
+
+                @php
+                    $avatarOptions = [
+                        'mahasiswa_male' => 'Leo',
+                        'mahasiswa_female' => 'Stella',
+                        'dosen' => 'Rysh',
+                        'verifikator' => 'Anya',
+                        'admin' => 'Zack',
+                    ];
+                @endphp
+
+                <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                    @foreach ($avatarOptions as $key => $label)
+                        @php $checked = old('avatar', $user->avatar ?? null) === $key; @endphp
+                        <label class="cursor-pointer border rounded-lg p-3 flex flex-col items-center gap-2 hover:bg-gray-50 transition ring-offset-1"
+                               :class="selectedAvatar === '{{ $key }}' ? 'ring-2 ring-[#1b3985] border-[#1b3985] bg-white' : 'border-gray-200'">
+                            <img src="{{ asset('avatars/' . match($key){
+                                'mahasiswa_male' => 'student-male.svg',
+                                'mahasiswa_female' => 'student-female.svg',
+                                'dosen' => 'lecturer.svg',
+                                'verifikator' => 'verifikator.svg',
+                                'admin' => 'admin.svg',
+                                default => 'student-male.svg'
+                            }) }}" alt="{{ $label }}" class="h-14 w-14 rounded-full">
+                            <input type="radio" name="avatar" value="{{ $key }}" class="sr-only" @checked($checked) x-model="selectedAvatar">
+                            <div class="text-xs text-gray-700">{{ $label }}</div>
+                        </label>
+                    @endforeach
+                </div>
+                <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
             </div>
             {{-- Nama --}}
             <div>
@@ -97,7 +108,7 @@
                     <div>
                         <x-input-label for="tanggal_lahir" value="Tanggal Lahir" />
                         <x-text-input id="tanggal_lahir" name="tanggal_lahir" type="date" class="mt-1 block w-full"
-                            :value="old('tanggal_lahir', $user->tanggal_lahir)" />
+                            :value="old('tanggal_lahir', optional($user->tanggal_lahir)->format('Y-m-d'))" />
                     </div>
                 </div>
                 <div>
@@ -138,7 +149,7 @@
                     <div>
                         <x-input-label for="tanggal_lulus" value="Tanggal Lulus" />
                         <x-text-input id="tanggal_lulus" name="tanggal_lulus" type="date"
-                            class="mt-1 block w-full" :value="old('tanggal_lulus', $user->tanggal_lulus)" :disabled="auth()->user()->role !== 'admin'" />
+                            class="mt-1 block w-full" :value="old('tanggal_lulus', optional($user->tanggal_lulus)->format('Y-m-d'))" :disabled="auth()->user()->role !== 'admin'" />
                     </div>
                     <div>
                         <x-input-label for="nomor_ijazah" value="Nomor Ijazah" />

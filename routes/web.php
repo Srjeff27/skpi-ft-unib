@@ -107,6 +107,19 @@ Route::middleware(['auth', 'role:verifikator,admin'])->prefix('verifikasi')->nam
     Route::post('/portofolio/{portfolio}/request-edit', [PortfolioReviewController::class, 'requestEdit'])->name('portfolios.request_edit');
     // Data Mahasiswa (khusus verifikator melihat mahasiswa di prodi-nya)
     Route::get('/mahasiswa', [\App\Http\Controllers\Verifikator\StudentController::class, 'index'])->name('students.index');
+
+    // Notifications helper routes
+    Route::get('/notifikasi', function () {
+        return redirect()->route('verifikator.portfolios.index', ['status' => 'pending']);
+    })->name('notifications.index');
+    Route::get('/notifications/pending-count', function () {
+        $query = \App\Models\Portfolio::query()->where('status','pending');
+        $user = auth()->user();
+        if ($user && $user->prodi_id) {
+            $query->whereHas('user', function($q) use ($user){ $q->where('prodi_id', $user->prodi_id); });
+        }
+        return response()->json(['count' => $query->count()]);
+    })->name('notifications.count');
 });
 
 // Admin Only Routes
@@ -146,18 +159,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity_logs.index');
 
     // Additional Admin Pages
-    Route::get('finalisasi', [AdminPagesController::class, 'finalisasi'])->name('finalisasi.index');
-    Route::post('finalisasi/set-official', [AdminPagesController::class, 'setOfficial'])->name('finalisasi.set_official');
-    Route::post('finalisasi/lock', [AdminPagesController::class, 'lock'])->name('finalisasi.lock');
-    // Penerbitan SKPI (resmi)
-    Route::get('penerbitan', [\App\Http\Controllers\Admin\PenerbitanController::class, 'index'])->name('penerbitan.index');
-    Route::post('penerbitan/publish', [\App\Http\Controllers\Admin\PenerbitanController::class, 'publishBulk'])->name('penerbitan.publish_bulk');
-    Route::post('penerbitan/publish/{user}', [\App\Http\Controllers\Admin\PenerbitanController::class, 'publishSingle'])->name('penerbitan.publish_single');
-    Route::get('penerbitan/download/{user}', [\App\Http\Controllers\Admin\PenerbitanController::class, 'download'])->name('penerbitan.download');
-    Route::get('penerbitan/verify/{user}', [\App\Http\Controllers\Admin\PenerbitanController::class, 'verify'])->name('penerbitan.verify');
     Route::get('pengaturan', [AdminPagesController::class, 'pengaturan'])->name('pengaturan.index');
-    Route::post('pengaturan/save-permissions', [AdminPagesController::class, 'savePermissions'])->name('security.save_permissions');
-    Route::post('pengaturan/save-advanced', [AdminPagesController::class, 'saveAdvanced'])->name('security.save_advanced');
     Route::get('cetak-skpi', [CetakSkpiController::class, 'index'])->name('cetak_skpi.index');
     Route::get('cetak-skpi/preview/{user}', [CetakSkpiController::class, 'preview'])->name('cetak_skpi.preview');
     Route::get('cetak-skpi/print/{user}', [CetakSkpiController::class, 'printSingle'])->name('cetak_skpi.print_single');
@@ -176,6 +178,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Admin mapping: Manajemen Data SKPI & Verifikasi menggunakan controller verifikator
     Route::get('portofolio', [PortfolioReviewController::class, 'index'])->name('portfolios.index');
     Route::get('portofolio/{portfolio}', [PortfolioReviewController::class, 'show'])->name('portfolios.show');
+
+    // Notifications helper routes (Admin)
+    Route::get('notifikasi', function () {
+        return redirect()->route('admin.portfolios.index', ['status' => 'pending']);
+    })->name('notifications.index');
+    Route::get('notifications/pending-count', function () {
+        $count = \App\Models\Portfolio::where('status','pending')->count();
+        return response()->json(['count' => $count]);
+    })->name('notifications.count');
 });
 
 

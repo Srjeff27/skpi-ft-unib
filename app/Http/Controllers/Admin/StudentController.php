@@ -46,14 +46,11 @@ class StudentController extends Controller
             'nomor_skpi' => ['nullable','string','max:255'],
             'gelar_id' => ['nullable','string','max:255'],
             'gelar_en' => ['nullable','string','max:255'],
-            'profile_photo' => ['nullable','file','mimes:jpg,jpeg,png,webp','max:2048'],
+            'avatar' => ['nullable','in:mahasiswa_male,mahasiswa_female,dosen,verifikator,admin'],
         ]);
         $data['role'] = 'mahasiswa';
         $data['password'] = Hash::make($data['password']);
-        if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
-            $data['profile_photo_path'] = $path;
-        }
+        $data['profile_photo_path'] = null;
         User::create($data);
         return redirect()->route('admin.students.index')->with('status','Mahasiswa dibuat');
     }
@@ -83,14 +80,11 @@ class StudentController extends Controller
             'nomor_skpi' => ['nullable','string','max:255'],
             'gelar_id' => ['nullable','string','max:255'],
             'gelar_en' => ['nullable','string','max:255'],
-            'profile_photo' => ['nullable','file','mimes:jpg,jpeg,png,webp','max:2048'],
+            'avatar' => ['nullable','in:mahasiswa_male,mahasiswa_female,dosen,verifikator,admin'],
         ]);
         if (!empty($data['password'])) $data['password'] = Hash::make($data['password']); else unset($data['password']);
         $data['role'] = 'mahasiswa';
-        if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
-            $data['profile_photo_path'] = $path;
-        }
+        $data['profile_photo_path'] = null;
         $student->update($data);
         return redirect()->route('admin.students.index')->with('status','Mahasiswa diperbarui');
     }

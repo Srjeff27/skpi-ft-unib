@@ -6,6 +6,9 @@
 
     <div class="pt-8 pb-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            @if (session('status'))
+                <x-toast type="success" :message="session('status')" />
+            @endif
             <div class="flex justify-between items-center">
                 <a href="{{ route('admin.users.create') }}" class="inline-flex items-center rounded-md bg-[#1b3985] text-white px-4 py-2 text-sm">Tambah User</a>
             </div>
@@ -48,4 +51,3 @@
         </div>
     </div>
 </x-app-layout>
-

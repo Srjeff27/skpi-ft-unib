@@ -23,6 +23,9 @@
     {{-- DIUBAH: Menyesuaikan padding untuk mobile dan desktop --}}
     <div class="pt-6 pb-24 sm:pt-8 sm:pb-12">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if ($errors->any())
+                <x-toast type="error" :message="$errors->first('general') ?? 'Gagal mengunggah portofolio. Periksa isian Anda.'" />
+            @endif
             <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl">
                 <form method="POST"
                     action="{{ isset($portfolio) ? route('student.portfolios.update', $portfolio) : route('student.portfolios.store') }}"
@@ -38,7 +41,7 @@
                             <x-input-label for="judul_kegiatan" value="Judul Kegiatan" />
                             <x-text-input id="judul_kegiatan" name="judul_kegiatan" class="mt-1 block w-full"
                                 :value="old('judul_kegiatan', $portfolio->judul_kegiatan ?? '')" required
-                                placeholder="Contoh: Juara 1 Lomba Cipta Puisi Nasional 2024" />
+                                placeholder="Contoh: Lomba Cipta Puisi Nasional FT Fair UNIB 2025" />
                             <x-input-error :messages="$errors->get('judul_kegiatan')" class="mt-2" />
                         </div>
 
@@ -66,7 +69,7 @@
                         <div>
                             <x-input-label for="penyelenggara" value="Penyelenggara" />
                             <x-text-input id="penyelenggara" name="penyelenggara" class="mt-1 block w-full"
-                                :value="old('penyelenggara', $portfolio->penyelenggara ?? '')" required placeholder="Contoh: Universitas Gadjah Mada" />
+                                :value="old('penyelenggara', $portfolio->penyelenggara ?? '')" required placeholder="Contoh: Universitas Bengkulu" />
                             <x-input-error :messages="$errors->get('penyelenggara')" class="mt-2" />
                         </div>
 
@@ -75,13 +78,13 @@
                             <div>
                                 <x-input-label for="nama_dokumen_id" value="Nama Dokumen (ID)" />
                                 <x-text-input id="nama_dokumen_id" name="nama_dokumen_id" class="mt-1 block w-full"
-                                    :value="old('nama_dokumen_id', $portfolio->nama_dokumen_id ?? '')" placeholder="Contoh: Prestasi Juara" />
+                                    :value="old('nama_dokumen_id', $portfolio->nama_dokumen_id ?? '')" placeholder="Contoh: Juara 1 Lomba Cipta Puisi Nasional FT Fair UNIB 2025" />
                                 <x-input-error :messages="$errors->get('nama_dokumen_id')" class="mt-2" />
                             </div>
                             <div>
                                 <x-input-label for="nama_dokumen_en" value="Nama Dokumen (EN)" />
                                 <x-text-input id="nama_dokumen_en" name="nama_dokumen_en" class="mt-1 block w-full"
-                                    :value="old('nama_dokumen_en', $portfolio->nama_dokumen_en ?? '')" placeholder="Example: Achievement Award" />
+                                    :value="old('nama_dokumen_en', $portfolio->nama_dokumen_en ?? '')" placeholder="Example: 1st Place in the 2025 FT Fair UNIB National Poetry Writing Competition" />
                                 <x-input-error :messages="$errors->get('nama_dokumen_en')" class="mt-2" />
                             </div>
                         </div>
@@ -98,7 +101,7 @@
                             <div>
                                 <x-input-label for="tanggal_dokumen" value="Tanggal Dokumen" />
                                 <x-text-input id="tanggal_dokumen" name="tanggal_dokumen" type="date"
-                                    class="mt-1 block w-full" :value="old('tanggal_dokumen', $portfolio->tanggal_dokumen ?? '')" required />
+                                    class="mt-1 block w-full" :value="old('tanggal_dokumen', isset($portfolio) && $portfolio->tanggal_dokumen ? optional($portfolio->tanggal_dokumen)->format('Y-m-d') : '')" required />
                                 <x-input-error :messages="$errors->get('tanggal_dokumen')" class="mt-2" />
                             </div>
                             <div>

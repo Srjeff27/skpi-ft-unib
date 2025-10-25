@@ -34,6 +34,7 @@ class VerifikatorController extends Controller
             'email' => ['required','email','max:255','unique:users,email'],
             'password' => ['required','min:8'],
             'prodi_id' => ['nullable','exists:prodis,id'],
+            'avatar' => ['nullable','in:mahasiswa_male,mahasiswa_female,dosen,verifikator,admin'],
         ]);
         $data['role'] = 'verifikator';
         $data['password'] = Hash::make($data['password']);
@@ -56,6 +57,7 @@ class VerifikatorController extends Controller
             'email' => ['required','email','max:255','unique:users,email,'.$verifikator->id],
             'password' => ['nullable','min:8'],
             'prodi_id' => ['nullable','exists:prodis,id'],
+            'avatar' => ['nullable','in:mahasiswa_male,mahasiswa_female,dosen,verifikator,admin'],
         ]);
         if (!empty($data['password'])) $data['password'] = Hash::make($data['password']); else unset($data['password']);
         $data['role'] = 'verifikator';
@@ -70,4 +72,3 @@ class VerifikatorController extends Controller
         return back()->with('status','Verifikator dihapus');
     }
 }
-

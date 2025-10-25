@@ -4,8 +4,14 @@
         <p class="text-sm text-gray-500">Verifikasi dan beri catatan</p>
     </x-slot>
 
-    <div class="pt-8 pb-16">
+<div class="pt-8 pb-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            @if (session('status'))
+                <x-toast type="success" :message="session('status')" />
+            @endif
+            @if ($errors->any())
+                <x-toast type="error" :message="$errors->first()" :auto-close="false" />
+            @endif
             <div class="bg-white rounded-lg shadow-sm p-5 space-y-4">
                 <div class="text-sm text-gray-500">Mahasiswa</div>
                 <div class="text-lg font-semibold">{{ $portfolio->user->name }} ({{ $portfolio->user->nim ?? '-' }})</div>
@@ -73,4 +79,3 @@
         </div>
     </div>
 </x-app-layout>
-

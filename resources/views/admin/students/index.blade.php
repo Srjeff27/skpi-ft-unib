@@ -6,6 +6,9 @@
 
     <div class="pt-8 pb-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            @if (session('status'))
+                <x-toast type="success" :message="session('status')" />
+            @endif
             <form method="GET" class="bg-white rounded-lg shadow-sm p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
                     <label class="text-xs text-gray-500">Prodi</label>
@@ -71,4 +74,3 @@
         </div>
     </div>
 </x-app-layout>
-

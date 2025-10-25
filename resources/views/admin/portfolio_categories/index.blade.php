@@ -12,7 +12,6 @@
                     <thead class="text-left text-gray-500">
                         <tr>
                             <th class="p-3">Nama</th>
-                            <th class="p-3">Maks Upload (KB)</th>
                             <th class="p-3">Aksi</th>
                         </tr>
                     </thead>
@@ -20,7 +19,6 @@
                         @foreach($categories as $c)
                             <tr class="border-t">
                                 <td class="p-3">{{ $c->name }}</td>
-                                <td class="p-3">{{ $c->max_upload_kb }}</td>
                                 <td class="p-3 space-x-2">
                                     <a href="{{ route('admin.portfolio-categories.edit', $c) }}" class="text-[#1b3985] underline">Edit</a>
                                     <form action="{{ route('admin.portfolio-categories.destroy', $c) }}" method="POST" class="inline" onsubmit="return confirm('Hapus kategori?')">
@@ -37,4 +35,3 @@
         </div>
     </div>
 </x-app-layout>
-

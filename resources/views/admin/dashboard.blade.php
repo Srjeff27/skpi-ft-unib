@@ -21,7 +21,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-white p-5 rounded-lg shadow-sm">
                     <div class="text-sm text-gray-500">Portofolio</div>
                     <div class="mt-1 text-2xl font-semibold">{{ $totalPortfolios }}</div>
@@ -33,6 +33,10 @@
                 <div class="bg-white p-5 rounded-lg shadow-sm">
                     <div class="text-sm text-gray-500">Ditolak</div>
                     <div class="mt-1 text-2xl font-semibold">{{ $rejected }}</div>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm">
+                    <div class="text-sm text-gray-500">Belum Diverifikasi</div>
+                    <div class="mt-1 text-2xl font-semibold">{{ $pending }}</div>
                 </div>
             </div>
 

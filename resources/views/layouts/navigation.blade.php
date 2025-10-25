@@ -29,7 +29,10 @@
 
             {{-- Desktop Navigation --}}
             <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
-                @if (Auth::user()->role === 'mahasiswa')
+                @php
+                    $roleTop = Auth::user()->role ?? null;
+                @endphp
+                @if ($roleTop === 'mahasiswa')
                     {{-- Tombol Unduh & Notifikasi Desktop --}}
                     @php
                         $hasVerified = \App\Models\Portfolio::where('user_id', Auth::id())
@@ -146,6 +149,58 @@
                             </x-slot>
                         </x-dropdown>
                     </div>
+                @elseif (in_array($roleTop, ['admin','verifikator']))
+                    @php
+                        $pendingQuery = \App\Models\Portfolio::query()->where('status','pending');
+                        if ($roleTop==='verifikator' && Auth::user()->prodi_id) {
+                            $pendingQuery->whereHas('user', function($qq){ $qq->where('prodi_id', Auth::user()->prodi_id); });
+                        }
+                        $pendingCount = $pendingQuery->count();
+                        $pendingList = (clone $pendingQuery)->latest()->take(10)->with(['user:id,name,prodi_id','user.prodi:id,nama_prodi'])->get();
+                        $notifUrl = $roleTop==='admin' ? route('admin.portfolios.index', ['status'=>'pending']) : route('verifikator.portfolios.index', ['status'=>'pending']);
+                    @endphp
+                    <x-dropdown align="right" width="80">
+                        <x-slot name="trigger">
+                            <button class="relative inline-flex items-center justify-center rounded-full w-9 h-9 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                                </svg>
+                                <span id="pending-badge-desktop" class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-orange-500 text-[10px] font-semibold text-white {{ $pendingCount>0 ? '' : 'hidden' }}">{{ $pendingCount }}</span>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <div class="bg-white rounded-md shadow-lg border border-gray-200">
+                                <div class="px-4 py-3 border-b border-gray-200">
+                                    <p class="text-lg font-bold text-gray-800">Notifikasi</p>
+                                    <p class="text-xs text-gray-500">Portofolio menunggu verifikasi</p>
+                                </div>
+
+                                <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                                    @forelse($pendingList as $pf)
+                                        <a href="{{ $roleTop==='admin' ? route('verifikator.portfolios.show', $pf) : route('verifikator.portfolios.show', $pf) }}" class="block px-4 py-3 hover:bg-gray-50">
+                                            <div class="flex items-start gap-3">
+                                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                </div>
+                                                <div class="flex-1 text-sm">
+                                                    <p class="font-semibold text-gray-900">{{ $pf->user->name }}</p>
+                                                    <p class="text-gray-600">{{ $pf->kategori_portfolio }}</p>
+                                                    <p class="text-xs text-gray-400">{{ optional($pf->tanggal_dokumen)->diffForHumans() }}</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    @empty
+                                        <div class="px-4 py-6 text-center text-sm text-gray-500">Tidak ada notifikasi.</div>
+                                    @endforelse
+                                </div>
+
+                                <div class="px-4 py-2 bg-gray-50 border-t border-gray-200 text-center rounded-b-md">
+                                    <a class="text-sm font-semibold text-blue-600 hover:underline" href="{{ $notifUrl }}">Lihat semua</a>
+                                </div>
+                            </div>
+                        </x-slot>
+                    </x-dropdown>
                 @endif
 
                 {{-- Profile Dropdown Desktop --}}
@@ -154,7 +209,7 @@
                         <button
                             class="inline-flex items-center gap-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-transparent hover:bg-white/10 focus:outline-none transition ease-in-out duration-150">
                             <img class="h-6 w-6 rounded-full object-cover"
-                                src="{{ Auth::user()->profile_photo_path ? asset('storage/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=1b3985&color=fff' }}"
+                                src="{{ Auth::user()->avatar_url }}"
                                 alt="Avatar" />
                             <div>{{ Auth::user()->name }}</div>
 
@@ -195,7 +250,7 @@
 
             {{-- Mobile Menu Button --}}
             <div class="-me-2 flex items-center sm:hidden gap-2">
-                @if (Auth::user()->role === 'mahasiswa')
+                @if ($roleTop === 'mahasiswa')
                     <a href="{{ route('student.notifications.index') }}"
                         class="relative inline-flex items-center justify-center rounded-full w-8 h-8 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white">
 
@@ -211,11 +266,51 @@
                                 class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-orange-500 text-[10px] font-semibold">{{ $unread }}</span>
                         @endif
                     </a>
+                @elseif (in_array($roleTop, ['admin','verifikator']))
+                    @php
+                        $pendingQueryM = \App\Models\Portfolio::query()->where('status','pending');
+                        if ($roleTop==='verifikator' && Auth::user()->prodi_id) {
+                            $pendingQueryM->whereHas('user', function($qq){ $qq->where('prodi_id', Auth::user()->prodi_id); });
+                        }
+                        $pendingCountM = $pendingQueryM->count();
+                        $pendingListM = (clone $pendingQueryM)->latest()->take(10)->with(['user:id,name,prodi_id','user.prodi:id,nama_prodi'])->get();
+                        $notifUrlM = $roleTop==='admin' ? route('admin.portfolios.index', ['status'=>'pending']) : route('verifikator.portfolios.index', ['status'=>'pending']);
+                    @endphp
+                    <x-dropdown align="right" width="64">
+                        <x-slot name="trigger">
+                            <button class="relative inline-flex items-center justify-center rounded-full w-8 h-8 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                                </svg>
+                                <span id="pending-badge-mobile" class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-orange-500 text-[10px] font-semibold {{ $pendingCountM>0 ? '' : 'hidden' }}">{{ $pendingCountM }}</span>
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <div class="bg-white rounded-md shadow-lg border border-gray-200">
+                                <div class="px-3 py-2 border-b border-gray-200">
+                                    <p class="text-sm font-bold text-gray-800">Notifikasi</p>
+                                </div>
+                                <div class="max-h-64 overflow-y-auto divide-y divide-gray-100">
+                                    @forelse($pendingListM as $pf)
+                                        <a href="{{ route('verifikator.portfolios.show', $pf) }}" class="block px-3 py-2 hover:bg-gray-50">
+                                            <div class="text-sm font-semibold text-gray-900">{{ $pf->user->name }}</div>
+                                            <div class="text-xs text-gray-600">{{ $pf->kategori_portfolio }}</div>
+                                        </a>
+                                    @empty
+                                        <div class="px-3 py-4 text-center text-sm text-gray-500">Tidak ada notifikasi.</div>
+                                    @endforelse
+                                </div>
+                                <div class="px-3 py-2 bg-gray-50 border-t border-gray-200 text-center rounded-b-md">
+                                    <a class="text-xs font-semibold text-blue-600 hover:underline" href="{{ $notifUrlM }}">Lihat semua</a>
+                                </div>
+                            </div>
+                        </x-slot>
+                    </x-dropdown>
                 @endif
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1b3985] focus:ring-white transition duration-150 ease-in-out">
                     <img class="h-8 w-8 rounded-full object-cover"
-                        src="{{ Auth::user()->profile_photo_path ? asset('storage/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=fafafa&color=1b3985' }}"
+                        src="{{ Auth::user()->avatar_url }}"
                         alt="Avatar" />
                 </button>
             </div>
@@ -254,3 +349,18 @@
         </div>
     </div>
 </nav>
+@php $roleScript = Auth::user()->role ?? null; @endphp
+@if (in_array($roleScript, ['admin','verifikator']))
+    <script>
+        (function(){
+            const badgeDesktop = document.getElementById('pending-badge-desktop');
+            const badgeMobile = document.getElementById('pending-badge-mobile');
+            const url = "{{ $roleScript==='admin' ? route('admin.notifications.count') : route('verifikator.notifications.count') }}";
+            async function refreshPending(){
+                try{ const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }}); if(!res.ok) return; const data = await res.json(); const c = data.count ?? 0; if(badgeDesktop){ badgeDesktop.textContent = c; badgeDesktop.classList.toggle('hidden', c<=0); } if(badgeMobile){ badgeMobile.textContent = c; badgeMobile.classList.toggle('hidden', c<=0); } }catch(e){}
+            }
+            refreshPending();
+            setInterval(refreshPending, 20000);
+        })();
+    </script>
+@endif

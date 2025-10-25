@@ -1,50 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-black leading-tight">Keamanan & Pengaturan</h2>
-        <p class="text-sm text-gray-500">Atur role & permission, lihat log aktivitas, dan pengaturan lanjutan sistem</p>
+        <h2 class="font-semibold text-xl text-black leading-tight">Log Aktivitas</h2>
+        <p class="text-sm text-gray-500">Pantau seluruh aktivitas pengguna di sistem</p>
     </x-slot>
 
-    <div class="pt-8 pb-16" x-data="{ tab: 'role' }">
+    <div class="pt-8 pb-16" x-data="{ tab: 'log' }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <div class="bg-white rounded-lg shadow-sm border border-gray-100">
                 <div class="p-4 sm:p-6">
                     <div class="flex items-center gap-2 text-sm">
-                        <button class="px-3 py-2 rounded-md" :class="tab==='role' ? 'bg-[#1b3985] text-white' : 'bg-gray-100 text-gray-700'" @click="tab='role'">Role & Permission</button>
-                        <button class="px-3 py-2 rounded-md" :class="tab==='log' ? 'bg-[#1b3985] text-white' : 'bg-gray-100 text-gray-700'" @click="tab='log'">Log Aktivitas</button>
-                        <button class="px-3 py-2 rounded-md" :class="tab==='adv' ? 'bg-[#1b3985] text-white' : 'bg-gray-100 text-gray-700'" @click="tab='adv'">Pengaturan Lanjutan</button>
-                    </div>
-
-                    {{-- Tab 1: Role & Permission --}}
-                    <div x-show="tab==='role'" class="mt-6">
-                        <form method="POST" action="{{ route('admin.security.save_permissions') }}" class="space-y-4">
-                            @csrf
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full text-sm">
-                                    <thead class="text-left text-gray-500">
-                                        <tr>
-                                            <th class="p-3">Permission</th>
-                                            @foreach($roles as $r)
-                                                <th class="p-3 capitalize">{{ $r }}</th>
-                                            @endforeach
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($availablePermissions as $key => $label)
-                                            <tr class="border-t">
-                                                <td class="p-3">{{ $label }}</td>
-                                                @foreach($roles as $r)
-                                                    <td class="p-3">
-                                                        <input type="checkbox" name="permissions[{{ $r }}][]" value="{{ $key }}"
-                                                            {{ in_array($key, $permissionsMap[$r] ?? []) ? 'checked' : '' }}>
-                                                    </td>
-                                                @endforeach
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div><button class="px-4 py-2 rounded-md bg-[#1b3985] text-white">Simpan Perubahan</button></div>
-                        </form>
+                        <button class="px-3 py-2 rounded-md bg-[#1b3985] text-white">Log Aktivitas</button>
                     </div>
 
                     {{-- Tab 2: Log Aktivitas --}}
@@ -90,44 +55,7 @@
                         </div>
                     </div>
 
-                    {{-- Tab 3: Pengaturan Lanjutan --}}
-                    <div x-show="tab==='adv'" class="mt-6">
-                        <form method="POST" action="{{ route('admin.security.save_advanced') }}" enctype="multipart/form-data" class="space-y-4">
-                            @csrf
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="text-xs text-gray-600">Batas Waktu Pengisian - Mulai</label>
-                                    <input type="date" name="portfolio_open" value="{{ old('portfolio_open', $adv['portfolio_open']) }}" class="mt-1 w-full rounded-md border-gray-300" />
-                                </div>
-                                <div>
-                                    <label class="text-xs text-gray-600">Batas Waktu Pengisian - Selesai</label>
-                                    <input type="date" name="portfolio_close" value="{{ old('portfolio_close', $adv['portfolio_close']) }}" class="mt-1 w-full rounded-md border-gray-300" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="text-xs text-gray-600">Waktu Kedaluwarsa Sesi (menit)</label>
-                                    <input type="number" name="session_timeout_minutes" min="5" max="720" value="{{ old('session_timeout_minutes', $adv['session_timeout_minutes']) }}" class="mt-1 w-full rounded-md border-gray-300" />
-                                </div>
-                                <div>
-                                    <label class="text-xs text-gray-600">Watermark PDF (opsional)</label>
-                                    <input type="file" name="pdf_watermark" accept="image/*" class="mt-1 w-full" />
-                                    @if($adv['pdf_watermark_path'])
-                                        <div class="text-xs text-gray-600 mt-1">Saat ini: {{ $adv['pdf_watermark_path'] }}</div>
-                                    @endif
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-600">Header PDF</label>
-                                <input type="text" name="pdf_header" value="{{ old('pdf_header', $adv['pdf_header']) }}" class="mt-1 w-full rounded-md border-gray-300" />
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-600">Footer PDF</label>
-                                <input type="text" name="pdf_footer" value="{{ old('pdf_footer', $adv['pdf_footer']) }}" class="mt-1 w-full rounded-md border-gray-300" />
-                            </div>
-                            <div class="pt-2"><button class="px-4 py-2 rounded-md bg-[#1b3985] text-white">Simpan Pengaturan</button></div>
-                        </form>
-                    </div>
+                    {{-- Tab Pengaturan Lanjutan dihapus sesuai permintaan --}}
 
                 </div>
             </div>

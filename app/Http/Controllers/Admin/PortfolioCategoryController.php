@@ -25,7 +25,6 @@ class PortfolioCategoryController extends Controller
     {
         $data = $request->validate([
             'name' => ['required','string','max:255'],
-            'max_upload_kb' => ['required','integer','min:1'],
         ]);
         PortfolioCategory::create($data);
         return redirect()->route('admin.portfolio-categories.index')->with('status','Kategori ditambahkan');
@@ -40,7 +39,6 @@ class PortfolioCategoryController extends Controller
     {
         $data = $request->validate([
             'name' => ['required','string','max:255'],
-            'max_upload_kb' => ['required','integer','min:1'],
         ]);
         $portfolio_category->update($data);
         return redirect()->route('admin.portfolio-categories.index')->with('status','Kategori diperbarui');
@@ -52,4 +50,3 @@ class PortfolioCategoryController extends Controller
         return back()->with('status','Kategori dihapus');
     }
 }
-

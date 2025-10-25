@@ -31,9 +31,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if (session('status'))
-                <div class="mb-6 rounded-lg border border-green-300 bg-green-50 p-4 text-sm text-green-800 shadow-sm">
-                    {{ session('status') }}
-                </div>
+                <x-toast type="success" :message="session('status')" />
             @endif
 
             @if ($portfolios->isEmpty())

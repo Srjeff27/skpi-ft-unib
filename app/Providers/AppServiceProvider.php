@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\Portfolio;
+use App\Policies\PortfolioPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register policies (explicit to ensure authorization works without AuthServiceProvider)
+        Gate::policy(Portfolio::class, PortfolioPolicy::class);
     }
 }

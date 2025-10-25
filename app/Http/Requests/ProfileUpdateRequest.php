@@ -28,7 +28,8 @@ class ProfileUpdateRequest extends FormRequest
             'nim' => ['nullable', 'string', 'max:255', Rule::unique(User::class, 'nim')->ignore($this->user()->id)],
             'angkatan' => ['nullable', 'integer', 'min:1900', 'max:' . (date('Y') + 1)],
             'prodi_id' => ['nullable', 'exists:prodis,id'],
-            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            // Avatar choice (fixed set, no uploads)
+            'avatar' => ['nullable', Rule::in(['mahasiswa_male','mahasiswa_female','dosen','verifikator','admin'])],
             // New profile fields
             'tempat_lahir' => ['nullable', 'string', 'max:255'],
             'tanggal_lahir' => ['nullable', 'date'],

@@ -75,17 +75,6 @@ class PagesController extends Controller
 
     public function pengaturan(Request $request): View
     {
-        $permissionsMap = json_decode(Setting::get('permissions_map', '{}'), true) ?: [];
-        $availablePermissions = [
-            'manage_students' => 'Dapat mengelola data mahasiswa',
-            'manage_cpl' => 'Dapat mengelola data kurikulum & CPL',
-            'finalize_data' => 'Dapat melakukan finalisasi data',
-            'publish_skpi' => 'Dapat menerbitkan SKPI resmi',
-            'system_settings' => 'Dapat mengakses pengaturan sistem',
-            'view_activity' => 'Dapat melihat log aktivitas',
-        ];
-        $roles = ['superadmin','admin','verifikator'];
-
         $logQuery = ActivityLog::query()->with('user')->latest();
         $filterUser = $request->integer('filter_user');
         $filterAction = $request->string('filter_action')->toString();
@@ -98,46 +87,6 @@ class PagesController extends Controller
         $logs = $logQuery->paginate(15)->withQueryString();
         $users = User::orderBy('name')->get(['id','name']);
 
-        $adv = [
-            'session_timeout_minutes' => Setting::get('session_timeout_minutes', '60'),
-            'pdf_header' => Setting::get('pdf_header'),
-            'pdf_footer' => Setting::get('pdf_footer'),
-            'pdf_watermark_path' => Setting::get('pdf_watermark_path'),
-            'portfolio_open' => Setting::get('portfolio_open'),
-            'portfolio_close' => Setting::get('portfolio_close'),
-        ];
-
-        return view('admin.pages.pengaturan', compact(
-            'permissionsMap','availablePermissions','roles','logs','users','filterUser','filterAction','dateFrom','dateTo','adv'
-        ));
-    }
-
-    public function savePermissions(Request $request)
-    {
-        $data = $request->validate([
-            'permissions' => ['array'],
-        ]);
-        Setting::set('permissions_map', json_encode($data['permissions'] ?? []));
-        return back()->with('status','Hak akses diperbarui.');
-    }
-
-    public function saveAdvanced(Request $request)
-    {
-        $validated = $request->validate([
-            'session_timeout_minutes' => ['required','integer','between:5,720'],
-            'pdf_header' => ['nullable','string'],
-            'pdf_footer' => ['nullable','string'],
-            'portfolio_open' => ['nullable','date'],
-            'portfolio_close' => ['nullable','date','after_or_equal:portfolio_open'],
-            'pdf_watermark' => ['nullable','image','max:5120'],
-        ]);
-        foreach (['session_timeout_minutes','pdf_header','pdf_footer','portfolio_open','portfolio_close'] as $k) {
-            Setting::set($k, $validated[$k] ?? null);
-        }
-        if ($request->hasFile('pdf_watermark')) {
-            $path = $request->file('pdf_watermark')->store('pdf', 'public');
-            Setting::set('pdf_watermark_path', $path);
-        }
-        return back()->with('status','Pengaturan lanjutan tersimpan.');
+        return view('admin.pages.pengaturan', compact('logs','users','filterUser','filterAction','dateFrom','dateTo'));
     }
 }

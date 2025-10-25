@@ -32,27 +32,16 @@ class ProfileController extends Controller
     {
         $data = $request->validated();
 
-        // Handle profile photo upload (Breeze-style)
-        if ($request->hasFile('photo')) {
-            // Ensure the uploaded file is valid before accessing real path
-            if (! $request->file('photo')->isValid()) {
-                return Redirect::back()->withErrors([
-                    'photo' => 'Gagal mengunggah foto. Silakan coba lagi.',
-                ]);
-            }
-
-            $user = $request->user();
-            if ($user->profile_photo_path && \Storage::disk('public')->exists($user->profile_photo_path)) {
-                \Storage::disk('public')->delete($user->profile_photo_path);
-            }
-            // Final attempt: Use Storage::put() directly
-            $photo = $request->file('photo');
-            $extension = $photo->extension() ?: 'jpg';
-            $filename = \Illuminate\Support\Str::random(40) . '.' . $extension;
-            $path = 'photos/' . $filename;
-            \Illuminate\Support\Facades\Storage::disk('public')->put($path, $photo->get());
-            $data['profile_photo_path'] = $path;
+        // Disable uploads: enforce avatar selection only
+        $user = $request->user();
+        if (isset($data['avatar'])) {
+            $user->avatar = $data['avatar'];
         }
+        // Clear legacy uploaded photo if any
+        if ($user->profile_photo_path && \Storage::disk('public')->exists($user->profile_photo_path)) {
+            \Storage::disk('public')->delete($user->profile_photo_path);
+        }
+        $data['profile_photo_path'] = null;
 
         $request->user()->fill($data);
 

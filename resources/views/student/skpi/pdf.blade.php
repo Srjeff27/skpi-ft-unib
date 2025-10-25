@@ -282,6 +282,7 @@
         use App\Models\Curriculum;
         use App\Models\CplItem;
         use App\Models\Finalization;
+        use Illuminate\Support\Facades\Schema;
         use App\Models\Official;
         use Carbon\Carbon;
 
@@ -297,7 +298,10 @@
 
         // Finalization & Official for graduation period
         $periodYm = $user->tanggal_lulus ? date('Y-m', strtotime($user->tanggal_lulus)) : null;
-        $fin = $periodYm ? Finalization::where('period_ym', $periodYm)->with('official')->first() : null;
+        $fin = null;
+        if ($periodYm && Schema::hasTable('finalizations')) {
+            $fin = Finalization::where('period_ym', $periodYm)->with('official')->first();
+        }
         $official = $fin?->official ?: Official::where('is_active', true)->first();
         $signatureSrc = null;
         if ($official?->signature_path) {
