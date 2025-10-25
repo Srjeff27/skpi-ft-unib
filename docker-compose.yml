@@ -6,7 +6,6 @@ services:
     container_name: skpi-app
     restart: unless-stopped
     working_dir: /var/www/html
-    working_dir: /var/www/html
     volumes:
       - .:/var/www/html
     ports:
@@ -14,10 +13,6 @@ services:
     depends_on:
       - db
       - .:/var/www/html
-    ports:
-      - "8000:80"
-    depends_on:
-      - db
     environment:
       APP_ENV: local
       APP_DEBUG: true
