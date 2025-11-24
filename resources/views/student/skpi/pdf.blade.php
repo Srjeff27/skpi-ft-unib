@@ -358,6 +358,18 @@
             <div class="doc-number">Nomor: {{ $user->nomor_skpi ?? '-' }}</div>
         </div>
 
+        @php
+            $achievements = $verifiedPortfolios ?? collect();
+            $organizationPortfolios = $achievements->filter(fn($p) => str_contains(strtolower($p->kategori_portfolio ?? ''), 'organisasi'));
+            $internshipPortfolios = $achievements->filter(fn($p) => str_contains(strtolower($p->kategori_portfolio ?? ''), 'magang') || str_contains(strtolower($p->kategori_portfolio ?? ''), 'intern'));
+            $finalProjectId = $user->tugas_akhir_id ?? null;
+            $finalProjectEn = $user->tugas_akhir_en ?? null;
+
+            $letter = function ($index) {
+                return chr(97 + $index) . '.';
+            };
+        @endphp
+
         <div class="section">
             <div class="section-title">1. INFORMASI MENGENAI IDENTITAS PEMEGANG SKPI <span class="en">/ Information
                     Identifying the Holder of the Diploma Supplement</span></div>
@@ -393,7 +405,10 @@
                     <tr>
                         <td>Gelar <br><span class="en">Title</span></td>
                         <td>:</td>
-                        <td>{{ $user->gelar ?? '-' }}</td>
+                        <td>
+                            {{ $user->gelar_id ?? '-' }} <br>
+                            <span class="en">{{ $user->gelar_en ?? ($user->gelar_id ?? '-') }}</span>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -461,6 +476,94 @@
                         @endforelse
                     </ul>
                 @endforeach
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">3.2 INFORMASI TAMBAHAN <span class="en">/ Additional Information</span></div>
+            <div class="section-content">
+                <table style="width:100%; border-collapse:collapse; font-size:10pt;">
+                    <tr>
+                        <td style="width:50%; text-align:center; font-weight:700;">Bahasa Indonesia</td>
+                        <td style="width:50%; text-align:center; font-weight:700;" class="en">Bahasa Inggris</td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top; padding-top:8px;">
+                            <div style="text-align:center; font-weight:700; margin-bottom:6px;">Penghargaan dan Pemenang Kejuaraan</div>
+                            <ol style="margin:0; padding-left:16px;">
+                                @forelse($achievements as $idx => $p)
+                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                                @empty
+                                    <li>-</li>
+                                @endforelse
+                            </ol>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Pengalaman Organisasi</div>
+                            <ol style="margin:0; padding-left:16px;">
+                                @forelse($organizationPortfolios as $p)
+                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                                @empty
+                                    <li>-</li>
+                                @endforelse
+                            </ol>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Spesifikasi Tugas Akhir</div>
+                            <div style="text-align:center;">{{ $finalProjectId ?: '-' }}</div>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Bahasa Internasional</div>
+                            <div style="text-align:center;">{{ $user->bahasa_internasional ?? '-' }}</div>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Magang / Industri</div>
+                            <ol style="margin:0; padding-left:16px;">
+                                @forelse($internshipPortfolios as $p)
+                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                                @empty
+                                    <li>-</li>
+                                @endforelse
+                            </ol>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Pendidikan Karakter</div>
+                            <div style="text-align:center;">{{ $user->pendidikan_karakter ?? '-' }}</div>
+                        </td>
+                        <td style="vertical-align:top; padding-top:8px;">
+                            <div style="text-align:center; font-weight:700; margin-bottom:6px;" class="en">Certificates of Honors and Awards</div>
+                            <ol style="margin:0; padding-left:16px;">
+                                @forelse($achievements as $idx => $p)
+                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_en ?? $p->judul_kegiatan }}</li>
+                                @empty
+                                    <li>-</li>
+                                @endforelse
+                            </ol>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">Organizational Experiences</div>
+                            <ol style="margin:0; padding-left:16px;">
+                                @forelse($organizationPortfolios as $p)
+                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_en ?? $p->judul_kegiatan }}</li>
+                                @empty
+                                    <li>-</li>
+                                @endforelse
+                            </ol>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">Specification of The Final Project</div>
+                            <div style="text-align:center;">{{ $finalProjectEn ?: ($finalProjectId ?: '-') }}</div>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">International Language</div>
+                            <div style="text-align:center;">{{ $user->international_language ?? ($user->bahasa_internasional ?? '-') }}</div>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">Internship</div>
+                            <ol style="margin:0; padding-left:16px;">
+                                @forelse($internshipPortfolios as $p)
+                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_en ?? $p->judul_kegiatan }}</li>
+                                @empty
+                                    <li>-</li>
+                                @endforelse
+                            </ol>
+
+                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">Soft Skill Training</div>
+                            <div style="text-align:center;">{{ $user->soft_skill_training ?? ($user->pendidikan_karakter ?? '-') }}</div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
 

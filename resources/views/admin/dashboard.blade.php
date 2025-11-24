@@ -67,7 +67,7 @@
                 <div class="flow-root">
                     <ul role="list" class="-mb-4">
                         @php
-                            $recentPending = \App\Models\Portfolio::with('user:id,name,avatar_url')->where('status', 'pending')->latest()->take(5)->get();
+                            $recentPending = \App\Models\Portfolio::with('user:id,name,avatar')->where('status', 'pending')->latest()->take(5)->get();
                         @endphp
                         @forelse ($recentPending as $portfolio)
                             <li>
