@@ -94,7 +94,7 @@
                                             <span class="{{ $statusInfo['color'] }}">{!! $statusInfo['icon'] !!}</span>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium text-gray-900 truncate">{{ $p->judul_kegiatan }}</p>
+                                            <p class="text-sm font-medium text-gray-900 truncate">{{ $p->nama_dokumen_id}}</p>
                                             <p class="text-sm text-gray-500 truncate">{{ $p->kategori_portfolio }}</p>
                                         </div>
                                         <div class="text-right text-sm text-gray-500">

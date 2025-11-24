@@ -1,73 +1,143 @@
 @php
-    $p = $portfolio; // Alias for brevity
+    $p = $portfolio;
+    
+    // Konfigurasi Status dengan Style Tailwind Modern
     $statusConfig = [
-        'pending' => ['color' => 'yellow', 'text' => 'Menunggu'],
-        'verified' => ['color' => 'green', 'text' => 'Disetujui'],
-        'rejected' => ['color' => 'red', 'text' => 'Ditolak'],
-        'requires_revision' => ['color' => 'orange', 'text' => 'Perbaikan'],
+        'pending' => [
+            'label' => 'Menunggu',
+            'style' => 'bg-yellow-50 text-yellow-700 ring-yellow-600/20',
+            'icon'  => 'heroicon-m-clock'
+        ],
+        'verified' => [
+            'label' => 'Disetujui',
+            'style' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+            'icon'  => 'heroicon-m-check-badge'
+        ],
+        'rejected' => [
+            'label' => 'Ditolak',
+            'style' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
+            'icon'  => 'heroicon-m-x-circle'
+        ],
+        'requires_revision' => [
+            'label' => 'Perlu Revisi',
+            'style' => 'bg-orange-50 text-orange-700 ring-orange-600/20',
+            'icon'  => 'heroicon-m-pencil-square'
+        ],
     ];
-    $currentStatus = $statusConfig[$p->status] ?? ['color' => 'gray', 'text' => 'N/A'];
-    $colors = [
-        'yellow' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800'],
-        'green' => ['bg' => 'bg-green-100', 'text' => 'text-green-800'],
-        'red' => ['bg' => 'bg-red-100', 'text' => 'text-red-800'],
-        'orange' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800'],
-        'gray' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800'],
+
+    // Default fallback jika status tidak dikenal
+    $currentStatus = $statusConfig[$p->status] ?? [
+        'label' => 'N/A', 
+        'style' => 'bg-gray-50 text-gray-600 ring-gray-500/20', 
+        'icon' => 'heroicon-m-question-mark-circle'
     ];
-    $statusColorClasses = $colors[$currentStatus['color']];
 @endphp
 
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-    <div class="flex-1 min-w-0">
-        <a href="{{ route('student.portfolios.edit', $p) }}" class="font-bold text-gray-800 hover:text-[#1b3985] transition-colors truncate block">{{ Str::limit($p->judul_kegiatan, 50) }}</a>
-        <p class="text-sm text-gray-500 mt-1">{{ $p->kategori_portfolio }}</p>
-    </div>
-
-    <div class="flex items-center gap-6 md:gap-8 text-sm">
-        <div class="flex-shrink-0">
-            <p class="text-xs text-gray-400 md:hidden">Tanggal</p>
-            <p class="font-medium text-gray-700">{{ \Carbon\Carbon::parse($p->tanggal_dokumen)->isoFormat('D MMM YYYY') }}</p>
+<div class="group relative flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#1b3985]/30 hover:shadow-md sm:flex-row sm:items-center sm:justify-between">
+    
+    {{-- BAGIAN KIRI: Ikon & Informasi Utama --}}
+    <div class="flex items-start gap-4">
+        {{-- Ikon Dekoratif (Hanya tampil di Tablet/Desktop) --}}
+        <div class="hidden shrink-0 rounded-lg bg-blue-50 p-3 text-[#1b3985] sm:block ring-1 ring-blue-100">
+            <x-heroicon-o-document-text class="h-6 w-6" />
         </div>
-        <div class="flex-shrink-0">
-            <p class="text-xs text-gray-400 md:hidden">Status</p>
-            <div class="flex items-center gap-2">
-                <span class="px-2.5 py-1 rounded-full text-xs font-semibold {{ $statusColorClasses['bg'] }} {{ $statusColorClasses['text'] }}">{{ $currentStatus['text'] }}</span>
-                @if (($p->status === 'rejected' || $p->status === 'requires_revision') && $p->rejection_reason)
-                    <div x-data="{ tooltip: false }" class="relative">
-                        <svg @mouseenter="tooltip = true" @mouseleave="tooltip = false" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 cursor-pointer" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                        <div x-show="tooltip" class="absolute z-10 bottom-full -translate-x-1/2 left-1/2 mb-2 w-60 p-2 text-xs text-white bg-gray-900 rounded-md shadow-lg" x-cloak>
-                            <span class="font-semibold">Catatan:</span> {{ $p->rejection_reason }}
-                        </div>
-                    </div>
-                @endif
+
+        <div class="min-w-0 flex-1 space-y-1.5">
+            {{-- Metadata: Kategori & Tanggal --}}
+            <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-gray-500">
+                <span class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-gray-600 uppercase tracking-wider text-[10px]">
+                    {{ $p->kategori_portfolio }}
+                </span>
+                <span class="hidden sm:inline text-gray-300">&bull;</span>
+                <span class="flex items-center gap-1 text-gray-400">
+                    <x-heroicon-m-calendar class="h-3.5 w-3.5" />
+                    {{ \Carbon\Carbon::parse($p->tanggal_dokumen)->isoFormat('D MMM YYYY') }}
+                </span>
             </div>
+
+            {{-- Judul Dokumen --}}
+            <h3 class="font-bold text-gray-900 leading-snug transition-colors group-hover:text-[#1b3985]">
+                <a href="{{ route('student.portfolios.edit', $p) }}" class="focus:outline-none">
+                    <span class="absolute inset-0 sm:hidden" aria-hidden="true"></span> {{-- Full card click di mobile --}}
+                    {{ Str::limit($p->nama_dokumen_id, 65) }}
+                </a>
+            </h3>
         </div>
     </div>
 
-    <div class="md:ml-auto flex-shrink-0" x-data="{ open: false }">
-        <div class="relative">
-            <button @click="open = !open" @click.away="open = false" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>
+    {{-- BAGIAN KANAN: Status & Aksi --}}
+    <div class="flex items-center justify-between gap-4 sm:justify-end border-t border-gray-100 pt-3 sm:border-0 sm:pt-0">
+        
+        {{-- Status Badge --}}
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset {{ $currentStatus['style'] }}">
+                <x-dynamic-component :component="$currentStatus['icon']" class="h-3.5 w-3.5" />
+                {{ $currentStatus['label'] }}
+            </span>
+
+            {{-- Tooltip Alasan Penolakan --}}
+            @if (($p->status === 'rejected' || $p->status === 'requires_revision') && $p->rejection_reason)
+                <div x-data="{ tooltip: false }" class="relative z-20">
+                    <button @mouseenter="tooltip = true" @mouseleave="tooltip = false" class="text-gray-400 hover:text-red-500 transition-colors focus:outline-none">
+                        <x-heroicon-m-information-circle class="h-5 w-5" />
+                    </button>
+                    <div x-show="tooltip" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 translate-y-1"
+                         class="absolute bottom-full right-0 sm:left-1/2 sm:-translate-x-1/2 z-50 mb-2 w-64 rounded-lg bg-gray-900 p-3 text-xs text-white shadow-xl"
+                         style="display: none;">
+                        <p class="font-bold text-red-300 mb-1">Catatan Validator:</p>
+                        <p class="leading-relaxed">{{ $p->rejection_reason }}</p>
+                        {{-- Panah Tooltip --}}
+                        <div class="absolute -bottom-1 right-4 sm:left-1/2 sm:-translate-x-1/2 h-2 w-2 rotate-45 bg-gray-900"></div>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        {{-- Menu Dropdown (Posisi tetap relatif terhadap parent button) --}}
+        <div class="relative z-10" x-data="{ open: false }">
+            <button @click="open = !open" @click.away="open = false" class="rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#1b3985] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1b3985] focus:ring-offset-2">
+                <x-heroicon-m-ellipsis-vertical class="h-5 w-5" />
             </button>
-            <div x-show="open" x-transition x-cloak
-                 class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border z-10">
-                <a href="{{ $p->link_sertifikat }}" target="_blank" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" /><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" /></svg>
-                    Lihat Bukti
-                </a>
-                @if ($p->status === 'pending' || $p->status === 'requires_revision')
-                    <a href="{{ route('student.portfolios.edit', $p) }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
-                        Edit
+
+            <div x-show="open" 
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="absolute right-0 top-full mt-1 w-48 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none divide-y divide-gray-100 z-30"
+                 style="display: none;">
+                
+                <div class="py-1">
+                    <a href="{{ $p->link_sertifikat }}" target="_blank" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1b3985]">
+                        <x-heroicon-s-eye class="mr-3 h-4 w-4 text-gray-400 group-hover:text-[#1b3985]" />
+                        Lihat Bukti
                     </a>
-                    <x-confirm :action="route('student.portfolios.destroy', $p)" method="DELETE" type="error" title="Hapus Portofolio" message="Anda yakin ingin menghapus portofolio ini?">
-                        <x-slot name="trigger">
-                            <button type="button" class="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                                Hapus
-                            </button>
-                        </x-slot>
-                    </x-confirm>
+                </div>
+
+                @if ($p->status === 'pending' || $p->status === 'requires_revision')
+                    <div class="py-1">
+                        <a href="{{ route('student.portfolios.edit', $p) }}" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-amber-600">
+                            <x-heroicon-s-pencil-square class="mr-3 h-4 w-4 text-gray-400 group-hover:text-amber-500" />
+                            Edit Data
+                        </a>
+                        
+                        <x-confirm :action="route('student.portfolios.destroy', $p)" method="DELETE" type="error" title="Hapus Portofolio" message="Apakah Anda yakin ingin menghapus portofolio ini? Tindakan ini tidak dapat dibatalkan.">
+                            <x-slot name="trigger">
+                                <button type="button" class="group flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <x-heroicon-s-trash class="mr-3 h-4 w-4 text-red-400 group-hover:text-red-600" />
+                                    Hapus
+                                </button>
+                            </x-slot>
+                        </x-confirm>
+                    </div>
                 @endif
             </div>
         </div>

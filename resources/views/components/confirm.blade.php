@@ -8,6 +8,10 @@
     'cancelText' => 'Batal',
 ])
 
+@once
+    <style>[x-cloak]{ display:none !important; }</style>
+@endonce
+
 @php
     $theme = match($type) {
         'success' => [
@@ -38,9 +42,9 @@
         {{ $trigger ?? 'Buka' }}
     </div>
 
-    <div x-show="show" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div x-show="show" x-transition.opacity x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-gray-800/70" @click="show = false"></div>
-        <div x-show="show" x-transition class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm text-center p-6 sm:p-8">
+        <div x-show="show" x-transition x-cloak class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm text-center p-6 sm:p-8">
             <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-white border-2 {{ $theme['ring'] }}">
                 @if($type === 'success')
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-9 h-9">
