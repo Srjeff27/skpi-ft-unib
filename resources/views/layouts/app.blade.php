@@ -20,7 +20,9 @@
 <body class="font-sans bg-[#f6f9ff] antialiased">
     <div x-data="{ isSidebarOpen: false }" class="min-h-screen">
         @include('layouts.navigation')
-        @include('layouts.mobile-sidebar')
+        @if (auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'verifikator'))
+            @include('layouts.mobile-sidebar')
+        @endif
 
         @isset($header)
             <header class="bg-white shadow">
@@ -31,16 +33,15 @@
         @endisset
 
         <main class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-6 pb-24 md:pb-6">
-            @if (auth()->check() && (request()->routeIs('admin.*') || request()->routeIs('verifikator.*')))
-                <div class="md:grid md:grid-cols-[16rem_1fr] md:gap-6">
-                    @include('layouts.sidebar')
+            @auth
+                                    <div class="md:grid md:grid-cols-[15rem_1fr] md:gap-6">                    @include('layouts.sidebar')
                     <div>
                         {{ $slot }}
                     </div>
                 </div>
             @else
                 {{ $slot }}
-            @endif
+            @endauth
         </main>
     </div>
 
