@@ -14,6 +14,9 @@
                 <div class="flex shrink-0 items-center gap-3">
                     <a href="/" class="flex items-center gap-3 group">
                         <x-application-logo class="block h-9 w-auto fill-current text-[#1b3985] transition-transform group-hover:scale-105" />
+                        <div class="sm:hidden leading-tight">
+                            <span class="text-sm font-bold text-[#1b3985] tracking-tight">SKPI FT UNIB</span>
+                        </div>
                         <div class="hidden sm:flex flex-col">
                             <span class="text-sm font-bold leading-none text-[#1b3985] tracking-tight">SKPI FT</span>
                             <span class="text-[10px] font-medium leading-none text-gray-500">Universitas Bengkulu</span>
@@ -138,8 +141,12 @@
     {{-- Mobile User Menu Panel --}}
     <div :class="{'block': open, 'hidden': ! open}" class="hidden bg-white sm:hidden border-t border-gray-100">
         <div class="border-b border-gray-100 bg-gray-50 pb-3 pt-4">
-            <div class="px-4 mb-3">
-                <div class="text-base font-bold text-[#1b3985]">SKPI FT Universitas Bengkulu</div>
+            <div class="px-4 mb-3 flex items-center gap-3">
+                <img src="{{ asset('images/logo-ft.png') }}" alt="Logo" class="h-10 w-auto">
+                <div>
+                    <div class="text-base font-bold text-[#1b3985]">SKPI FT</div>
+                    <div class="text-xs font-semibold text-gray-600 -mt-0.5">Universitas Bengkulu</div>
+                </div>
             </div>
             <div class="flex items-center px-4">
                 <div class="shrink-0">

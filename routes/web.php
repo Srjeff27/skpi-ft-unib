@@ -74,7 +74,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Student Specific Routes (tidak perlu email verified)
-Route::middleware(['auth', 'role:mahasiswa', 'maintenance.check'])->prefix('mahasiswa')->name('student.')->group(function () {
+Route::middleware(['auth', 'role:mahasiswa', 'maintenance.check', 'academic.complete'])->prefix('mahasiswa')->name('student.')->group(function () {
     // Portfolio (parameter disamakan agar binding konsisten)
     Route::resource('portofolio', StudentPortfolioController::class)
         ->parameters(['portofolio' => 'portfolio'])

@@ -1,4 +1,7 @@
 <x-app-layout>
+    @php
+        $showAcademicReminder = session('academic_incomplete') || (auth()->user()?->role === 'mahasiswa' && !auth()->user()?->isAcademicProfileComplete());
+    @endphp
     <div x-data="{ tab: window.location.hash ? window.location.hash.substring(1) : 'profile' }" class="space-y-6">
         <div class="relative rounded-xl bg-gradient-to-r from-[#1b3985] to-[#2b50a8] p-6 overflow-hidden">
             <div class="relative z-10 space-y-2">
@@ -42,6 +45,18 @@
             </div>
 
             <div class="lg:col-span-3">
+                @if ($showAcademicReminder)
+                    <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 p-4 flex items-start gap-3">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-amber-500 border border-amber-100">
+                            <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+                        </div>
+                        <div class="space-y-1">
+                            <p class="font-semibold">Lengkapi Data Akademik Anda</p>
+                            <p class="text-sm">Beberapa data akademik masih kosong. Silakan isi di tab Profil sebelum mengakses portofolio atau fitur lain.</p>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100">
                     <div x-show="tab === 'profile'" x-cloak>
                         @include('profile.partials.update-profile-information-form')

@@ -18,6 +18,27 @@
 </head>
 
 <body class="font-sans bg-[#f6f9ff] antialiased">
+    @php
+        $authUser = auth()->user();
+        $needsAcademicCompletion = $authUser && $authUser->role === 'mahasiswa' && !$authUser->isAcademicProfileComplete();
+        $missingAcademicFields = [];
+        if ($needsAcademicCompletion) {
+            $fieldLabels = [
+                'nim' => 'NPM',
+                'tempat_lahir' => 'Tempat Lahir',
+                'tanggal_lahir' => 'Tanggal Lahir',
+                'nomor_hp' => 'Nomor WhatsApp',
+                'angkatan' => 'Tahun Angkatan',
+                'prodi_id' => 'Program Studi',
+            ];
+            foreach ($fieldLabels as $field => $label) {
+                if (blank($authUser?->$field)) {
+                    $missingAcademicFields[] = $label;
+                }
+            }
+        }
+    @endphp
+
     <div x-data="{ isSidebarOpen: false }" class="min-h-screen">
         @include('layouts.navigation')
         @if (auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'verifikator'))
@@ -34,11 +55,14 @@
 
         <main class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-6 pb-24 md:pb-6">
             @auth
-                                    <div class="md:grid md:grid-cols-[15rem_1fr] md:gap-6">                    @include('layouts.sidebar')
-                    <div>
-                        {{ $slot }}
-                    </div>
-                </div>
+                                                    <div class="md:grid md:grid-cols-[15rem_1fr] md:gap-6">
+                                                        <div class="col-span-1">
+                                                            @include('layouts.sidebar')
+                                                        </div>
+                                                        <div class="col-span-1">
+                                                            {{ $slot }}
+                                                        </div>
+                                                    </div>
             @else
                 {{ $slot }}
             @endauth
@@ -135,6 +159,43 @@
     {{-- ====================================================================== --}}
     {{-- END BAGIAN UNTUK MAHASISWA --}}
     {{-- ====================================================================== --}}
+
+    @if ($needsAcademicCompletion && !request()->routeIs('profile.*'))
+        <div class="fixed inset-0 z-[70] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center px-4">
+            <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 p-6 space-y-4">
+                <div class="flex items-start gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                        <x-heroicon-o-exclamation-triangle class="w-6 h-6" />
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-[#0A2E73]">Lengkapi Data Akademik</h3>
+                        <p class="text-sm text-slate-600">Beberapa data akademik wajib belum lengkap. Silakan lengkapi terlebih dahulu sebelum menambah portofolio atau aktivitas lainnya.</p>
+                    </div>
+                </div>
+                @if (!empty($missingAcademicFields))
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-700">
+                        <p class="font-semibold mb-2">Data yang perlu dilengkapi:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            @foreach ($missingAcademicFields as $item)
+                                <li>{{ $item }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
+                    <a href="{{ route('profile.edit') }}"
+                       class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#fa7516] to-[#e5670c] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-200 hover:shadow-orange-300 transition">
+                        <x-heroicon-o-arrow-right-circle class="w-5 h-5" />
+                        Buka Halaman Profil
+                    </a>
+                    <p class="text-xs text-slate-500 text-center sm:text-left">Akses lain dinonaktifkan sementara.</p>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.body.classList.add('overflow-hidden');
+        </script>
+    @endif
 
 
     {{-- Script untuk Toggle Password Visibility (jika dibutuhkan di halaman lain) --}}

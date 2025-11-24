@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'maintenance.check' => \App\Http\Middleware\CheckMaintenanceMode::class,
+            'academic.complete' => \App\Http\Middleware\EnsureAcademicDataComplete::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

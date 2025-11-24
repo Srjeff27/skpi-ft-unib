@@ -43,24 +43,25 @@
     <div class="min-h-screen flex flex-col lg:flex-row">
         
         <div class="hidden lg:flex lg:w-1/2 xl:w-2/3 relative bg-[#0A2E73] overflow-hidden justify-center items-center">
-            <div class="absolute inset-0 bg-cover bg-center opacity-80 scale-105 transition-transform duration-[20s] hover:scale-110" 
-                 style="background-image: url('{{ asset('images/background-ft.jpg') }}'); filter: saturate(1.1);">
+            <div class="absolute inset-0 bg-cover bg-center opacity-90 scale-105 transition-transform duration-[20s] hover:scale-110" 
+                 style="background-image: url('{{ asset('images/background-ft.jpg') }}'); filter: saturate(1.05);">
             </div>
             
-            <div class="absolute inset-0 bg-gradient-to-tr from-[#0A2E73]/55 via-[#0A2E73]/45 to-[#1E3A8A]/35"></div>
+            <div class="absolute inset-0 bg-gradient-to-tr from-[#0A2E73]/75 via-[#0A2E73]/65 to-[#1E3A8A]/55"></div>
+            <div class="absolute inset-0 bg-[#0A1F60]/35 mix-blend-multiply"></div>
             
             <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-blue-400 rounded-full blur-3xl opacity-20 animate-pulse"></div>
             <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-orange-500 rounded-full blur-3xl opacity-10"></div>
 
             <div class="relative z-10 w-full max-w-2xl px-12 flex flex-col justify-between h-full py-12">
                 
-                <div class="flex items-center gap-4 animate-enter-right">
-                    <img src="{{ asset('images/logo-ft.png') }}" alt="Logo FT" class="h-12 w-auto drop-shadow-md">
+                <a href="{{ url('/') }}" class="flex items-center gap-4 animate-enter-right group">
+                    <img src="{{ asset('images/logo-ft.png') }}" alt="Logo FT" class="h-12 w-auto drop-shadow-md transition-transform group-hover:scale-[1.02]">
                     <div class="text-white">
-                        <h2 class="font-bold text-lg leading-tight">Fakultas Teknik</h2>
-                        <p class="text-xs text-blue-200 font-medium tracking-wide">UNIVERSITAS BENGKULU</p>
+                        <h2 class="font-bold text-lg leading-tight group-hover:text-orange-100 transition-colors">Fakultas Teknik</h2>
+                        <p class="text-xs text-blue-200 font-medium tracking-wide group-hover:text-blue-100 transition-colors">UNIVERSITAS BENGKULU</p>
                     </div>
-                </div>
+                </a>
 
                 <div class="space-y-6 animate-enter-up delay-100">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-orange-300 text-xs font-bold uppercase tracking-wider">
@@ -94,13 +95,13 @@
 
         <div class="w-full lg:w-1/2 xl:w-1/3 flex flex-col justify-center items-center p-6 sm:p-12 bg-white relative">
             <div class="lg:hidden absolute top-8 left-0 w-full flex justify-center mb-8">
-                <div class="flex items-center gap-3">
-                    <img src="{{ asset('images/logo-ft.png') }}" alt="Logo" class="h-10 w-auto">
+                <a href="{{ url('/') }}" class="flex items-center gap-3 group">
+                    <img src="{{ asset('images/logo-ft.png') }}" alt="Logo" class="h-10 w-auto transition-transform group-hover:scale-[1.03]">
                     <div class="text-[#0A2E73]">
-                        <h2 class="font-bold text-lg leading-none">SKPI</h2>
-                        <p class="text-[10px] font-bold tracking-widest uppercase text-orange-600">Fakultas Teknik</p>
+                        <h2 class="font-bold text-lg leading-none group-hover:text-[#fa7516] transition-colors">SKPI</h2>
+                        <p class="text-[10px] font-bold tracking-widest uppercase text-orange-600 group-hover:text-orange-700 transition-colors">Fakultas Teknik</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="absolute inset-0 opacity-[0.03] pointer-events-none" 

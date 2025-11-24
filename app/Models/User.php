@@ -74,6 +74,17 @@ class User extends Authenticatable
         return $this->hasMany(Portfolio::class);
     }
 
+    public function isAcademicProfileComplete(): bool
+    {
+        $required = ['nim', 'tempat_lahir', 'tanggal_lahir', 'nomor_hp', 'angkatan', 'prodi_id'];
+        foreach ($required as $field) {
+            if (blank($this->$field)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Computed URL for selected avatar (fallback based on role)
     public function getAvatarUrlAttribute(): string
     {
