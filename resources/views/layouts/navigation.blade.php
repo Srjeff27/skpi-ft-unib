@@ -138,6 +138,9 @@
     {{-- Mobile User Menu Panel --}}
     <div :class="{'block': open, 'hidden': ! open}" class="hidden bg-white sm:hidden border-t border-gray-100">
         <div class="border-b border-gray-100 bg-gray-50 pb-3 pt-4">
+            <div class="px-4 mb-3">
+                <div class="text-base font-bold text-[#1b3985]">SKPI FT Universitas Bengkulu</div>
+            </div>
             <div class="flex items-center px-4">
                 <div class="shrink-0">
                     <img class="h-10 w-10 rounded-full border border-gray-200 object-cover" src="{{ Auth::user()->avatar_url }}" alt="Avatar" />
