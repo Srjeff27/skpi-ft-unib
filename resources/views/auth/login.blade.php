@@ -1,13 +1,15 @@
 <x-guest-layout>
-    <div class="text-center mb-8">
+    <div class="text-center mb-8 space-y-3">
         <a href="/" class="inline-block relative group">
             <div class="absolute inset-0 bg-orange-200 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-200"></div>
             <span class="relative inline-flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-br from-[#fa7516] to-[#e5670c] shadow-lg transform group-hover:scale-105 transition duration-200">
                 <img src="{{ asset('images/logo-ft.png') }}" alt="Logo FT UNIB" class="h-12 w-12 drop-shadow-md">
             </span>
         </a>
-        <h2 class="mt-6 text-3xl font-bold text-[#1b3985] tracking-tight">Portal Mahasiswa</h2>
-        <p class="mt-2 text-sm text-gray-500">Silakan masuk untuk mengakses layanan akademik</p>
+        <div class="space-y-1">
+            <h2 class="text-3xl font-bold text-[#1b3985] tracking-tight">Portal Mahasiswa</h2>
+            <p class="text-sm text-gray-500">Masuk untuk mengelola portofolio, memantau verifikasi SKPI, dan akses layanan akademik.</p>
+        </div>
     </div>
 
     <x-auth-session-status class="mb-4" :status="session('status')" />
