@@ -19,6 +19,12 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
                             Profil
                         </a>
+                        <a @click.prevent="tab = 'graduation'; window.location.hash = 'graduation'" href="#"
+                           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
+                           :class="tab === 'graduation' ? 'bg-blue-50 text-[#1b3985]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
+                            <x-heroicon-o-academic-cap class="h-5 w-5 mr-3" />
+                            Data Kelulusan
+                        </a>
                         <a @click.prevent="tab = 'password'; window.location.hash = 'password'" href="#"
                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
                            :class="tab === 'password' ? 'bg-blue-50 text-[#1b3985]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
@@ -39,6 +45,9 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100">
                     <div x-show="tab === 'profile'" x-cloak>
                         @include('profile.partials.update-profile-information-form')
+                    </div>
+                    <div x-show="tab === 'graduation'" x-cloak>
+                        @include('profile.partials.graduation-information')
                     </div>
                     <div x-show="tab === 'password'" x-cloak>
                         @include('profile.partials.update-password-form')
