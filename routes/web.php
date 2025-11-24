@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\CplController;
 use App\Http\Controllers\Admin\CetakSkpiController;
 use App\Http\Controllers\Admin\PejabatController;
 use App\Http\Controllers\Admin\SystemSettingsController;
+use App\Http\Controllers\Auth\GoogleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,6 +189,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         return response()->json(['count' => $count]);
     })->name('notifications.count');
 });
+
+// Google Auth Routes
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 
 require __DIR__ . '/auth.php';

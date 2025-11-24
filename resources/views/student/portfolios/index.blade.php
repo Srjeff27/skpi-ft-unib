@@ -1,85 +1,75 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    @php
-                        $hour = now()->timezone(config('app.timezone'))->format('H');
-                        $greet =
-                            $hour < 11
-                                ? 'Selamat Pagi'
-                                : ($hour < 15
-                                    ? 'Selamat Siang'
-                                    : ($hour < 18
-                                        ? 'Selamat Sore'
-                                        : 'Selamat Malam'));
-                        $name = auth()->user()?->name ?? 'Pengguna';
-                    @endphp
-                    <h2 class="font-bold text-2xl text-gray-800 leading-tight">{{ $greet }}, {{ $name }}!</h2>
-                    <p class="text-sm text-gray-500 mt-1">Kelola semua portofolio kegiatan Anda di halaman ini.</p>
+    @php
+        $user = auth()->user();
+        // Fetch all portfolios for frontend filtering
+        $portfolios = \App\Models\Portfolio::where('user_id', $user->id)
+            ->latest()
+            ->get();
+        
+        $stats = [
+            'semua' => $portfolios->count(),
+            'verified' => $portfolios->where('status', 'verified')->count(),
+            'pending' => $portfolios->where('status', 'pending')->count(),
+            'rejected' => $portfolios->whereIn('status', ['rejected', 'requires_revision'])->count(),
+        ];
+    @endphp
+
+    <div class="space-y-6" x-data="{ tab: 'semua' }">
+        <div class="relative rounded-xl bg-gradient-to-r from-[#1b3985] to-[#2b50a8] p-6 overflow-hidden">
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="space-y-2">
+                    <h1 class="text-2xl font-bold text-white">Portofolio Saya</h1>
+                    <p class="text-blue-200 max-w-md">Kelola, tambah, dan lihat status semua portofolio kegiatan Anda di sini.</p>
                 </div>
-                <a href="{{ route('student.portfolios.create') }}"
-                    class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-[#1b3985] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    <x-heroicon-o-plus-circle class="w-5 h-5 mr-2" />
-                    Upload Portofolio
+                <a href="{{ route('student.portfolios.create') }}" class="flex-shrink-0 w-full md:w-auto inline-flex items-center justify-center rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-800 focus:ring-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                    Tambah Portofolio
                 </a>
             </div>
+            <div class="absolute -bottom-12 -right-12 w-40 h-40 rounded-full bg-blue-800 opacity-50"></div>
         </div>
-    </x-slot>
 
-    <div class="pt-6 pb-24 sm:pt-8 sm:pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        @if (session('status'))
+            <div class="p-4 text-sm text-green-800 rounded-lg bg-green-50" role="alert">
+                {{ session('status') }}
+            </div>
+        @endif
 
-            @if (session('status'))
-                <x-toast type="success" :message="session('status')" />
-            @endif
-
-            @if ($portfolios->isEmpty())
-                {{-- Tampilan jika tidak ada portofolio --}}
-                <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl text-center p-12">
-                    <x-heroicon-o-document-duplicate class="mx-auto w-12 h-12 text-gray-300" />
-                    <h3 class="mt-4 text-lg font-semibold text-gray-800">Anda Belum Memiliki Portofolio</h3>
-                    <p class="mt-1 text-sm text-gray-500">Mulai kumpulkan prestasi dan pengalaman Anda sekarang.</p>
-                    <a href="{{ route('student.portfolios.create') }}"
-                        class="mt-6 inline-flex items-center rounded-lg bg-[#1b3985] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 transition-colors">
-                        <x-heroicon-o-plus-circle class="w-5 h-5 mr-2" />
-                        Upload Portofolio Pertama
+        @if ($portfolios->isEmpty())
+            <div class="text-center py-16 px-6 bg-white rounded-xl shadow-sm border border-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                <h3 class="mt-2 text-lg font-medium text-gray-900">Belum ada portofolio</h3>
+                <p class="mt-1 text-sm text-gray-500">Mulai kumpulkan prestasi dan pengalaman Anda sekarang.</p>
+                <div class="mt-6">
+                    <a href="{{ route('student.portfolios.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#F97316] hover:bg-[#E8630B] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F97316]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                        Unggah Portofolio Pertama
                     </a>
                 </div>
-            @else
-                {{-- TAMPILAN TABLET BESAR & DESKTOP --}}
-                <div class="hidden md:block bg-white overflow-hidden shadow-lg sm:rounded-xl">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
-                            <thead class="text-left text-gray-500 bg-gray-50/75 border-b border-gray-200">
-                                <tr>
-                                    <th class="p-4 font-semibold">Judul Kegiatan</th>
-                                    <th class="p-4 font-semibold">Kategori</th>
-                                    <th class="p-4 font-semibold">Tanggal</th>
-                                    <th class="p-4 font-semibold">Status</th>
-                                    <th class="p-4 font-semibold text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                @foreach ($portfolios as $p)
-                                    @include('student.portfolios._portfolio-row', ['portfolio' => $p])
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+        @else
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-6 px-6" aria-label="Tabs">
+                        <button @click="tab = 'semua'" :class="tab === 'semua' ? 'border-[#1b3985] text-[#1b3985]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">Semua <span class="ml-1.5 rounded-full bg-gray-200 text-gray-700 px-2 py-0.5 text-xs">{{ $stats['semua'] }}</span></button>
+                        <button @click="tab = 'verified'" :class="tab === 'verified' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">Disetujui <span class="ml-1.5 rounded-full bg-green-100 text-green-800 px-2 py-0.5 text-xs">{{ $stats['verified'] }}</span></button>
+                        <button @click="tab = 'pending'" :class="tab === 'pending' ? 'border-yellow-500 text-yellow-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">Menunggu <span class="ml-1.5 rounded-full bg-yellow-100 text-yellow-800 px-2 py-0.5 text-xs">{{ $stats['pending'] }}</span></button>
+                        <button @click="tab = 'rejected'" :class="tab === 'rejected' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">Ditolak <span class="ml-1.5 rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-xs">{{ $stats['rejected'] }}</span></button>
+                    </nav>
                 </div>
 
-                {{-- TAMPILAN MOBILE & TABLET KECIL --}}
-                <div class="block md:hidden space-y-4">
-                    @foreach ($portfolios as $p)
-                        @include('student.portfolios._portfolio-card', ['portfolio' => $p])
-                    @endforeach
+                <div class="flow-root">
+                    <ul role="list" class="divide-y divide-gray-200">
+                        @foreach ($portfolios as $p)
+                            <li x-show="tab === 'semua' || tab === '{{ $p->status }}' || (tab === 'rejected' && ('{{ $p->status }}' === 'rejected' || '{{ $p->status }}' === 'requires_revision'))" x-cloak class="p-6 hover:bg-gray-50/50 transition-colors">
+                                @include('student.portfolios._portfolio-list-item', ['portfolio' => $p])
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
-
-                @if ($portfolios->hasPages())
-                    <div class="mt-8">{{ $portfolios->links() }}</div>
-                @endif
-            @endif
-        </div>
+            </div>
+        @endif
     </div>
 </x-app-layout>

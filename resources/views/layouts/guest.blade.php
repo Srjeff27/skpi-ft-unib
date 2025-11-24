@@ -17,28 +17,30 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans text-gray-900 antialiased min-h-screen"
-    style="background-image: linear-gradient(rgba(4, 26, 82, 0.7), rgba(5, 17, 47, 0.7)), url('{{ asset('images/background-ft.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<body class="font-sans text-gray-900 antialiased">
 
-    <div class="min-h-screen flex flex-col items-center justify-center p-4">
-        {{-- DIUBAH: Kartu form kini memiliki logo dan shadow yang lebih baik --}}
-        <div class="w-full sm:max-w-md px-6 py-8 bg-white shadow-2xl border border-gray-200 rounded-2xl">
-
-            {{-- DITAMBAHKAN: Logo di bagian atas kartu --}}
-            <div class="flex justify-center mb-6">
-                <a href="/">
-                    <div class="flex items-center gap-3">
-                        <img src="{{ asset('images/logo-ft.png') }}" alt="Logo FT UNIB" class="h-10 w-10">
-                        <span class="font-semibold text-xl text-[#0A2E73]">Fakultas Teknik UNIB</span>
-                    </div>
+    <div class="min-h-screen flex">
+        <!-- Image Column -->
+        <div class="hidden lg:block relative lg:w-1/2 xl:w-2/3 min-h-screen bg-cover bg-center"
+            style="background-image: url('{{ asset('images/background-ft.jpg') }}')">
+            <div class="absolute inset-0 w-full h-full bg-blue-900 bg-opacity-60"></div>
+            <div class="absolute top-0 left-0 w-full p-8">
+                <a href="/" class="inline-flex items-center gap-3 text-white">
+                    <img src="{{ asset('images/logo-ft.png') }}" alt="Logo FT UNIB" class="h-10 w-10">
+                    <span class="font-semibold text-xl">Fakultas Teknik UNIB</span>
                 </a>
             </div>
+        </div>
 
-            {{ $slot }}
+        <!-- Form Column -->
+        <div class="w-full lg:w-1/2 xl:w-1/3 flex flex-col justify-center items-center p-6 sm:p-12 bg-white">
+            <div class="w-full max-w-md">
+                {{ $slot }}
+            </div>
         </div>
     </div>
 
-    {{-- DIUBAH: Ikon dan hover effect pada tombol chatbot --}}
+    <!-- Chatbot -->
     <button id="chatbot-toggle" aria-label="Kontak admin"
         class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#F97B16] text-white shadow-lg transition-transform hover:scale-110 hover:bg-[#E8630B]">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -65,7 +67,6 @@
                     class="rounded-lg bg-[#F97316] px-3 py-1.5 text-sm text-white hover:bg-[#FF7C1F]">Kirim Email</a>
             </div>
 
-            {{-- DIUBAH: Menggunakan Heroicon untuk tombol close --}}
             <button id="chatbot-close" class="absolute right-2 top-2 text-gray-500 hover:text-gray-800"
                 aria-label="Tutup">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -82,7 +83,6 @@
             const panel = document.getElementById('chatbot-panel');
             const closeBtn = document.getElementById('chatbot-close');
 
-            // Hindari error jika elemen tidak ditemukan
             if (!toggle || !panel || !closeBtn) return;
 
             const show = () => panel.classList.remove('hidden');

@@ -1,4 +1,4 @@
-<section class="space-y-6">
+<section class="space-y-6 p-6 sm:p-8">
     <header>
         <h2 class="text-lg font-bold text-gray-800">
             Perbarui Password Akun
