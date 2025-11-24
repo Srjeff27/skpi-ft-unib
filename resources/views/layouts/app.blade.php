@@ -18,13 +18,9 @@
 </head>
 
 <body class="font-sans bg-[#f6f9ff] antialiased">
-    <div class="min-h-screen">
+    <div x-data="{ isSidebarOpen: false }" class="min-h-screen">
         @include('layouts.navigation')
-
-        {{-- Admin mobile sidebar (offcanvas) --}}
-        @if (auth()->check() && request()->routeIs('admin.*'))
-            @include('layouts.admin-mobile-sidebar')
-        @endif
+        @include('layouts.mobile-sidebar')
 
         @isset($header)
             <header class="bg-white shadow">
@@ -34,14 +30,17 @@
             </header>
         @endisset
 
-        {{-- DIUBAH: Padding bawah ditambahkan untuk memberi ruang bagi navigasi mobile --}}
         <main class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-6 pb-24 md:pb-6">
-            <div class="md:grid md:grid-cols-[14rem_1fr] md:gap-6">
-                @include('layouts.sidebar')
-                <div>
-                    {{ $slot }}
+            @if (auth()->check() && (request()->routeIs('admin.*') || request()->routeIs('verifikator.*')))
+                <div class="md:grid md:grid-cols-[16rem_1fr] md:gap-6">
+                    @include('layouts.sidebar')
+                    <div>
+                        {{ $slot }}
+                    </div>
                 </div>
-            </div>
+            @else
+                {{ $slot }}
+            @endif
         </main>
     </div>
 
@@ -51,57 +50,39 @@
     @if (auth()->check() && auth()->user()->role === 'mahasiswa')
 
         {{-- Mobile Bottom Navigation --}}
-        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] md:hidden">
+        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/75 backdrop-blur-sm border-t border-gray-200 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] md:hidden">
             <div class="relative flex items-center justify-around max-w-7xl mx-auto text-xs">
+                @php
+                    $navItems = [
+                        ['route' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'heroicon-o-home'],
+                        ['route' => 'student.portfolios.index', 'label' => 'Portofolio', 'icon' => 'heroicon-o-briefcase'],
+                        ['route' => 'placeholder', 'label' => '', 'icon' => ''],
+                        ['route' => 'student.documents.index', 'label' => 'Dokumen', 'icon' => 'heroicon-o-document-text'],
+                        ['route' => 'profile.edit', 'label' => 'Profil', 'icon' => 'heroicon-o-user-circle'],
+                    ];
+                @endphp
 
-                {{-- Tombol 1: Dashboard --}}
-                <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center w-full py-2 transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'text-[#1b3985]' : 'text-gray-500 hover:text-[#1b3985]' }}">
-                    @if (request()->routeIs('dashboard'))
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.061l8.69-8.69Z" /><path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" /></svg>
+                @foreach ($navItems as $item)
+                    @if ($item['route'] === 'placeholder')
+                        <div class="w-full"></div>
                     @else
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" /></svg>
+                        <a href="{{ route($item['route']) }}" 
+                           class="flex flex-col items-center justify-center w-full pt-2 pb-1.5 transition-colors duration-200 {{ request()->routeIs($item['route'].'*') ? 'text-[#1b3985]' : 'text-gray-500 hover:text-[#1b3985]' }}">
+                            <div class="relative">
+                                <x-dynamic-component :component="$item['icon']" class="w-6 h-6" />
+                                @if (request()->routeIs($item['route'].'*'))
+                                    <span class="absolute -top-1 -right-1 block h-1.5 w-1.5 rounded-full bg-[#1b3985]"></span>
+                                @endif
+                            </div>
+                            <span class="mt-1">{{ $item['label'] }}</span>
+                        </a>
                     @endif
-                    <span>Dashboard</span>
-                </a>
-
-                {{-- Tombol 2: Portfolio --}}
-                <a href="{{ route('student.portfolios.index') }}" class="flex flex-col items-center justify-center w-full py-2 transition-colors duration-200 {{ request()->routeIs('student.portfolios.*') ? 'text-[#1b3985]' : 'text-gray-500 hover:text-[#1b3985]' }}">
-                    @if (request()->routeIs('student.portfolios.*'))
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M3.75 4.5a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 .75.75v15a.75.75 0 0 1-.75.75h-15a.75.75 0 0 1-.75-.75V4.5Zm.75 3.75a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5Zm5.25.75a.75.75 0 0 0 0-1.5h6a.75.75 0 0 0 0 1.5h-6Zm0 3a.75.75 0 0 0 0-1.5h6a.75.75 0 0 0 0 1.5h-6Zm0 3a.75.75 0 0 0 0-1.5h6a.75.75 0 0 0 0 1.5h-6Z" clip-rule="evenodd" /></svg>
-                    @else
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
-                    @endif
-                    <span>Portfolio</span>
-                </a>
-
-                {{-- Placeholder untuk Tombol Tengah --}}
-                <div class="w-full"></div>
-
-                {{-- Tombol 4: Dokumen --}}
-                <a href="{{ route('student.documents.index') }}" class="flex flex-col items-center justify-center w-full py-2 transition-colors duration-200 {{ request()->routeIs('student.documents.*') ? 'text-[#1b3985]' : 'text-gray-500 hover:text-[#1b3985]' }}">
-                    @if (request()->routeIs('student.documents.*'))
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M5.625 1.5A3.375 3.375 0 0 0 2.25 4.875v14.25A3.375 3.375 0 0 0 5.625 22.5h12.75a3.375 3.375 0 0 0 3.375-3.375V4.875A3.375 3.375 0 0 0 18.375 1.5H5.625ZM7.5 10.5a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-4.5Z" clip-rule="evenodd" /></svg>
-                    @else
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0-3h-1.5A2.25 2.25 0 0 0 4.5 5.25v13.5A2.25 2.25 0 0 0 6.75 21h10.5A2.25 2.25 0 0 0 19.5 18.75V10.5a2.25 2.25 0 0 0-2.25-2.25h-4.5M7.5 11.25h3v3h-3v-3Z" /></svg>
-                    @endif
-                    <span>Dokumen</span>
-                </a>
-
-                {{-- Tombol 5: Profil --}}
-                <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full py-2 transition-colors duration-200 {{ request()->routeIs('profile.*') ? 'text-[#1b3985]' : 'text-gray-500 hover:text-[#1b3985]' }}">
-                    @if (request()->routeIs('profile.*'))
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" /></svg>
-                    @else
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
-                    @endif
-                    <span>Profil</span>
-                </a>
+                @endforeach
             </div>
 
-            {{-- Tombol Aksi Utama (FAB) --}}
             <a href="{{ route('student.portfolios.create') }}" aria-label="Tambah Portfolio"
-               class="absolute left-1/2 top-0 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#F97316] text-white shadow-lg transition-transform hover:scale-110">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-7 w-7"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+               class="absolute left-1/2 top-0 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-[#fa7516] to-[#e5670c] text-white shadow-lg transition-transform hover:scale-110">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             </a>
         </nav>
 

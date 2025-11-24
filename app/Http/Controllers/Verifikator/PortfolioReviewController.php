@@ -56,7 +56,7 @@ class PortfolioReviewController extends Controller
             'verified_at' => now(),
         ]);
         $portfolio->user->notify(new PortfolioStatusNotification($portfolio, 'verified', $request->string('catatan')->toString() ?: null));
-        ActivityLogger::log($request->user(), 'portfolio.approve', $portfolio, [ 'catatan' => $request->string('catatan')->toString() ]);
+        ActivityLogger::log($request->user(), 'verifikator.portfolios.approve', $portfolio, [ 'catatan' => $request->string('catatan')->toString() ]);
         return back()->with('status', 'Portofolio disetujui.');
     }
 
@@ -70,7 +70,7 @@ class PortfolioReviewController extends Controller
             'verified_at' => now(),
         ]);
         $portfolio->user->notify(new PortfolioStatusNotification($portfolio, 'rejected', $request->string('alasan')->toString()));
-        ActivityLogger::log($request->user(), 'portfolio.reject', $portfolio, [ 'alasan' => $request->string('alasan')->toString() ]);
+        ActivityLogger::log($request->user(), 'verifikator.portfolios.reject', $portfolio, [ 'alasan' => $request->string('alasan')->toString() ]);
         return back()->with('status', 'Portofolio ditolak.');
     }
 
@@ -85,7 +85,7 @@ class PortfolioReviewController extends Controller
             'verified_at' => null,
         ]);
         $portfolio->user->notify(new PortfolioStatusNotification($portfolio, 'pending', $request->string('catatan')->toString()));
-        ActivityLogger::log($request->user(), 'portfolio.request_edit', $portfolio, [ 'catatan' => $request->string('catatan')->toString() ]);
+        ActivityLogger::log($request->user(), 'verifikator.portfolios.request_edit', $portfolio, [ 'catatan' => $request->string('catatan')->toString() ]);
         return back()->with('status', 'Diminta perbaikan kepada mahasiswa.');
     }
 }

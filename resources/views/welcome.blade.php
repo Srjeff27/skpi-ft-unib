@@ -80,7 +80,7 @@
                 <div class="pl-4 border-l border-slate-200">
                     @guest
                         <a href="{{ route('login') }}" class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-white transition-all duration-200 bg-[#0A2E73] border border-transparent rounded-full shadow-lg hover:bg-[#072257] hover:shadow-[#0A2E73]/30 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A2E73]">
-                            Login Mahasiswa
+                            Login 
                         </a>
                     @else
                         <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-white transition-all duration-200 bg-[#F97316] border border-transparent rounded-full shadow-lg hover:bg-[#e8630b] hover:shadow-orange-500/30 hover:-translate-y-0.5">

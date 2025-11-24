@@ -7,6 +7,7 @@ use App\Http\Requests\Student\StorePortfolioRequest;
 use App\Http\Requests\Student\UpdatePortfolioRequest;
 use App\Models\Portfolio;
 use App\Services\PortfolioService;
+use App\Services\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,7 +34,8 @@ class PortfolioController extends Controller
     public function store(StorePortfolioRequest $request, PortfolioService $portfolioService): RedirectResponse
     {
         try {
-            $portfolioService->createForUser($request->user(), $request->validated(), $request->file('bukti_file'));
+            $portfolio = $portfolioService->createForUser($request->user(), $request->validated(), $request->file('bukti_file'));
+            ActivityLogger::log($request->user(), 'student.portfolios.store', $portfolio);
         } catch (Throwable $e) {
             Log::error('Gagal menyimpan portofolio', [
                 'user_id' => $request->user()->id,
@@ -64,15 +66,18 @@ class PortfolioController extends Controller
         $this->authorize('update', $portfolio);
 
         $portfolioService->updateForUser($portfolio, $request->validated(), $request->file('bukti_file'));
+        ActivityLogger::log($request->user(), 'student.portfolios.update', $portfolio);
 
         return redirect()->route('student.portfolios.index')->with('status', 'Portofolio berhasil diperbarui.');
     }
 
-    public function destroy(Portfolio $portfolio): RedirectResponse
+    public function destroy(Request $request, Portfolio $portfolio): RedirectResponse
     {
         $this->authorize('delete', $portfolio);
 
         $portfolio->delete();
+        ActivityLogger::log($request->user(), 'student.portfolios.destroy', $portfolio);
+        
         return redirect()->route('student.portfolios.index')->with('status', 'Portofolio berhasil dihapus.');
     }
 }

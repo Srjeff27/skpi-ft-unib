@@ -1,62 +1,118 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
+    <div class="space-y-6">
+        {{-- Header --}}
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-                <h2 class="font-semibold text-xl text-black leading-tight">Kelola Pejabat Penandatangan</h2>
-                <p class="text-sm text-gray-500">Atur pejabat yang menandatangani SKPI</p>
+                <h2 class="text-2xl font-bold text-gray-800">Manajemen Pejabat</h2>
+                <p class="text-sm text-gray-500">Kelola data pejabat penandatangan SKPI.</p>
             </div>
-            <a href="{{ route('admin.pejabat.create') }}" class="inline-flex items-center rounded-md bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-sm">+ Tambah Pejabat Baru</a>
+            <div>
+                <a href="{{ route('admin.pejabat.create') }}"
+                    class="inline-flex items-center gap-2 justify-center rounded-lg bg-[#1b3985] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#152c66] focus:outline-none focus:ring-2 focus:ring-[#1b3985] focus:ring-offset-2">
+                    <x-heroicon-o-plus class="h-4 w-4" />
+                    Tambah Pejabat
+                </a>
+            </div>
         </div>
-    </x-slot>
 
-    <div class="pt-8 pb-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead class="text-left text-gray-500">
-                        <tr>
-                            <th class="p-3">Nama Lengkap & Gelar</th>
-                            <th class="p-3">Jabatan</th>
-                            <th class="p-3">NIP/NIDN</th>
-                            <th class="p-3">Tanda Tangan</th>
-                            <th class="p-3">Status</th>
-                            <th class="p-3">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($officials as $o)
-                            <tr class="border-t">
-                                <td class="p-3">{{ $o->display_name }}</td>
-                                <td class="p-3">{{ $o->jabatan }}</td>
-                                <td class="p-3">{{ $o->nip ?? '-' }}</td>
-                                <td class="p-3">
-                                    @if($o->signature_path)
-                                        <img src="{{ asset('storage/'.$o->signature_path) }}" class="h-10 object-contain" alt="Tanda tangan">
+        @if (session('status'))
+            <x-toast type="success" :message="session('status')" />
+        @endif
+
+        {{-- Search --}}
+        <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+            <form method="GET">
+                <div class="flex items-center gap-4">
+                    <input type="search" name="search" placeholder="Cari nama, NIP, atau jabatan..." value="{{ request('search') }}"
+                        class="w-full rounded-lg border-gray-200 focus:border-[#1b3985] focus:ring-[#1b3985]">
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 justify-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-200">
+                        <x-heroicon-o-magnifying-glass class="h-4 w-4" />
+                        <span>Cari</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- Officials List --}}
+        <div class="flow-root">
+            @if ($officials->count() > 0)
+                <div class="divide-y divide-gray-100 rounded-xl border border-gray-100 bg-white shadow-sm">
+                    {{-- Table Header --}}
+                    <div class="hidden grid-cols-12 gap-4 bg-gray-50/75 px-4 py-2.5 text-xs font-semibold text-gray-500 md:grid">
+                        <div class="col-span-4">Nama & Jabatan</div>
+                        <div class="col-span-2">NIP/NIDN</div>
+                        <div class="col-span-3">Tanda Tangan</div>
+                        <div class="col-span-2">Status</div>
+                        <div class="col-span-1"></div>
+                    </div>
+                    {{-- Table Body --}}
+                    <div class="divide-y divide-gray-100">
+                        @foreach ($officials as $official)
+                            <div class="grid grid-cols-1 gap-4 px-4 py-4 text-sm md:grid-cols-12 md:gap-4">
+                                {{-- Column 1: Name & Position --}}
+                                <div class="md:col-span-4">
+                                    <div class="font-medium text-gray-800">{{ $official->display_name }}</div>
+                                    <div class="text-gray-500">{{ $official->jabatan }}</div>
+                                </div>
+                                {{-- Column 2: NIP --}}
+                                <div class="md:col-span-2"><span class="font-medium text-gray-500 md:hidden">NIP/NIDN: </span>{{ $official->nip ?? '-' }}</div>
+                                {{-- Column 3: Signature --}}
+                                <div class="md:col-span-3">
+                                    @if($official->signature_path)
+                                        <img src="{{ asset('storage/'.$official->signature_path) }}" class="h-10 object-contain" alt="Tanda tangan">
                                     @else
                                         <span class="text-gray-400">Belum ada</span>
                                     @endif
-                                </td>
-                                <td class="p-3">
-                                    @if($o->is_active)
-                                        <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2 py-0.5 text-xs font-semibold">Aktif</span>
+                                </div>
+                                {{-- Column 4: Status --}}
+                                <div class="md:col-span-2">
+                                    @if($official->is_active)
+                                        <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">Aktif</span>
                                     @else
-                                        <span class="inline-flex items-center rounded-full bg-gray-100 text-gray-700 px-2 py-0.5 text-xs font-semibold">Tidak Aktif</span>
+                                        <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">Tidak Aktif</span>
                                     @endif
-                                </td>
-                                <td class="p-3 space-x-2">
-                                    <a href="{{ route('admin.pejabat.edit', $o) }}" class="text-[#1b3985] hover:underline">Edit</a>
-                                    <form action="{{ route('admin.pejabat.destroy', $o) }}" method="POST" class="inline" onsubmit="return confirm('Hapus pejabat ini?')">
-                                        @csrf @method('DELETE')
-                                        <button class="text-red-600 hover:underline">Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td class="p-6 text-center text-gray-500" colspan="6">Belum ada data.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                </div>
+                                {{-- Column 5: Actions --}}
+                                <div class="flex items-center justify-end md:col-span-1">
+                                    <x-dropdown align="right" width="48">
+                                        <x-slot name="trigger">
+                                            <button class="rounded-full p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                                                <x-heroicon-o-ellipsis-vertical class="h-5 w-5" />
+                                            </button>
+                                        </x-slot>
+                                        <x-slot name="content">
+                                            <x-dropdown-link :href="route('admin.pejabat.edit', $official)">
+                                                Edit
+                                            </x-dropdown-link>
+                                            <form action="{{ route('admin.pejabat.destroy', $official) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus pejabat ini?')">
+                                                @csrf @method('DELETE')
+                                                <x-dropdown-link as="button" type="submit" class="text-red-600">
+                                                    Hapus
+                                                </x-dropdown-link>
+                                            </form>
+                                        </x-slot>
+                                    </x-dropdown>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @else
+                {{-- Empty State --}}
+                <div class="text-center rounded-xl border-2 border-dashed border-gray-200 bg-white p-12">
+                    <x-heroicon-o-user-circle class="mx-auto h-12 w-12 text-gray-400" />
+                    <h3 class="mt-2 text-sm font-semibold text-gray-900">Belum Ada Pejabat</h3>
+                    <p class="mt-1 text-sm text-gray-500">Mulai dengan menambahkan data pejabat baru.</p>
+                    <div class="mt-6">
+                        <a href="{{ route('admin.pejabat.create') }}"
+                            class="inline-flex items-center gap-2 rounded-md bg-[#1b3985] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#152c66]">
+                            <x-heroicon-o-plus class="h-4 w-4" />
+                            Tambah Pejabat
+                        </a>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

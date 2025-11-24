@@ -74,7 +74,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Student Specific Routes (tidak perlu email verified)
-Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('student.')->group(function () {
+Route::middleware(['auth', 'role:mahasiswa', 'maintenance.check'])->prefix('mahasiswa')->name('student.')->group(function () {
     // Portfolio (parameter disamakan agar binding konsisten)
     Route::resource('portofolio', StudentPortfolioController::class)
         ->parameters(['portofolio' => 'portfolio'])
@@ -191,6 +191,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 // Google Auth Routes
+Route::get('/maintenance', function () {
+    return view('errors.maintenance');
+})->name('maintenance.show');
+
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 

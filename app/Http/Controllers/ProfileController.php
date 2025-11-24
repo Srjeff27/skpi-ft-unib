@@ -11,6 +11,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Str;
 use App\Models\Prodi;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ActivityLogger;
 
 class ProfileController extends Controller
 {
@@ -50,6 +51,8 @@ class ProfileController extends Controller
         }
 
         $request->user()->save();
+
+        ActivityLogger::log($request->user(), 'profile.update', $request->user());
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

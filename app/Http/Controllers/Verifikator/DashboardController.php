@@ -12,25 +12,29 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
-        $pending = Portfolio::where('status','pending')->count();
-        $verified = Portfolio::where('status','verified')->count();
-        $rejected = Portfolio::where('status','rejected')->count();
+        $user = auth()->user();
+        $prodiId = $user->prodi_id;
 
-        $byProdi = User::selectRaw('prodi_id, COUNT(*) as total')
-            ->whereNotNull('prodi_id')
-            ->groupBy('prodi_id')
-            ->with('prodi:id,nama_prodi')
-            ->get();
-            
-        // Data untuk grafik prestasi per prodi
-        $prestasiProdi = Portfolio::join('users', 'portfolios.user_id', '=', 'users.id')
-            ->where('portfolios.status', 'verified')
-            ->select('users.prodi_id', DB::raw('COUNT(*) as total'))
-            ->groupBy('users.prodi_id')
-            ->with('user.prodi:id,nama_prodi')
+        // Scope portfolio counts to the verifier's prodi
+        $pending = Portfolio::where('status', 'pending')
+            ->whereHas('user', fn($q) => $q->where('prodi_id', $prodiId))
+            ->count();
+        $verified = Portfolio::where('status', 'verified')
+            ->whereHas('user', fn($q) => $q->where('prodi_id', $prodiId))
+            ->count();
+        $totalStudents = User::where('role', 'mahasiswa')
+            ->where('prodi_id', $prodiId)
+            ->count();
+        
+        // Get recent pending portfolios for the verifier's prodi
+        $recentPending = Portfolio::with('user')
+            ->where('status', 'pending')
+            ->whereHas('user', fn($q) => $q->where('prodi_id', $prodiId))
+            ->latest()
+            ->take(5)
             ->get();
 
-        return view('verifikator.dashboard', compact('pending', 'verified', 'rejected', 'byProdi', 'prestasiProdi'));
+        return view('verifikator.dashboard', compact('pending', 'verified', 'totalStudents', 'recentPending'));
     }
 }
 
