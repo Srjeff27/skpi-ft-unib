@@ -25,11 +25,66 @@
             <div class="flex items-center sm:ms-6">
                 {{-- Desktop User Menu --}}
                 <div class="hidden sm:flex sm:items-center gap-4">
-                    @php $roleTop = Auth::user()->role ?? null; @endphp
+                    @php
+                        $roleTop = Auth::user()->role ?? null;
+                        // Dummy notifications per role; replace with real data when available
+                        $notifications = [];
+                        if ($roleTop === 'mahasiswa') {
+                            $notifications = [
+                                ['title' => 'Belum ada portofolio baru.', 'time' => 'Baru saja'],
+                            ];
+                        } elseif ($roleTop === 'admin') {
+                            $notifications = [
+                                ['title' => 'Tidak ada portofolio pending saat ini.', 'time' => 'Hari ini'],
+                            ];
+                        } elseif ($roleTop === 'verifikator') {
+                            $notifications = [
+                                ['title' => 'Belum ada portofolio untuk diverifikasi.', 'time' => 'Hari ini'],
+                            ];
+                        }
+                        $notificationCount = count($notifications);
+                        $notificationsIndexRoute = match($roleTop) {
+                            'mahasiswa' => route('student.notifications.index'),
+                            'admin' => route('admin.notifications.index'),
+                            'verifikator' => route('verifikator.notifications.index'),
+                            default => '#',
+                        };
+                    @endphp
 
-                    @if ($roleTop === 'mahasiswa')
-                        {{-- Student-specific buttons --}}
-                    @endif
+                    <x-dropdown align="right" width="80">
+                        <x-slot name="trigger">
+                            <button class="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition hover:border-[#1b3985] hover:text-[#1b3985] focus:outline-none">
+                                <x-heroicon-o-bell class="h-5 w-5" />
+                                @if ($notificationCount > 0)
+                                    <span class="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">{{ $notificationCount }}</span>
+                                @endif
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <div class="text-sm font-semibold text-gray-800">Notifikasi</div>
+                                <p class="text-xs text-gray-500">Peran: {{ ucfirst($roleTop ?? 'Pengguna') }}</p>
+                            </div>
+                            <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                                @forelse ($notifications as $item)
+                                    <div class="px-4 py-3">
+                                        <div class="text-sm font-medium text-gray-800">{{ $item['title'] }}</div>
+                                        @if (!empty($item['time']))
+                                            <div class="text-xs text-gray-500">{{ $item['time'] }}</div>
+                                        @endif
+                                    </div>
+                                @empty
+                                    <div class="px-4 py-6 text-center text-sm text-gray-500">Belum ada notifikasi.</div>
+                                @endforelse
+                            </div>
+                            <div class="border-t border-gray-100">
+                                <a href="{{ $notificationsIndexRoute }}" class="flex items-center justify-between px-4 py-3 text-sm font-semibold text-[#1b3985] hover:bg-gray-50">
+                                    <span>Lihat semua notifikasi</span>
+                                    <x-heroicon-o-arrow-right class="h-4 w-4" />
+                                </a>
+                            </div>
+                        </x-slot>
+                    </x-dropdown>
 
                     <div class="h-6 w-px bg-gray-200"></div>
 
@@ -95,6 +150,30 @@
         </div>
 
         <div class="space-y-1 py-2 bg-white">
+            <div class="px-4 pb-2">
+                <div class="text-sm font-semibold text-gray-800">Notifikasi</div>
+                @if (($notificationCount ?? 0) === 0)
+                    <p class="text-sm text-gray-500">Belum ada notifikasi.</p>
+                @else
+                    <div class="mt-2 space-y-2">
+                        @foreach ($notifications as $item)
+                            <div class="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2">
+                                <div class="text-sm font-medium text-gray-800">{{ $item['title'] }}</div>
+                                @if (!empty($item['time']))
+                                    <div class="text-xs text-gray-500">{{ $item['time'] }}</div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+                <div class="mt-3">
+                    <a href="{{ $notificationsIndexRoute ?? '#' }}" class="flex items-center justify-between rounded-lg border border-gray-100 px-3 py-2 text-sm font-semibold text-[#1b3985] hover:bg-gray-50">
+                        <span>Lihat semua notifikasi</span>
+                        <x-heroicon-o-arrow-right class="h-4 w-4" />
+                    </a>
+                </div>
+            </div>
+
             <a href="{{ route('profile.edit') }}" class="flex w-full items-center gap-3 border-l-4 border-transparent px-4 py-2.5 text-base font-medium text-gray-600 transition duration-150 ease-in-out hover:border-[#1b3985] hover:bg-gray-50 hover:text-[#1b3985]">
                 <x-heroicon-o-user-circle class="h-5 w-5 text-gray-400" />
                 {{ __('Profile') }}
