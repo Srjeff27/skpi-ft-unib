@@ -173,6 +173,7 @@
 <body>
     @php
         use Carbon\Carbon;
+        use App\Models\Curriculum;
         // Gunakan locale Indonesia
         Carbon::setLocale('id');
 
@@ -180,6 +181,29 @@
         $dateLulus = $user->tanggal_lulus ? Carbon::parse($user->tanggal_lulus)->translatedFormat('d F Y') : '-';
         $dateLahir = $user->tanggal_lahir ? Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : '-';
         $dateNow = Carbon::now()->translatedFormat('d F Y');
+
+        // CPL dari kurikulum aktif prodi (fallback: kurikulum aktif terbaru)
+        $curriculum = Curriculum::with('cplItems')
+            ->where('is_active', true)
+            ->when($user->prodi_id, fn($q) => $q->where('prodi_id', $user->prodi_id))
+            ->latest('year')
+            ->first();
+        $cplItems = $curriculum?->cplItems ?? collect();
+        $cpl = $cplItems->groupBy('category');
+
+        // Kelompok portofolio terverifikasi per kategori
+        $verifiedPortfolios = $verifiedPortfolios ?? collect();
+        $groupPortfolio = [
+            'prestasi' => $verifiedPortfolios->filter(fn($p) => str_contains(strtolower($p->kategori_portfolio ?? ''), 'prestasi')),
+            'organisasi' => $verifiedPortfolios->filter(fn($p) => str_contains(strtolower($p->kategori_portfolio ?? ''), 'organisasi')),
+            'magang' => $verifiedPortfolios->filter(fn($p) => str_contains(strtolower($p->kategori_portfolio ?? ''), 'magang')),
+        ];
+
+        // Pejabat penandatangan
+        $signaturePath = (isset($official) && $official?->signature_path) ? public_path('storage/'.$official->signature_path) : null;
+        $officialName = $official->display_name ?? 'Faisal Hadi, ST, M.T';
+        $officialNip = $official->nip ?? '197707132002121005';
+        $officialRole = $official->jabatan ?? 'Dekan Fakultas Teknik';
     @endphp
 
     <div class="header">
@@ -422,24 +446,21 @@
         <tr>
             <td style="vertical-align:top;">
                 <ol class="custom-list">
-                    @if(isset($cpl[$catKey]))
-                        @foreach($cpl[$catKey] as $item)
-                            <li>{{ $item->desc_id }}</li>
-                        @endforeach
-                    @else
-                        <li>Mampu menunjukkan sikap religius...</li>
-                    @endif
+                    @php $items = $cpl[$catKey] ?? collect(); @endphp
+                    @forelse($items as $item)
+                        <li>{{ $item->desc_id }}</li>
+                    @empty
+                        <li>-</li>
+                    @endforelse
                 </ol>
             </td>
             <td style="vertical-align:top;">
                 <ol class="custom-list">
-                    @if(isset($cpl[$catKey]))
-                        @foreach($cpl[$catKey] as $item)
-                            <li class="en">{{ $item->desc_en }}</li>
-                        @endforeach
-                    @else
-                        <li class="en">Able to show a religious attitude...</li>
-                    @endif
+                    @forelse($items as $item)
+                        <li class="en">{{ $item->desc_en }}</li>
+                    @empty
+                        <li class="en">-</li>
+                    @endforelse
                 </ol>
             </td>
         </tr>
@@ -464,17 +485,21 @@
                 <td style="vertical-align:top; padding:10px;">
                     <strong>Penghargaan dan Pemenang Kejuaraan</strong>
                     <ol class="custom-list">
-                        @foreach($verifiedPortfolios->where('kategori', 'Prestasi') as $p)
-                            <li>{{ $p->judul_id }}</li>
-                        @endforeach
+                        @forelse($groupPortfolio['prestasi'] as $p)
+                            <li>{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                        @empty
+                            <li>-</li>
+                        @endforelse
                     </ol>
                     
                     <br>
                     <strong>Pengalaman Organisasi</strong>
                     <ol class="custom-list">
-                         @foreach($verifiedPortfolios->where('kategori', 'Organisasi') as $p)
-                            <li>{{ $p->judul_id }}</li>
-                        @endforeach
+                        @forelse($groupPortfolio['organisasi'] as $p)
+                            <li>{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                        @empty
+                            <li>-</li>
+                        @endforelse
                     </ol>
 
                     <br>
@@ -486,26 +511,32 @@
                      <br>
                     <strong>Magang Industri</strong>
                      <ol class="custom-list">
-                         @foreach($verifiedPortfolios->where('kategori', 'Magang') as $p)
-                            <li>{{ $p->judul_id }}</li>
-                        @endforeach
+                        @forelse($groupPortfolio['magang'] as $p)
+                            <li>{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                        @empty
+                            <li>-</li>
+                        @endforelse
                     </ol>
                 </td>
 
                 <td style="vertical-align:top; padding:10px;">
                     <strong class="en">Certificate of Honors and Awards</strong>
                     <ol class="custom-list">
-                        @foreach($verifiedPortfolios->where('kategori', 'Prestasi') as $p)
-                            <li class="en">{{ $p->judul_en ?? $p->judul_id }}</li>
-                        @endforeach
+                        @forelse($groupPortfolio['prestasi'] as $p)
+                            <li class="en">{{ $p->nama_dokumen_en ?? $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                        @empty
+                            <li class="en">-</li>
+                        @endforelse
                     </ol>
 
                     <br>
                     <strong class="en">Organizational Experiences</strong>
                     <ol class="custom-list">
-                         @foreach($verifiedPortfolios->where('kategori', 'Organisasi') as $p)
-                            <li class="en">{{ $p->judul_en ?? $p->judul_id }}</li>
-                        @endforeach
+                        @forelse($groupPortfolio['organisasi'] as $p)
+                            <li class="en">{{ $p->nama_dokumen_en ?? $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                        @empty
+                            <li class="en">-</li>
+                        @endforelse
                     </ol>
 
                     <br>
@@ -517,9 +548,11 @@
                     <br>
                     <strong class="en">Internship</strong>
                      <ol class="custom-list">
-                         @foreach($verifiedPortfolios->where('kategori', 'Magang') as $p)
-                            <li class="en">{{ $p->judul_en ?? $p->judul_id }}</li>
-                        @endforeach
+                        @forelse($groupPortfolio['magang'] as $p)
+                            <li class="en">{{ $p->nama_dokumen_en ?? $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
+                        @empty
+                            <li class="en">-</li>
+                        @endforelse
                     </ol>
                 </td>
             </tr>
@@ -531,9 +564,14 @@
     <div class="footer-signature">
         <div class="sign-box">
             Bengkulu, {{ $dateNow }}<br>
-            Dekan Fakultas Teknik,<br>
-            <br><br><br><br> <span style="font-weight:bold; text-decoration:underline;">Faisal Hadi, ST, M.T</span><br>
-            NIP. 197707132002121005
+            {{ $officialRole }}<br>
+            @if($signaturePath)
+                <img src="{{ $signaturePath }}" alt="Tanda tangan" style="height:70px; margin:12px 0 4px 0;">
+            @else
+                <br><br><br><br>
+            @endif
+            <span style="font-weight:bold; text-decoration:underline;">{{ $officialName }}</span><br>
+            NIP. {{ $officialNip }}
         </div>
         <div style="clear:both;"></div>
     </div>
