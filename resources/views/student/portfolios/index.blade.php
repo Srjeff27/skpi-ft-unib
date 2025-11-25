@@ -52,8 +52,8 @@
         @else
             <div class="bg-white rounded-xl shadow-sm border border-gray-100">
                 <div class="border-b border-gray-200 bg-white">
-                    <div class="px-6">
-                        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <div class="px-6 overflow-x-auto">
+                        <nav class="-mb-px flex space-x-6 min-w-max" aria-label="Tabs">
                             <button @click="tab = 'semua'"
                                 :class="tab === 'semua' ? 'border-[#1b3985] text-[#1b3985]' :
                                     'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"

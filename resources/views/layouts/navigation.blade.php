@@ -114,8 +114,42 @@
                 </div>
 
                 {{-- Mobile User Menu Trigger (Avatar) --}}
-                <div class="-me-2 flex items-center sm:hidden">
-                    <button @click="open = ! open" class="inline-flex items-center justify-center rounded-full h-10 w-10 text-gray-400 hover:bg-gray-100 focus:outline-none">
+                <div class="flex items-center sm:hidden">
+                    <x-dropdown align="right" width="80">
+                        <x-slot name="trigger">
+                            <button class="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition hover:border-[#1b3985] hover:text-[#1b3985] focus:outline-none">
+                                <x-heroicon-o-bell class="h-5 w-5" />
+                                @if ($notificationCount > 0)
+                                    <span class="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">{{ $notificationCount }}</span>
+                                @endif
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <div class="text-sm font-semibold text-gray-800">Notifikasi</div>
+                                <p class="text-xs text-gray-500">Peran: {{ ucfirst($roleTop ?? 'Pengguna') }}</p>
+                            </div>
+                            <div class="max-h-[60vh] overflow-y-auto divide-y divide-gray-100">
+                                @forelse ($notifications as $notification)
+                                    <x-notification-item :notification="$notification" />
+                                @empty
+                                    <div class="px-4 py-6 text-center text-sm text-gray-500">
+                                        <x-heroicon-o-bell-slash class="w-10 h-10 mx-auto text-gray-400" />
+                                        <p class="mt-2 font-semibold">Tidak ada notifikasi baru</p>
+                                        <p class="mt-1 text-xs">Notifikasi yang sudah dibaca akan muncul di halaman Semua Notifikasi.</p>
+                                    </div>
+                                @endforelse
+                            </div>
+                            <div class="border-t border-gray-100">
+                                <a href="{{ $notificationsIndexRoute }}" class="flex items-center justify-between px-4 py-3 text-sm font-semibold text-[#1b3985] hover:bg-gray-50">
+                                    <span>Lihat semua notifikasi</span>
+                                    <x-heroicon-o-arrow-right class="h-4 w-4" />
+                                </a>
+                            </div>
+                        </x-slot>
+                    </x-dropdown>
+
+                    <button @click="open = ! open" class="inline-flex items-center justify-center rounded-full h-10 w-10 text-gray-400 hover:bg-gray-100 focus:outline-none -me-2">
                         <span class="sr-only">Buka menu user</span>
                         <img class="h-10 w-10 rounded-full object-cover" src="{{ Auth::user()->avatar_url }}" alt="Avatar" />
                     </button>
@@ -146,27 +180,6 @@
         </div>
 
         <div class="space-y-1 py-2 bg-white">
-            <div class="px-4 pb-2">
-                <div class="text-sm font-semibold text-gray-800">Notifikasi</div>
-                @if (($notificationCount ?? 0) === 0)
-                    <p class="text-sm text-gray-500">Belum ada notifikasi.</p>
-                @else
-                    <div class="mt-2 space-y-1">
-                        @foreach ($notifications as $notification)
-                            <div class="rounded-lg border border-gray-100">
-                                <x-notification-item :notification="$notification" />
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-                <div class="mt-3">
-                    <a href="{{ $notificationsIndexRoute ?? '#' }}" class="flex items-center justify-between rounded-lg border border-gray-100 px-3 py-2 text-sm font-semibold text-[#1b3985] hover:bg-gray-50">
-                        <span>Lihat semua notifikasi</span>
-                        <x-heroicon-o-arrow-right class="h-4 w-4" />
-                    </a>
-                </div>
-            </div>
-
             <a href="{{ route('profile.edit') }}" class="flex w-full items-center gap-3 border-l-4 border-transparent px-4 py-2.5 text-base font-medium text-gray-600 transition duration-150 ease-in-out hover:border-[#1b3985] hover:bg-gray-50 hover:text-[#1b3985]">
                 <x-heroicon-o-user-circle class="h-5 w-5 text-gray-400" />
                 {{ __('Profile') }}
