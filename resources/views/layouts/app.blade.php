@@ -57,7 +57,7 @@
             </header>
         @endisset
 
-        <main class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-6 pb-32 md:pb-6">
+        <main class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-6 pb-40 md:pb-8">
             @auth
                                                     <div class="md:grid md:grid-cols-[15rem_1fr] md:gap-6">
                                                         <div class="col-span-1">
