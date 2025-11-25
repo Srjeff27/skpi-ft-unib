@@ -1,75 +1,176 @@
 <x-app-layout>
     @php
-        $showAcademicReminder = session('academic_incomplete') || (auth()->user()?->role === 'mahasiswa' && !auth()->user()?->isAcademicProfileComplete());
+        $user = auth()->user();
+        $isAcademicIncomplete = session('academic_incomplete') || ($user?->role === 'mahasiswa' && !$user?->isAcademicProfileComplete());
     @endphp
-    <div x-data="{ tab: window.location.hash ? window.location.hash.substring(1) : 'profile' }" class="space-y-6">
-        <div class="relative rounded-xl bg-gradient-to-r from-[#1b3985] to-[#2b50a8] p-6 overflow-hidden">
-            <div class="relative z-10 space-y-2">
-                <h1 class="text-2xl font-bold text-white">Pengaturan Akun</h1>
-                <p class="text-blue-200 max-w-md">Kelola informasi profil, preferensi, dan keamanan akun Anda.</p>
-            </div>
-            <div class="absolute -bottom-12 -right-12 w-40 h-40 rounded-full bg-blue-800 opacity-50"></div>
-            <div class="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-blue-700 opacity-50"></div>
-        </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-                    <nav class="space-y-1">
-                        <a @click.prevent="tab = 'profile'; window.location.hash = 'profile'" href="#"
-                           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
-                           :class="tab === 'profile' ? 'bg-blue-50 text-[#1b3985]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
-                            Profil
-                        </a>
-                        <a @click.prevent="tab = 'graduation'; window.location.hash = 'graduation'" href="#"
-                           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
-                           :class="tab === 'graduation' ? 'bg-blue-50 text-[#1b3985]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
-                            <x-heroicon-o-academic-cap class="h-5 w-5 mr-3" />
-                            Data Kelulusan
-                        </a>
-                        <a @click.prevent="tab = 'password'; window.location.hash = 'password'" href="#"
-                           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
-                           :class="tab === 'password' ? 'bg-blue-50 text-[#1b3985]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5.02.998.998 0 001.993 6.01c.312.42.65.826.994 1.212.345.386.708.756 1.09 1.107A11.958 11.958 0 0110 18.056a11.958 11.958 0 01-6.907-2.728.998.998 0 00-1.414 1.414 13.955 13.955 0 0016.64 0 .998.998 0 00-1.414-1.414A11.958 11.958 0 0110 18.056zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
-                            Ubah Password
-                        </a>
-                        <a @click.prevent="tab = 'delete'; window.location.hash = 'delete'" href="#"
-                           class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
-                           :class="tab === 'delete' ? 'bg-red-50 text-red-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                            Hapus Akun
-                        </a>
-                    </nav>
+    <div x-data="{ 
+            tab: window.location.hash ? window.location.hash.substring(1) : 'profile',
+            updateHash(newTab) {
+                this.tab = newTab;
+                window.location.hash = newTab;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }" 
+        class="min-h-screen pb-20 space-y-8">
+        
+        {{-- 1. Header Section --}}
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-[#1b3985] to-[#2b50a8] shadow-xl">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 -mb-10 -ml-10 h-40 w-40 rounded-full bg-blue-400/10 blur-2xl pointer-events-none"></div>
+
+            <div class="relative z-10 p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div class="flex items-center gap-6">
+                    <div class="hidden md:flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-inner text-white text-2xl font-bold">
+                        {{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}
+                    </div>
+                    <div class="space-y-2">
+                        <h1 class="text-3xl font-bold text-white tracking-tight">Pengaturan Akun</h1>
+                        <p class="text-blue-100/90 text-sm md:text-base max-w-xl leading-relaxed">
+                            Kelola informasi pribadi, data akademik, dan keamanan akun Anda di sini.
+                        </p>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="lg:col-span-3">
-                @if ($showAcademicReminder)
-                    <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 p-4 flex items-start gap-3">
-                        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-amber-500 border border-amber-100">
-                            <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
-                        </div>
-                        <div class="space-y-1">
-                            <p class="font-semibold">Lengkapi Data Akademik Anda</p>
-                            <p class="text-sm">Beberapa data akademik masih kosong. Silakan isi di tab Profil sebelum mengakses portofolio atau fitur lain.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {{-- 2. Sidebar Navigation (Vertical on Desktop, Horizontal Scroll on Mobile) --}}
+            <div class="lg:col-span-3 lg:sticky lg:top-24 z-10">
+                <nav class="flex flex-wrap gap-3 sm:gap-2 overflow-x-auto sm:overflow-visible pb-4 lg:flex-col lg:pb-0 no-scrollbar" aria-label="Tabs">
+                    
+                    {{-- Tab: Profil --}}
+                    <button @click.prevent="updateHash('profile')"
+                        :class="tab === 'profile' 
+                            ? 'bg-white text-[#1b3985] shadow-md ring-1 ring-slate-200' 
+                            : 'text-slate-500 hover:text-slate-700 hover:bg-white/60'"
+                        class="flex-shrink-0 group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 w-full sm:w-auto min-w-[160px] lg:min-w-0">
+                        <span :class="tab === 'profile' ? 'bg-blue-50 text-[#1b3985]' : 'bg-slate-100 text-slate-400 group-hover:text-slate-600'"
+                              class="mr-3 flex-shrink-0 h-8 w-8 flex items-center justify-center rounded-lg transition-colors">
+                            <x-heroicon-o-user class="h-5 w-5" />
+                        </span>
+                        <span class="whitespace-nowrap">Profil Umum</span>
+                    </button>
+
+                    {{-- Tab: Data Kelulusan (Only for Mahasiswa) --}}
+                    @if($user->role === 'mahasiswa')
+                    <button @click.prevent="updateHash('graduation')"
+                        :class="tab === 'graduation' 
+                            ? 'bg-white text-[#1b3985] shadow-md ring-1 ring-slate-200' 
+                            : 'text-slate-500 hover:text-slate-700 hover:bg-white/60'"
+                        class="flex-shrink-0 group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 w-full sm:w-auto min-w-[160px] lg:min-w-0">
+                        <span :class="tab === 'graduation' ? 'bg-blue-50 text-[#1b3985]' : 'bg-slate-100 text-slate-400 group-hover:text-slate-600'"
+                              class="mr-3 flex-shrink-0 h-8 w-8 flex items-center justify-center rounded-lg transition-colors">
+                            <x-heroicon-o-academic-cap class="h-5 w-5" />
+                        </span>
+                        <span class="whitespace-nowrap">Data Akademik</span>
+                        @if($isAcademicIncomplete)
+                            <span class="ml-auto flex h-2 w-2 rounded-full bg-amber-500"></span>
+                        @endif
+                    </button>
+                    @endif
+
+                    {{-- Tab: Password --}}
+                    <button @click.prevent="updateHash('password')"
+                        :class="tab === 'password' 
+                            ? 'bg-white text-[#1b3985] shadow-md ring-1 ring-slate-200' 
+                            : 'text-slate-500 hover:text-slate-700 hover:bg-white/60'"
+                        class="flex-shrink-0 group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 w-full sm:w-auto min-w-[160px] lg:min-w-0">
+                        <span :class="tab === 'password' ? 'bg-blue-50 text-[#1b3985]' : 'bg-slate-100 text-slate-400 group-hover:text-slate-600'"
+                              class="mr-3 flex-shrink-0 h-8 w-8 flex items-center justify-center rounded-lg transition-colors">
+                            <x-heroicon-o-lock-closed class="h-5 w-5" />
+                        </span>
+                        <span class="whitespace-nowrap">Keamanan</span>
+                    </button>
+
+                    {{-- Tab: Hapus Akun --}}
+                    <button @click.prevent="updateHash('delete')"
+                        :class="tab === 'delete' 
+                            ? 'bg-white text-rose-600 shadow-md ring-1 ring-rose-100' 
+                            : 'text-slate-500 hover:text-rose-600 hover:bg-rose-50/50'"
+                        class="flex-shrink-0 group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 w-full sm:w-auto min-w-[160px] lg:min-w-0 mt-auto lg:mt-4">
+                        <span :class="tab === 'delete' ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-400 group-hover:bg-rose-100 group-hover:text-rose-500'"
+                              class="mr-3 flex-shrink-0 h-8 w-8 flex items-center justify-center rounded-lg transition-colors">
+                            <x-heroicon-o-trash class="h-5 w-5" />
+                        </span>
+                        <span class="whitespace-nowrap">Hapus Akun</span>
+                    </button>
+                </nav>
+            </div>
+
+            {{-- 3. Content Area --}}
+            <div class="lg:col-span-9 space-y-6">
+                
+                {{-- Academic Warning --}}
+                @if ($isAcademicIncomplete)
+                    <div class="rounded-xl border-l-4 border-amber-500 bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                                    <x-heroicon-o-exclamation-triangle class="h-6 w-6" />
+                                </span>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900">Data Akademik Belum Lengkap</h3>
+                                <p class="mt-1 text-sm text-slate-600 leading-relaxed">
+                                    Mohon lengkapi data pada tab <strong>Data Akademik</strong> (NPM, Prodi, dll) agar Anda dapat menggunakan fitur Portofolio dan pengajuan SKPI.
+                                </p>
+                                <button @click="updateHash('graduation')" class="mt-3 text-sm font-semibold text-amber-700 hover:underline">
+                                    Lengkapi Sekarang &rarr;
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @endif
 
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                    <div x-show="tab === 'profile'" x-cloak>
-                        @include('profile.partials.update-profile-information-form')
+                {{-- Tab Contents with Transitions --}}
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden min-h-[400px]">
+                    
+                    {{-- Profile Form --}}
+                    <div x-show="tab === 'profile'" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="p-6 sm:p-8" x-cloak>
+                        <div class="max-w-2xl">
+                            @include('profile.partials.update-profile-information-form')
+                        </div>
                     </div>
-                    <div x-show="tab === 'graduation'" x-cloak>
-                        @include('profile.partials.graduation-information')
+
+                    {{-- Graduation Form --}}
+                    <div x-show="tab === 'graduation'" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="p-6 sm:p-8" x-cloak>
+                        <div class="max-w-2xl">
+                            @include('profile.partials.graduation-information')
+                        </div>
                     </div>
-                    <div x-show="tab === 'password'" x-cloak>
-                        @include('profile.partials.update-password-form')
+
+                    {{-- Password Form --}}
+                    <div x-show="tab === 'password'" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="p-6 sm:p-8" x-cloak>
+                        <div class="max-w-xl">
+                            @include('profile.partials.update-password-form')
+                        </div>
                     </div>
-                    <div x-show="tab === 'delete'" x-cloak>
-                        @include('profile.partials.delete-user-form')
+
+                    {{-- Delete Form --}}
+                    <div x-show="tab === 'delete'" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="p-6 sm:p-8 bg-rose-50/30 h-full" x-cloak>
+                        <div class="max-w-xl">
+                            @include('profile.partials.delete-user-form')
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

@@ -140,19 +140,19 @@
                                         </div>
 
                                         {{-- Content --}}
-                                        <div class="flex-1 min-w-0">
-                                            <h4 class="text-sm font-semibold text-slate-800 truncate group-hover:text-blue-700 transition-colors">
-                                                {{ $item->nama_dokumen_id }}
-                                            </h4>
-                                            <p class="text-xs text-slate-500 mt-0.5">
-                                                {{ $item->kategori_portfolio }} &bull; <span class="text-slate-400">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
-                                            </p>
-                                        </div>
-                                        
-                                        {{-- Arrow --}}
-                                        <div class="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-1 transition-all">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                        </div>
+                                        <a href="{{ route('student.portfolios.edit', $item) }}" class="flex-1 min-w-0 flex items-center gap-3 sm:gap-4 group/action">
+                                            <div class="flex-1 min-w-0">
+                                                <h4 class="text-sm font-semibold text-slate-800 truncate group-hover:text-blue-700 transition-colors">
+                                                    {{ $item->nama_dokumen_id }}
+                                                </h4>
+                                                <p class="text-xs text-slate-500 mt-0.5">
+                                                    {{ $item->kategori_portfolio }} &bull; <span class="text-slate-400">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
+                                                </p>
+                                            </div>
+                                            <div class="flex items-center text-slate-300 transition-all group-hover/action:text-blue-600 group-hover/action:translate-x-0.5">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                            </div>
+                                        </a>
                                     </div>
                                 </li>
                             @endforeach

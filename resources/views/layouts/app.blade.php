@@ -88,10 +88,7 @@
     {{-- BOTTOM NAVIGATION (MAHASISWA ONLY) --}}
     {{-- ====================================================================== --}}
     @if (auth()->check() && $user->role === 'mahasiswa')
-        <nav class="fixed bottom-0 left-0 right-0 z-40 md:hidden pb-safe">
-            {{-- Backdrop Blur Effect Container --}}
-            <div class="absolute inset-0 bg-white/90 backdrop-blur-lg border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]"></div>
-
+        <nav class="fixed bottom-0 left-0 right-0 z-40 md:hidden pb-safe bg-gradient-to-r from-[#1b3985] to-[#2b50a8] shadow-[0_-6px_24px_rgba(17,24,39,0.18)]">
             <div class="relative flex items-center justify-between max-w-md mx-auto px-6 h-[70px]">
                 @php
                     $navs = [
@@ -105,18 +102,18 @@
 
                 @foreach ($navs as $item)
                     @if (!$item['route'])
-                        <div class="w-12"></div> {{-- Spacer --}}
+                        <div class="w-12"></div>
                     @else
                         @php $isActive = request()->routeIs($item['route'].'*'); @endphp
                         <a href="{{ route($item['route']) }}" 
                            class="group flex flex-col items-center justify-center w-full h-full transition-colors duration-200">
-                            
-                            <div class="relative p-1.5 rounded-xl transition-all duration-300 {{ $isActive ? 'text-blue-600 bg-blue-50' : 'text-slate-400 group-hover:text-slate-600' }}">
+
+                            <div class="relative p-1.5 rounded-xl transition-all duration-300 {{ $isActive ? 'text-white bg-white/10 ring-1 ring-white/30 shadow-inner shadow-blue-900/30' : 'text-blue-100/90 group-hover:text-white group-hover:bg-white/10' }}">
                                 <x-dynamic-component :component="$item['icon']" 
                                     class="w-6 h-6 {{ $isActive ? 'stroke-2' : 'stroke-[1.5]' }}" />
                             </div>
-                            
-                            <span class="text-[10px] font-medium mt-1 {{ $isActive ? 'text-blue-600' : 'text-slate-400' }}">
+
+                            <span class="text-[10px] font-medium mt-1 {{ $isActive ? 'text-white' : 'text-blue-100/90 group-hover:text-white' }}">
                                 {{ $item['label'] }}
                             </span>
                         </a>
@@ -127,7 +124,7 @@
             {{-- Floating Action Button (FAB) --}}
             <div class="absolute left-1/2 -top-6 -translate-x-1/2">
                 <a href="{{ route('student.portfolios.create') }}" 
-                   class="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-blue-700 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-[6px] ring-white/50 backdrop-blur-sm transition-transform hover:scale-105 active:scale-95">
+                   class="flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#1b3985] shadow-lg shadow-blue-900/30 ring-[6px] ring-blue-200 transition-transform hover:scale-105 active:scale-95">
                     <x-heroicon-o-plus class="w-7 h-7 stroke-2" />
                 </a>
             </div>

@@ -1,101 +1,119 @@
-<section class="rounded-2xl bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] sm:p-8 ring-1 ring-gray-900/5">
+<section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
     @php
         $fields = [
             [
                 'label' => 'Tanggal Lulus',
                 'value' => $user->tanggal_lulus ? $user->tanggal_lulus->format('d F Y') : null,
-                'icon'  => 'calendar'
+                'icon'  => 'heroicon-m-calendar-days',
+                'color' => 'text-blue-600',
+                'bg'    => 'bg-blue-50'
             ],
             [
                 'label' => 'Nomor Ijazah',
                 'value' => $user->nomor_ijazah,
-                'icon'  => 'document'
+                'icon'  => 'heroicon-m-document-check',
+                'color' => 'text-emerald-600',
+                'bg'    => 'bg-emerald-50'
             ],
             [
                 'label' => 'Nomor SKPI',
                 'value' => $user->nomor_skpi,
-                'icon'  => 'clipboard'
+                'icon'  => 'heroicon-m-clipboard-document-list',
+                'color' => 'text-purple-600',
+                'bg'    => 'bg-purple-50'
             ],
             [
                 'label' => 'Gelar (Indonesia)',
                 'value' => $user->gelar_id,
-                'icon'  => 'academic'
+                'icon'  => 'heroicon-m-academic-cap',
+                'color' => 'text-[#1b3985]',
+                'bg'    => 'bg-slate-100'
             ],
             [
                 'label' => 'Degree (English)',
                 'value' => $user->gelar_en,
-                'icon'  => 'academic'
+                'icon'  => 'heroicon-m-globe-alt',
+                'color' => 'text-[#1b3985]',
+                'bg'    => 'bg-slate-100'
             ],
         ];
         
-        $hasData = collect($fields)->contains(fn($f) => filled($f['value']));
+        $hasData = collect($fields)->every(fn($f) => filled($f['value']));
     @endphp
 
-    <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-gray-100 pb-6">
+    {{-- Header Section --}}
+    <div class="px-6 py-6 sm:px-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h2 class="text-xl font-bold text-[#1b3985] tracking-tight">Data Kelulusan</h2>
-            <p class="mt-1 text-sm text-slate-500">Rekam jejak akademik dan legalitas kelulusan Anda.</p>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <x-heroicon-o-academic-cap class="w-5 h-5 text-[#1b3985]" />
+                Data Kelulusan
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">Informasi resmi terkait legalitas kelulusan akademik Anda.</p>
         </div>
         
         <div>
             @if($hasData)
-                <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 shadow-sm">
                     <span class="relative flex h-2 w-2">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </span>
-                    Data Terverifikasi
-                </span>
+                    <span class="text-xs font-bold text-emerald-700 uppercase tracking-wide">Terverifikasi</span>
+                </div>
             @else
-                <span class="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
-                    <span class="h-2 w-2 rounded-full bg-amber-500"></span>
-                    Data Belum Lengkap
-                </span>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-100 shadow-sm">
+                    <span class="h-2 w-2 rounded-full bg-amber-400"></span>
+                    <span class="text-xs font-bold text-amber-700 uppercase tracking-wide">Belum Lengkap</span>
+                </div>
             @endif
         </div>
-    </header>
-
-    <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        @foreach ($fields as $field)
-            <div class="group relative flex items-start gap-4 rounded-xl border border-slate-200 bg-slate-50/50 p-4 transition-all duration-300 hover:bg-white hover:border-[#1b3985]/30 hover:shadow-lg hover:shadow-[#1b3985]/5">
-                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#1b3985] shadow-sm ring-1 ring-slate-900/5 transition-colors group-hover:bg-[#1b3985] group-hover:text-white">
-                    @switch($field['icon'])
-                        @case('calendar')
-                            <x-heroicon-o-calendar class="h-6 w-6" />
-                            @break
-                        @case('document')
-                            <x-heroicon-o-document-text class="h-6 w-6" />
-                            @break
-                        @case('clipboard')
-                            <x-heroicon-o-clipboard-document-check class="h-6 w-6" />
-                            @break
-                        @default
-                            <x-heroicon-o-academic-cap class="h-6 w-6" />
-                    @endswitch
-                </div>
-                
-                <div class="flex-1 min-w-0">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#1b3985]/70 transition-colors">
-                        {{ $field['label'] }}
-                    </p>
-                    <p class="mt-1 truncate text-sm font-semibold text-slate-800">
-                        {{ $field['value'] ?? '-' }}
-                    </p>
-                    @if(empty($field['value']))
-                        <p class="text-[10px] text-amber-600 mt-0.5 italic">Menunggu data</p>
-                    @endif
-                </div>
-            </div>
-        @endforeach
     </div>
 
-    @unless($hasData)
-        <div class="mt-8 flex items-start gap-4 rounded-lg bg-amber-50 p-4 text-amber-800 ring-1 ring-inset ring-amber-600/10">
-            <x-heroicon-o-information-circle class="h-6 w-6 flex-shrink-0 text-amber-600" />
-            <div class="text-sm">
-                <p class="font-semibold">Perhatian</p>
-                <p class="mt-1 opacity-90">Beberapa data kelulusan Anda belum tersedia. Mohon segera menghubungi Bagian Akademik Fakultas Teknik jika Anda merasa sudah memenuhi syarat kelulusan.</p>
-            </div>
+    {{-- Grid Content --}}
+    <div class="p-6 sm:p-8 bg-slate-50/30">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            @foreach ($fields as $field)
+                <div class="group relative bg-white rounded-xl p-4 border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#1b3985]/30 hover:-translate-y-0.5">
+                    <div class="flex items-start gap-4">
+                        {{-- Icon --}}
+                        <div class="shrink-0">
+                            <div class="h-10 w-10 rounded-lg {{ $field['bg'] }} {{ $field['color'] }} flex items-center justify-center transition-transform group-hover:scale-110">
+                                <x-dynamic-component :component="$field['icon']" class="h-5 w-5" />
+                            </div>
+                        </div>
+
+                        {{-- Data --}}
+                        <div class="min-w-0 flex-1">
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">
+                                {{ $field['label'] }}
+                            </p>
+                            
+                            @if(filled($field['value']))
+                                <p class="text-sm font-semibold text-slate-800 truncate" title="{{ $field['value'] }}">
+                                    {{ $field['value'] }}
+                                </p>
+                            @else
+                                <p class="text-sm text-slate-400 italic flex items-center gap-1">
+                                    <span>-</span>
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
-    @endunless
+
+        {{-- Warning State if Empty --}}
+        @unless($hasData)
+            <div class="mt-8 rounded-xl bg-amber-50 border border-amber-100 p-4 flex gap-4 items-start animate-fade-in-up">
+                <x-heroicon-s-information-circle class="h-6 w-6 text-amber-500 shrink-0" />
+                <div class="space-y-1">
+                    <h3 class="text-sm font-bold text-amber-800">Sinkronisasi Data Diperlukan</h3>
+                    <p class="text-xs text-amber-700/80 leading-relaxed">
+                        Data kelulusan Anda belum tersedia atau belum lengkap. Jika Anda telah dinyatakan lulus, silakan hubungi bagian akademik Fakultas Teknik untuk pembaruan data PDDikti/SIAKAD.
+                    </p>
+                </div>
+            </div>
+        @endunless
+    </div>
 </section>

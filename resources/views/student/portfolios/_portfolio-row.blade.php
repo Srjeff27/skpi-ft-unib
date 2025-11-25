@@ -1,50 +1,124 @@
 @php
-    $p = $portfolio; // Menggunakan variabel $p agar lebih singkat
-    $statusConfig = [
-        'pending' => ['color' => 'bg-yellow-100 text-yellow-800', 'text' => 'Menunggu'],
-        'verified' => ['color' => 'bg-green-100 text-green-800', 'text' => 'Disetujui'],
-        'rejected' => ['color' => 'bg-red-100 text-red-800', 'text' => 'Ditolak'],
-        'requires_revision' => ['color' => 'bg-orange-100 text-orange-800', 'text' => 'Perbaikan'],
-    ];
-    $currentStatus = $statusConfig[$p->status] ?? ['color' => 'bg-gray-100 text-gray-800', 'text' => 'N/A'];
+    $p = $portfolio;
+    
+    // Konfigurasi Status & Warna
+    $statusConfig = match($p->status) {
+        'verified' => [
+            'label' => 'Disetujui',
+            'style' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+            'icon'  => 'heroicon-m-check-badge'
+        ],
+        'pending' => [
+            'label' => 'Menunggu',
+            'style' => 'bg-amber-50 text-amber-700 ring-amber-600/20',
+            'icon'  => 'heroicon-m-clock'
+        ],
+        'requires_revision' => [
+            'label' => 'Perlu Revisi',
+            'style' => 'bg-orange-50 text-orange-700 ring-orange-600/20',
+            'icon'  => 'heroicon-m-exclamation-triangle'
+        ],
+        'rejected' => [
+            'label' => 'Ditolak',
+            'style' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
+            'icon'  => 'heroicon-m-x-circle'
+        ],
+        default => [
+            'label' => 'Draft',
+            'style' => 'bg-slate-50 text-slate-600 ring-slate-500/20',
+            'icon'  => 'heroicon-m-document'
+        ]
+    };
+
+    $isEditable = in_array($p->status, ['pending', 'requires_revision']);
 @endphp
 
-<tr>
-    <td class="p-4 align-top">
-        <div class="font-bold text-gray-800">{{ Str::limit($p->judul_kegiatan, 45) }}</div>
-        <div class="text-gray-500">{{ $p->penyelenggara }}</div>
-    </td>
-    <td class="p-4 align-top">{{ $p->kategori_portfolio }}</td>
-    <td class="p-4 align-top whitespace-nowrap">{{ \Carbon\Carbon::parse($p->tanggal_dokumen)->isoFormat('D MMM YYYY') }}</td>
-    <td class="p-4 align-top">
-        <div class="flex items-center gap-2">
-            <span class="px-2 py-1 rounded-full text-xs font-medium {{ $currentStatus['color'] }}">{{ $currentStatus['text'] }}</span>
-            @if (($p->status === 'rejected' || $p->status === 'requires_revision') && $p->rejection_reason)
-                <div x-data="{ tooltip: false }" class="relative">
-                    <x-heroicon-s-information-circle @mouseenter="tooltip = true" @mouseleave="tooltip = false" class="w-5 h-5 text-gray-400 cursor-pointer" />
-                    <div x-show="tooltip" class="absolute z-10 bottom-full mb-2 w-60 p-2 text-xs text-white bg-gray-800 rounded-md shadow-lg" x-cloak>
-                        {{ $p->rejection_reason }}
-                    </div>
+<div class="group relative flex flex-col h-full bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+    
+    {{-- 1. Card Header: Status & Kategori --}}
+    <div class="px-5 pt-5 pb-3 flex items-start justify-between gap-4">
+        {{-- Kategori Badge --}}
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 text-xs font-semibold text-slate-600 uppercase tracking-wide">
+            <x-heroicon-m-tag class="w-3.5 h-3.5" />
+            {{ $p->kategori_portfolio }}
+        </div>
+
+        {{-- Status Badge --}}
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ring-1 ring-inset {{ $statusConfig['style'] }}">
+            <x-dynamic-component :component="$statusConfig['icon']" class="w-3.5 h-3.5" />
+            {{ $statusConfig['label'] }}
+        </div>
+    </div>
+
+    {{-- 2. Card Body: Konten Utama --}}
+    <div class="px-5 flex-1">
+        {{-- Judul --}}
+        <h3 class="text-lg font-bold text-slate-900 leading-snug group-hover:text-[#1b3985] transition-colors line-clamp-2" title="{{ $p->judul_kegiatan }}">
+            {{ $p->judul_kegiatan }}
+        </h3>
+        
+        {{-- Penyelenggara --}}
+        <div class="mt-2 flex items-center gap-2 text-sm text-slate-500">
+            <x-heroicon-o-building-office-2 class="w-4 h-4 shrink-0 text-slate-400" />
+            <span class="truncate">{{ $p->penyelenggara }}</span>
+        </div>
+
+        {{-- Tanggal --}}
+        <div class="mt-1 flex items-center gap-2 text-sm text-slate-500">
+            <x-heroicon-o-calendar class="w-4 h-4 shrink-0 text-slate-400" />
+            <span>{{ \Carbon\Carbon::parse($p->tanggal_dokumen)->isoFormat('D MMMM YYYY') }}</span>
+        </div>
+
+        {{-- Alert Revisi/Ditolak (Jika ada) --}}
+        @if (($p->status === 'rejected' || $p->status === 'requires_revision') && $p->rejection_reason)
+            <div class="mt-4 p-3 rounded-lg bg-orange-50 border border-orange-100 flex gap-3 items-start">
+                <x-heroicon-s-information-circle class="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                <div class="space-y-1">
+                    <p class="text-xs font-bold text-orange-800 uppercase">Catatan Verifikator:</p>
+                    <p class="text-xs text-slate-700 leading-relaxed italic">"{{ Str::limit($p->rejection_reason, 80) }}"</p>
                 </div>
-            @endif
-        </div>
-    </td>
-    <td class="p-4 align-top text-right whitespace-nowrap">
-        <div class="flex items-center justify-end gap-4 font-semibold">
-            <a href="{{ $p->link_sertifikat }}" target="_blank" class="text-blue-600 hover:underline">
-                Lihat Bukti
-            </a>
-            @if ($p->status === 'pending' || $p->status === 'requires_revision')
-                <a href="{{ route('student.portfolios.edit', $p) }}" class="text-indigo-600 hover:underline">
-                    Edit
+            </div>
+        @endif
+    </div>
+
+    {{-- 3. Card Footer: Actions --}}
+    <div class="mt-5 px-5 py-4 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl flex items-center justify-between gap-4">
+        
+        {{-- Link Bukti (Selalu Ada) --}}
+        <a href="{{ $p->link_sertifikat }}" target="_blank" 
+           class="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline decoration-blue-300 underline-offset-4 transition-all">
+            <x-heroicon-m-link class="w-4 h-4" />
+            Lihat Bukti
+        </a>
+
+        {{-- Edit & Delete (Hanya jika status Pending/Revisi) --}}
+        @if ($isEditable)
+            <div class="flex items-center gap-1">
+                {{-- Edit Button --}}
+                <a href="{{ route('student.portfolios.edit', $p) }}" 
+                   class="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all tooltip-trigger"
+                   title="Edit Data">
+                    <x-heroicon-m-pencil-square class="w-5 h-5" />
                 </a>
-                <x-confirm :action="route('student.portfolios.destroy', $p)" method="DELETE" type="error"
-                           title="Hapus Portofolio" message="Anda yakin ingin menghapus portofolio ini?">
-                    <x-slot name="trigger">
-                        <button type="button" class="text-red-600 hover:underline">Hapus</button>
-                    </x-slot>
-                </x-confirm>
-            @endif
-        </div>
-    </td>
-</tr>
+
+                {{-- Delete Button (Menggunakan Form Standard) --}}
+                <form action="{{ route('student.portfolios.destroy', $p) }}" method="POST" 
+                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus portofolio ini? Data tidak bisa dikembalikan.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
+                            title="Hapus Data">
+                        <x-heroicon-m-trash class="w-5 h-5" />
+                    </button>
+                </form>
+            </div>
+        @else
+            {{-- Indikator Locked --}}
+            <span class="text-xs text-slate-400 flex items-center gap-1 cursor-help" title="Data dikunci karena sedang diverifikasi atau sudah disetujui">
+                <x-heroicon-m-lock-closed class="w-3.5 h-3.5" />
+                Terkunci
+            </span>
+        @endif
+    </div>
+</div>

@@ -3,635 +3,540 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Surat Keterangan Pendamping Ijazah (SKPI) - {{ $user->name }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>SKPI - {{ $user->name }}</title>
     <style>
         @page {
             size: A4;
-            margin: 1.5cm;
+            margin: 1cm 1.5cm;
         }
 
         body {
-            font-family: 'Poppins', 'Arial', sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 10pt;
-            color: #333;
-            line-height: 1.15;
-            background-color: #fff;
-            position: relative;
+            color: #000;
+            line-height: 1.3;
         }
 
         .en {
             font-style: italic;
-            color: #555;
-            font-weight: 400;
-        }
-
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            opacity: 0.05;
-            z-index: -1;
-            pointer-events: none;
+            color: #000; /* PDF hitam pekat */
+            display: block;
+            font-weight: normal;
         }
 
         /* --- Header --- */
         .header {
             text-align: center;
-            padding-bottom: 10px;
-            border-bottom: 3px double #333;
             margin-bottom: 20px;
         }
 
-        .header img {
-            height: 80px;
-            margin-bottom: 10px;
-        }
-
-        .header .ministry {
-            font-size: 12pt;
-            font-weight: 600;
+        .header .faculty {
+            font-size: 14pt;
+            font-weight: bold;
             text-transform: uppercase;
         }
 
-        .header .university,
-        .header .faculty {
+        .header .univ {
             font-size: 14pt;
-            font-weight: 700;
+            font-weight: bold;
             text-transform: uppercase;
-            margin-top: 3px;
         }
 
-        .header .faculty {
-            font-size: 13pt;
-        }
-
-        .header .contact {
-            font-size: 8pt;
-            line-height: 1.3;
-            margin-top: 5px;
-            color: #444;
-        }
-
-        /* --- Document Title --- */
-        .doc-title-container {
+        .skpi-title {
             text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .doc-title {
-            font-size: 15pt;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .doc-subtitle {
-            font-size: 13pt;
-            font-style: italic;
-            color: #555;
-            margin-top: 2px;
-        }
-
-        .doc-number {
-            font-size: 10pt;
-            margin-top: 5px;
-        }
-
-        /* --- Sections --- */
-        .section {
-            margin-bottom: 20px;
-            page-break-inside: avoid;
-        }
-
-        .section-title {
-            font-weight: 600;
-            font-size: 11pt;
-            padding-bottom: 4px;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 10px;
-        }
-
-        .section-title .en {
-            font-weight: 500;
-        }
-
-        .section-content {
-            padding-left: 5px;
-        }
-
-        /* --- Info Table --- */
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .info-table td {
-            padding: 4px 0;
-            vertical-align: top;
-        }
-
-        .info-table td:first-child {
-            width: 220px;
-            font-weight: 500;
-        }
-
-        .info-table td:nth-child(2) {
-            width: 15px;
-            text-align: center;
-        }
-
-        /* --- CPL / Outcomes List --- */
-        .cpl-category {
-            font-weight: 600;
-            font-size: 10pt;
-            margin-top: 10px;
             margin-bottom: 5px;
-        }
-
-        .cpl-list {
-            padding-left: 20px;
-            margin: 0;
-            list-style-type: '•  ';
-        }
-
-        .cpl-list li {
-            margin-bottom: 8px;
-            padding-left: 5px;
-        }
-
-        .cpl-list .en {
-            display: block;
-        }
-
-
-        /* --- Achievements Table --- */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 5px;
-        }
-
-        .data-table th,
-        .data-table td {
-            border: 1px solid #e2e8f0;
-            padding: 8px 10px;
-            vertical-align: top;
-            text-align: left;
-        }
-
-        .data-table thead {
-            background-color: #f8f9fa;
-        }
-
-        .data-table th {
-            font-weight: 600;
-            font-size: 10pt;
-        }
-
-        .data-table tbody tr:nth-child(even) {
-            background-color: #fdfdff;
-        }
-
-        .data-table .en {
-            font-size: 9pt;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .data-table .no-data {
-            text-align: center;
-            padding: 20px;
-            color: #777;
-            font-style: italic;
-        }
-
-        /* --- Endorsement Section --- */
-        .endorsement-table {
-            width: 100%;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .endorsement-content {
-            vertical-align: top;
-        }
-
-        .signature-box {
-            height: 70px;
-            margin: 10px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .signature-box img {
-            height: 70px;
-            object-fit: contain;
-        }
-
-        .signature-box .placeholder {
-            color: #aaa;
-            font-style: italic;
-        }
-
-        .official-name {
-            font-weight: 700;
-            text-decoration: underline;
-            text-decoration-thickness: 1px;
-            text-underline-offset: 3px;
-        }
-
-        .qr-section {
             margin-top: 15px;
         }
 
-        .qr-section img {
-            width: 90px;
-            height: 90px;
+        .skpi-title h1 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 0;
+            text-transform: uppercase;
+            text-decoration: underline;
         }
 
-        .qr-section .qr-label {
-            font-size: 8pt;
-            margin-top: 5px;
+        .skpi-title h2 {
+            font-size: 12pt;
+            font-weight: bold;
+            font-style: italic;
+            margin: 2px 0;
+        }
+
+        .skpi-number {
+            text-align: center;
+            font-size: 11pt;
+            margin-bottom: 10px;
+        }
+
+        .skpi-desc {
+            text-align: center;
+            font-size: 9pt;
+            margin-bottom: 20px;
+            padding: 0 10%;
+        }
+
+        /* --- Sections & Tables --- */
+        .section-box {
+            border: 1px solid #000;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+        
+        /* PDF asli tidak pakai kotak border per section, tapi spacing headers */
+        .section-header {
+            font-weight: bold;
+            font-size: 11pt;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        table.info-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+        }
+
+        table.info-table td {
+            vertical-align: top;
+            padding: 2px 0;
+        }
+
+        /* Kolom Penomoran (1.1, 1.2) */
+        .col-num { width: 30px; font-weight: bold; }
+        /* Kolom Label */
+        .col-label { width: 220px; }
+        /* Kolom Titik Dua */
+        .col-sep { width: 15px; text-align: center; }
+        /* Kolom Isi */
+        .col-val { font-weight: bold; }
+
+        /* --- Section 3.2 Two Columns --- */
+        .split-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .split-table td {
+            width: 50%;
+            vertical-align: top;
+            padding: 0 10px;
+            border: 1px solid #000; /* PDF Section 3.2 often has borders or strictly separated */
+        }
+        
+        /* Modifikasi agar mirip PDF: Borderless outer, content lists */
+        .two-col-container {
+            width: 100%;
+            display: table;
+        }
+        .col-left {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            padding-right: 10px;
+            border-right: 1px solid #ccc;
+        }
+        .col-right {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            padding-left: 10px;
+        }
+
+        /* --- Lists --- */
+        ol.custom-list {
+            padding-left: 20px;
+            margin: 0;
+            list-style-type: lower-alpha;
+        }
+        ol.custom-list li {
+            margin-bottom: 3px;
+            padding-left: 5px;
         }
 
         /* --- Footer --- */
-        footer {
-            position: fixed;
-            bottom: -1.5cm;
-            left: -1.5cm;
-            right: -1.5cm;
-            height: 30px;
-            text-align: center;
-            font-size: 9pt;
-            color: #888;
-            border-top: 1px solid #ddd;
-            padding-top: 8px;
-            background-color: #fff;
+        .footer-signature {
+            margin-top: 30px;
+            width: 100%;
         }
+        .sign-box {
+            float: right;
+            width: 40%;
+            text-align: left; /* PDF aligns signature text left usually, but standard is center of box */
+        }
+
     </style>
 </head>
 
 <body>
     @php
-        use App\Models\Setting;
-        use App\Models\Curriculum;
-        use App\Models\CplItem;
-        use App\Models\Finalization;
-        use Illuminate\Support\Facades\Schema;
-        use App\Models\Official;
         use Carbon\Carbon;
-
-        // Settings (institution)
-        $univ = Setting::get('univ_name', 'Universitas Bengkulu');
-        $faculty = Setting::get('faculty_name', 'Fakultas Teknik');
-        $skpt = Setting::get('sk_pt');
-        $grading = Setting::get('grading');
-        $admission = Setting::get('admission');
-        $languages = Setting::get('languages', 'Indonesia & English');
-        $contact = Setting::get('contact');
-        $logoPath = Setting::get('logo_path');
-
-        // Finalization & Official for graduation period
-        $periodYm = $user->tanggal_lulus ? date('Y-m', strtotime($user->tanggal_lulus)) : null;
-        $fin = null;
-        if ($periodYm && Schema::hasTable('finalizations')) {
-            $fin = Finalization::where('period_ym', $periodYm)->with('official')->first();
-        }
-        $official = $fin?->official ?: Official::where('is_active', true)->first();
-        $signatureSrc = null;
-        if ($official?->signature_path) {
-            $local = storage_path('app/public/' . $official->signature_path);
-            if (is_file($local)) {
-                $signatureSrc = 'data:image/png;base64,' . base64_encode(file_get_contents($local));
-            }
-        }
-
-        // Active curriculum & CPL
-        $activeCurr = $user->prodi_id
-            ? Curriculum::where('prodi_id', $user->prodi_id)->where('is_active', true)->first()
-            : null;
-        $cpl = collect();
-        if ($activeCurr) {
-            $cpl = CplItem::where('curriculum_id', $activeCurr->id)
-                ->orderBy('category')
-                ->orderBy('order')
-                ->get()
-                ->groupBy('category');
-        }
-
-        // Set locale for date formatting
+        // Gunakan locale Indonesia
         Carbon::setLocale('id');
 
+        // Helper date
+        $dateLulus = $user->tanggal_lulus ? Carbon::parse($user->tanggal_lulus)->translatedFormat('d F Y') : '-';
+        $dateLahir = $user->tanggal_lahir ? Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : '-';
+        $dateNow = Carbon::now()->translatedFormat('d F Y');
     @endphp
 
-    @if ($logoPath && is_file(storage_path('app/public/' . $logoPath)))
-        <div class="watermark">
-            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $logoPath))) }}"
-                width="350" />
-        </div>
-    @endif
+    <div class="header">
+        <div class="faculty">FAKULTAS TEKNIK</div>
+        <div class="univ">UNIVERSITAS BENGKULU</div>
+    </div>
 
-    <footer>
-        Nomor SKPI / <span class="en">Diploma Supplement Number</span>: {{ $user->nomor_skpi ?? '-' }}
-    </footer>
+    <div class="skpi-title">
+        <h1>SURAT KETERANGAN PENDAMPING IJAZAH</h1>
+        <h2>DIPLOMA SUPPLEMENT</h2>
+    </div>
+    <div class="skpi-number">
+        Nomor: {{ $user->nomor_skpi ?? '.......................' }}
+    </div>
 
-    <header class="header">
-        @if ($logoPath && is_file(storage_path('app/public/' . $logoPath)))
-            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $logoPath))) }}"
-                alt="Logo">
-        @endif
-        <div class="ministry">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI</div>
-        <div class="university">{{ $univ }}</div>
-        <div class="faculty">{{ $faculty }}</div>
-        <div class="contact">{!! nl2br(e($contact)) !!}</div>
-    </header>
+    <div class="skpi-desc">
+        Surat Keterangan Pendamping Ijazah sebagai pelengkap Ijazah yang menerangkan capaian pembelajaran dan prestasi dari pemegang Ijazah selama studi<br>
+        <span class="en">The Diploma Supplement accompanies a higher education certificate providing a standardized description of the nature, level, content and status of studies completed by its holder</span>
+    </div>
 
-    <main>
-        <div class="doc-title-container">
-            <div class="doc-title">Surat Keterangan Pendamping Ijazah</div>
-            <div class="doc-subtitle">Diploma Supplement</div>
-            <div class="doc-number">Nomor: {{ $user->nomor_skpi ?? '-' }}</div>
-        </div>
+    <div class="section-header">
+        1. INFORMASI TENTANG IDENTITAS DIRI PEMEGANG SKPI<br>
+        <span class="en" style="font-weight:normal; text-transform:none;">INFORMATION OF PERSONAL IDENTITY DIPLOMA SUPPLEMENT HOLDER</span>
+    </div>
 
+    <table class="info-table">
+        <tr>
+            <td class="col-num">1.1</td>
+            <td class="col-label">Nama Lengkap<span class="en">Name</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">{{ strtoupper($user->name) }}</td>
+        </tr>
+        <tr>
+            <td class="col-num">1.2</td>
+            <td class="col-label">Tempat dan Tanggal Lahir<span class="en">Place and Date of Birth</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                {{ $user->tempat_lahir }}, {{ $dateLahir }}
+                <span class="en" style="font-weight:bold">{{ $user->tempat_lahir }}, {{ $user->tanggal_lahir ? Carbon::parse($user->tanggal_lahir)->format('F d, Y') : '-' }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">1.3</td>
+            <td class="col-label">Nomor Induk Mahasiswa<span class="en">Student Identification Number</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">{{ $user->nim }}</td>
+        </tr>
+        <tr>
+            <td class="col-num">1.4</td>
+            <td class="col-label">Tahun Masuk<span class="en">Admission Year</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">{{ substr($user->nim, 3, 4) ?? '20..' }} </td>
+        </tr>
+        <tr>
+            <td class="col-num">1.5</td>
+            <td class="col-label">Tanggal Lulus<span class="en">Date of Graduation</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                {{ $dateLulus }}
+                <span class="en" style="font-weight:bold">
+                     {{ $user->tanggal_lulus ? Carbon::parse($user->tanggal_lulus)->format('F d, Y') : '-' }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">1.6</td>
+            <td class="col-label">Nomor Ijazah/Nomor Seri<span class="en">Certificate Number</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">{{ $user->nomor_ijazah }}</td>
+        </tr>
+        <tr>
+            <td class="col-num">1.7</td>
+            <td class="col-label">Gelar<span class="en">Title</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                {{ $user->gelar_id ?? 'Sarjana Komputer (S.Kom)' }}
+                <span class="en" style="font-weight:bold">{{ $user->gelar_en ?? 'Bachelor of Computer Science' }}</span>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <div class="section-header">
+        2. INFORMASI TENTANG IDENTITAS PENYELENGGARA PROGRAM<br>
+        <span class="en" style="font-weight:normal; text-transform:none;">INFORMATION OF IDENTITY HIGHER EDUCATION INSTITUTION</span>
+    </div>
+
+    <table class="info-table">
+        <tr>
+            <td class="col-num">2.1</td>
+            <td class="col-label">Surat Keterangan Pendirian<span class="en">Certificate of Establishment</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Keputusan Presiden RI Nomor 17 Tahun 1982
+                <span class="en">Republic of Indonesia Presidential Instruction Number 17, 1982</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.2</td>
+            <td class="col-label">Nama Perguruan Tinggi<span class="en">Name of University</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Universitas Bengkulu
+                <span class="en">Bengkulu University</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.3</td>
+            <td class="col-label">Fakultas<span class="en">Faculty</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Teknik
+                <span class="en">Engineering</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.4</td>
+            <td class="col-label">Nama Program Studi<span class="en">Study Program</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                {{ $user->prodi->nama_prodi ?? 'Sistem Informasi' }}
+                <span class="en">{{ $user->prodi->nama_en ?? 'Information Systems' }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.5</td>
+            <td class="col-label">Jenis Pendidikan<span class="en">Classification of Study</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Akademik
+                <span class="en">Academic</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.6</td>
+            <td class="col-label">Jenjang Pendidikan<span class="en">Education Level</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Strata 1 (S-1)
+                <span class="en">Bachelor Degree</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.7</td>
+            <td class="col-label">Jenjang Kualifikasi Sesuai KKNI<span class="en">Qualification Level of KKNI</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Level 6
+                <span class="en">Level 6</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.8</td>
+            <td class="col-label">Persyaratan Penerimaan<span class="en">Admission Requirements</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Lulus Pendidikan Menengah Atas atau Sederajat
+                <span class="en">Graduated From High School Or Similar Level Of Education</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.9</td>
+            <td class="col-label">Bahasa Pengantar Kuliah<span class="en">Medium of Instruction in Lecture</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Bahasa Indonesia
+                <span class="en">Indonesian</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.10</td>
+            <td class="col-label">Sistem Penilaian<span class="en">Evaluation System</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Skala 1-4; A: 4.00, A-:3.75, B+: 3.50, B: 3.00, B-: 2.75, C+: 2.50, C: 2.00, D: 1.00, E: 0
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.11</td>
+            <td class="col-label">Lama Studi Reguler<span class="en">Regular Study Period</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                8 Semester
+                <span class="en">8 Semesters</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-num">2.12</td>
+            <td class="col-label">Jenis dan Jenjang Pendidikan Lanjutan<span class="en">Access to Further Study</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                Program Magister dan Doktoral
+                <span class="en">Master and Doctoral Program</span>
+            </td>
+        </tr>
+         <tr>
+            <td class="col-num">2.13</td>
+            <td class="col-label">Status Profesi<span class="en">Professional Status</span></td>
+            <td class="col-sep">:</td>
+            <td class="col-val">
+                -
+            </td>
+        </tr>
+    </table>
+    
+    <div style="page-break-after: always;"></div>
+
+    <div class="section-header">
+        3. INFORMASI TENTANG KUALIFIKASI DAN HASIL YANG DICAPAI<br>
+        <span class="en" style="font-weight:normal; text-transform:none;">INFORMATION OF QUALIFICATION AND LEARNING OUTCOME</span>
+    </div>
+
+    <div style="margin-left: 30px; margin-bottom: 10px; font-weight: bold;">
+        3.1 Capaian Pembelajaran <span class="en" style="display:inline; font-weight:normal;">/ Learning Outcomes</span>
+    </div>
+
+    <table width="100%" style="border-collapse: collapse;">
+        <tr>
+            <td width="50%" style="font-weight:bold; text-align:center; border-bottom:1px solid #000;">Bahasa Indonesia</td>
+            <td width="50%" style="font-weight:bold; text-align:center; border-bottom:1px solid #000;" class="en">English</td>
+        </tr>
+        
         @php
-            $achievements = $verifiedPortfolios ?? collect();
-            $organizationPortfolios = $achievements->filter(fn($p) => str_contains(strtolower($p->kategori_portfolio ?? ''), 'organisasi'));
-            $internshipPortfolios = $achievements->filter(fn($p) => str_contains(strtolower($p->kategori_portfolio ?? ''), 'magang') || str_contains(strtolower($p->kategori_portfolio ?? ''), 'intern'));
-            $finalProjectId = $user->tugas_akhir_id ?? null;
-            $finalProjectEn = $user->tugas_akhir_en ?? null;
-
-            $letter = function ($index) {
-                return chr(97 + $index) . '.';
-            };
+            $cplCategories = [
+                'sikap' => ['Sikap', 'Attitude'],
+                'kerja' => ['Kemampuan di Bidang Kerja', 'Ability in The Field of Work'],
+                'pengetahuan' => ['Pengetahuan yang Dikuasai', 'Ability of Knowledge'],
+                'umum' => ['Kemampuan Umum', 'General Skills'],
+            ];
+            // Simulasi data CPL jika variabel $cpl tidak tersedia dari controller
+            $cpl = $cpl ?? collect(); 
         @endphp
 
-        <div class="section">
-            <div class="section-title">1. INFORMASI MENGENAI IDENTITAS PEMEGANG SKPI <span class="en">/ Information
-                    Identifying the Holder of the Diploma Supplement</span></div>
-            <div class="section-content">
-                <table class="info-table">
-                    <tr>
-                        <td>Nama Lengkap <br><span class="en">Full Name</span></td>
-                        <td>:</td>
-                        <td>{{ $user->name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Tempat & Tgl. Lahir <br><span class="en">Place & Date of Birth</span></td>
-                        <td>:</td>
-                        <td>{{ trim($user->tempat_lahir . ' ' . ($user->tanggal_lahir ? ', ' . Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : '')) ?: '-' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>NIM <br><span class="en">Student ID Number</span></td>
-                        <td>:</td>
-                        <td>{{ $user->nim ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Tanggal Lulus <br><span class="en">Date of Graduation</span></td>
-                        <td>:</td>
-                        <td>{{ $user->tanggal_lulus ? Carbon::parse($user->tanggal_lulus)->translatedFormat('d F Y') : '-' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>No. Ijazah <br><span class="en">Diploma Number</span></td>
-                        <td>:</td>
-                        <td>{{ $user->nomor_ijazah ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Gelar <br><span class="en">Title</span></td>
-                        <td>:</td>
-                        <td>
-                            {{ $user->gelar_id ?? '-' }} <br>
-                            <span class="en">{{ $user->gelar_en ?? ($user->gelar_id ?? '-') }}</span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+        @foreach($cplCategories as $catKey => $titles)
+        <tr>
+            <td style="font-weight:bold; padding-top:10px;">{{ $titles[0] }}</td>
+            <td style="font-weight:bold; padding-top:10px;" class="en">{{ $titles[1] }}</td>
+        </tr>
+        <tr>
+            <td style="vertical-align:top;">
+                <ol class="custom-list">
+                    @if(isset($cpl[$catKey]))
+                        @foreach($cpl[$catKey] as $item)
+                            <li>{{ $item->desc_id }}</li>
+                        @endforeach
+                    @else
+                        <li>Mampu menunjukkan sikap religius...</li>
+                    @endif
+                </ol>
+            </td>
+            <td style="vertical-align:top;">
+                <ol class="custom-list">
+                    @if(isset($cpl[$catKey]))
+                        @foreach($cpl[$catKey] as $item)
+                            <li class="en">{{ $item->desc_en }}</li>
+                        @endforeach
+                    @else
+                        <li class="en">Able to show a religious attitude...</li>
+                    @endif
+                </ol>
+            </td>
+        </tr>
+        @endforeach
+    </table>
+
+    <div style="page-break-after: always;"></div>
+
+    <div style="margin-left: 0px; margin-bottom: 10px; font-weight: bold;">
+        3.2 Informasi Tambahan <span class="en" style="display:inline; font-weight:normal;">/ Additional Information</span>
+    </div>
+
+    <table class="split-table" border="1">
+        <thead>
+            <tr>
+                <th style="padding:5px; background:#f0f0f0;">Bahasa Indonesia</th>
+                <th style="padding:5px; background:#f0f0f0;" class="en">English</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="vertical-align:top; padding:10px;">
+                    <strong>Penghargaan dan Pemenang Kejuaraan</strong>
+                    <ol class="custom-list">
+                        @foreach($verifiedPortfolios->where('kategori', 'Prestasi') as $p)
+                            <li>{{ $p->judul_id }}</li>
+                        @endforeach
+                    </ol>
+                    
+                    <br>
+                    <strong>Pengalaman Organisasi</strong>
+                    <ol class="custom-list">
+                         @foreach($verifiedPortfolios->where('kategori', 'Organisasi') as $p)
+                            <li>{{ $p->judul_id }}</li>
+                        @endforeach
+                    </ol>
+
+                    <br>
+                    <strong>Spesifikasi Tugas Akhir</strong>
+                    <div style="padding-left:20px;">
+                        {{ $user->tugas_akhir_id ?? '-' }}
+                    </div>
+
+                     <br>
+                    <strong>Magang Industri</strong>
+                     <ol class="custom-list">
+                         @foreach($verifiedPortfolios->where('kategori', 'Magang') as $p)
+                            <li>{{ $p->judul_id }}</li>
+                        @endforeach
+                    </ol>
+                </td>
+
+                <td style="vertical-align:top; padding:10px;">
+                    <strong class="en">Certificate of Honors and Awards</strong>
+                    <ol class="custom-list">
+                        @foreach($verifiedPortfolios->where('kategori', 'Prestasi') as $p)
+                            <li class="en">{{ $p->judul_en ?? $p->judul_id }}</li>
+                        @endforeach
+                    </ol>
+
+                    <br>
+                    <strong class="en">Organizational Experiences</strong>
+                    <ol class="custom-list">
+                         @foreach($verifiedPortfolios->where('kategori', 'Organisasi') as $p)
+                            <li class="en">{{ $p->judul_en ?? $p->judul_id }}</li>
+                        @endforeach
+                    </ol>
+
+                    <br>
+                    <strong class="en">Specification of The Final Project</strong>
+                    <div style="padding-left:20px;" class="en">
+                        {{ $user->tugas_akhir_en ?? ($user->tugas_akhir_id ?? '-') }}
+                    </div>
+                    
+                    <br>
+                    <strong class="en">Internship</strong>
+                     <ol class="custom-list">
+                         @foreach($verifiedPortfolios->where('kategori', 'Magang') as $p)
+                            <li class="en">{{ $p->judul_en ?? $p->judul_id }}</li>
+                        @endforeach
+                    </ol>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <div class="footer-signature">
+        <div class="sign-box">
+            Bengkulu, {{ $dateNow }}<br>
+            Dekan Fakultas Teknik,<br>
+            <br><br><br><br> <span style="font-weight:bold; text-decoration:underline;">Faisal Hadi, ST, M.T</span><br>
+            NIP. 197707132002121005
         </div>
-
-        <div class="section">
-            <div class="section-title">2. INFORMASI MENGENAI IDENTITAS PENYELENGGARA PROGRAM <span class="en">/
-                    Information Identifying the Awarding Institution</span></div>
-            <div class="section-content">
-                <table class="info-table">
-                    <tr>
-                        <td>SK Pendirian PT <br><span class="en">Decree</span></td>
-                        <td>:</td>
-                        <td>{{ $skpt ?: '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Program Studi <br><span class="en">Study Program</span></td>
-                        <td>:</td>
-                        <td>{{ optional($user->prodi)->nama_prodi ?? '-' }}
-                            ({{ optional($user->prodi)->jenjang ?? '-' }})</td>
-                    </tr>
-                    <tr>
-                        <td>Persyaratan Penerimaan <br><span class="en">Entry Requirements</span></td>
-                        <td>:</td>
-                        <td>{!! nl2br(e($admission)) !!}</td>
-                    </tr>
-                    <tr>
-                        <td>Bahasa Pengantar <br><span class="en">Language of Instruction</span></td>
-                        <td>:</td>
-                        <td>{{ $languages }}</td>
-                    </tr>
-                    <tr>
-                        <td>Sistem Penilaian <br><span class="en">Grading System</span></td>
-                        <td>:</td>
-                        <td>{!! nl2br(e($grading)) !!}</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">3. INFORMASI MENGENAI KUALIFIKASI DAN HASIL YANG DICAPAI <span class="en">/
-                    Information on the Qualification and Outcomes</span></div>
-            <div class="section-content">
-                @if ($activeCurr)
-                    <div style="font-size: 10pt; margin-bottom: 10px;">Kurikulum <span class="en">/
-                            Curriculum</span>: <strong>{{ $activeCurr->name }}
-                            ({{ $activeCurr->year ?? '-' }})</strong></div>
-                @endif
-                @php
-                    $cplLabels = [
-                        'sikap' => 'a. Sikap dan Tata Nilai / a. Attitude and Values',
-                        'pengetahuan' => 'b. Penguasaan Pengetahuan / b. Knowledge',
-                        'umum' => 'c. Keterampilan Umum / c. General Skills',
-                        'khusus' => 'd. Keterampilan Khusus / d. Specific Skills',
-                    ];
-                @endphp
-                @foreach ($cplLabels as $cat => $label)
-                    <div class="cpl-category">{{ $label }}</div>
-                    <ul class="cpl-list">
-                        @forelse(($cpl[$cat] ?? collect()) as $it)
-                            <li>{!! e($it->desc_id) !!}<span class="en">{!! e($it->desc_en) !!}</span></li>
-                        @empty
-                            <li><span class="en">- Not Available -</span></li>
-                        @endforelse
-                    </ul>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">3.2 INFORMASI TAMBAHAN <span class="en">/ Additional Information</span></div>
-            <div class="section-content">
-                <table style="width:100%; border-collapse:collapse; font-size:10pt;">
-                    <tr>
-                        <td style="width:50%; text-align:center; font-weight:700;">Bahasa Indonesia</td>
-                        <td style="width:50%; text-align:center; font-weight:700;" class="en">Bahasa Inggris</td>
-                    </tr>
-                    <tr>
-                        <td style="vertical-align:top; padding-top:8px;">
-                            <div style="text-align:center; font-weight:700; margin-bottom:6px;">Penghargaan dan Pemenang Kejuaraan</div>
-                            <ol style="margin:0; padding-left:16px;">
-                                @forelse($achievements as $idx => $p)
-                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
-                                @empty
-                                    <li>-</li>
-                                @endforelse
-                            </ol>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Pengalaman Organisasi</div>
-                            <ol style="margin:0; padding-left:16px;">
-                                @forelse($organizationPortfolios as $p)
-                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
-                                @empty
-                                    <li>-</li>
-                                @endforelse
-                            </ol>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Spesifikasi Tugas Akhir</div>
-                            <div style="text-align:center;">{{ $finalProjectId ?: '-' }}</div>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Bahasa Internasional</div>
-                            <div style="text-align:center;">{{ $user->bahasa_internasional ?? '-' }}</div>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Magang / Industri</div>
-                            <ol style="margin:0; padding-left:16px;">
-                                @forelse($internshipPortfolios as $p)
-                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_id ?? $p->judul_kegiatan }}</li>
-                                @empty
-                                    <li>-</li>
-                                @endforelse
-                            </ol>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;">Pendidikan Karakter</div>
-                            <div style="text-align:center;">{{ $user->pendidikan_karakter ?? '-' }}</div>
-                        </td>
-                        <td style="vertical-align:top; padding-top:8px;">
-                            <div style="text-align:center; font-weight:700; margin-bottom:6px;" class="en">Certificates of Honors and Awards</div>
-                            <ol style="margin:0; padding-left:16px;">
-                                @forelse($achievements as $idx => $p)
-                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_en ?? $p->judul_kegiatan }}</li>
-                                @empty
-                                    <li>-</li>
-                                @endforelse
-                            </ol>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">Organizational Experiences</div>
-                            <ol style="margin:0; padding-left:16px;">
-                                @forelse($organizationPortfolios as $p)
-                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_en ?? $p->judul_kegiatan }}</li>
-                                @empty
-                                    <li>-</li>
-                                @endforelse
-                            </ol>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">Specification of The Final Project</div>
-                            <div style="text-align:center;">{{ $finalProjectEn ?: ($finalProjectId ?: '-') }}</div>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">International Language</div>
-                            <div style="text-align:center;">{{ $user->international_language ?? ($user->bahasa_internasional ?? '-') }}</div>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">Internship</div>
-                            <ol style="margin:0; padding-left:16px;">
-                                @forelse($internshipPortfolios as $p)
-                                    <li style="margin-bottom:2px;">{{ $p->nama_dokumen_en ?? $p->judul_kegiatan }}</li>
-                                @empty
-                                    <li>-</li>
-                                @endforelse
-                            </ol>
-
-                            <div style="text-align:center; font-weight:700; margin:14px 0 6px;" class="en">Soft Skill Training</div>
-                            <div style="text-align:center;">{{ $user->soft_skill_training ?? ($user->pendidikan_karakter ?? '-') }}</div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">4. PRESTASI DAN PENGHARGAAN <span class="en">/ Achievements and Awards</span>
-            </div>
-            <div class="section-content">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Uraian Kegiatan <span class="en">/ Description</span></th>
-                            <th style="width:25%">Tanggal <span class="en">/ Date</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($verifiedPortfolios as $p)
-                            <tr>
-                                <td>
-                                    <strong>{{ $p->judul_kegiatan }}</strong>
-                                    <span class="en">{{ $p->kategori_portfolio }}</span>
-                                </td>
-                                <td>{{ $p->tanggal_dokumen ? Carbon::parse($p->tanggal_dokumen)->translatedFormat('d M Y') : '-' }}
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="2" class="no-data"><span class="en">No verified achievements
-                                        recorded.</span></td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">5. PENGESAHAN SKPI <span class="en">/ Official Endorsement</span></div>
-            <div class="section-content">
-                <table class="endorsement-table">
-                    <tr>
-                        <td class="endorsement-content">
-                            Bengkulu, {{ Carbon::now()->translatedFormat('d F Y') }}
-                            <br>
-                            {{ $official->jabatan ?? 'Pejabat Berwenang' }}
-                            <div class="signature-box">
-                                @if ($signatureSrc)
-                                    <img src="{{ $signatureSrc }}" alt="Signature" />
-                                @else
-                                    <div class="placeholder">[ Digital Signature ]</div>
-                                @endif
-                            </div>
-                            <div class="official-name">{{ $official->display_name ?? '-' }}</div>
-                            <div>NIP. {{ $official->nip ?? '-' }}</div>
-
-                            <div class="qr-section">
-                                @if (isset($qrBase64) && $qrBase64)
-                                    <img src="{{ $qrBase64 }}" alt="QR Code" />
-                                    <div class="qr-label">Verifikasi Keaslian Dokumen <br><span class="en">Verify
-                                            Document Authenticity</span></div>
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </main>
+        <div style="clear:both;"></div>
+    </div>
 
 </body>
-
 </html>

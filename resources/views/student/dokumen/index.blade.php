@@ -1,77 +1,144 @@
 <x-app-layout>
-    <div class="space-y-6">
-        <div class="relative rounded-xl bg-gradient-to-r from-[#1b3985] to-[#2b50a8] p-6 overflow-hidden">
-            <div class="relative z-10">
-                <h1 class="text-2xl font-bold text-white">Dokumen SKPI</h1>
-                <p class="text-blue-200 mt-1 max-w-lg">Pratinjau dan ajukan Surat Keterangan Pendamping Ijazah (SKPI) Anda di sini. Pastikan semua data sudah benar sebelum mengajukan.</p>
+    <div class="space-y-8 pb-12">
+        
+        {{-- 1. Header Section --}}
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-[#1b3985] to-[#2b50a8] shadow-xl">
+            {{-- Decorative Background --}}
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 -mb-10 -ml-10 h-40 w-40 rounded-full bg-blue-400/10 blur-2xl pointer-events-none"></div>
+
+            <div class="relative z-10 p-6 sm:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div class="space-y-2">
+                    <h1 class="text-3xl font-bold text-white tracking-tight">Dokumen SKPI</h1>
+                    <p class="text-blue-100/90 text-sm md:text-base max-w-2xl leading-relaxed">
+                        Pratinjau Surat Keterangan Pendamping Ijazah Anda. Pastikan seluruh data portofolio dan profil telah valid sebelum melakukan pengajuan final.
+                    </p>
+                </div>
+                <div class="hidden md:block">
+                    <div class="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-lg">
+                        <x-heroicon-o-document-text class="w-6 h-6" />
+                    </div>
+                </div>
             </div>
-            <div class="absolute -bottom-12 -right-12 w-40 h-40 rounded-full bg-blue-800 opacity-50"></div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl border border-gray-100">
-                    <div class="p-4 sm:p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-800">Pratinjau Dokumen</h3>
-                        <p class="text-sm text-gray-500 mt-1">Ini adalah tampilan SKPI Anda berdasarkan data profil dan portofolio yang telah disetujui.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {{-- 2. Left Column: Document Preview (Wider) --}}
+            <div class="lg:col-span-8 space-y-4">
+                {{-- Preview Toolbar --}}
+                <div class="flex items-center justify-between px-1">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <span class="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+                        Live Preview
+                    </h3>
+                    <div class="text-xs text-slate-500 font-medium bg-slate-100 px-2 py-1 rounded-md">
+                        Format A4
                     </div>
-                    <div class="p-4 sm:p-6 bg-gray-50/50">
-                        <div x-data="{ loading: true }" class="relative aspect-[1/1.414] w-full max-w-2xl mx-auto bg-white rounded-lg shadow-lg border">
-                            <div x-show="loading" class="absolute inset-0 flex items-center justify-center bg-gray-100">
-                                <div class="text-center">
-                                    <svg class="mx-auto h-8 w-8 text-gray-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                    <p class="mt-2 text-sm text-gray-500">Memuat pratinjau...</p>
-                                </div>
-                            </div>
-                            <iframe @load="loading = false" src="{{ route('student.skpi.download') }}" class="w-full h-full border-0" title="Pratinjau SKPI"></iframe>
+                </div>
+
+                {{-- PDF Container --}}
+                <div class="bg-slate-200/50 rounded-2xl border border-slate-300 p-4 sm:p-8 shadow-inner overflow-hidden">
+                    <div x-data="{ loading: true }" class="relative w-full max-w-[210mm] mx-auto bg-white shadow-2xl rounded-sm ring-1 ring-slate-900/5 aspect-[1/1.414]">
+                        
+                        {{-- Loading Overlay --}}
+                        <div x-show="loading" 
+                             x-transition:leave="transition ease-in duration-300"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white">
+                            <svg class="animate-spin h-10 w-10 text-[#1b3985] mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span class="text-sm font-medium text-slate-500">Merender Dokumen...</span>
                         </div>
+
+                        {{-- Iframe --}}
+                        <iframe @load="loading = false" 
+                                src="{{ route('student.skpi.download') }}#toolbar=0&view=FitH" 
+                                class="w-full h-full border-0" 
+                                title="Pratinjau SKPI">
+                        </iframe>
                     </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl border border-gray-100">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-800">Status Pengajuan</h3>
-                        <div class="mt-4 flex items-center gap-3 rounded-lg bg-blue-50 text-blue-900 border border-blue-200 p-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            <span class="font-semibold text-sm">Belum Diajukan</span>
+            {{-- 3. Right Column: Status & Actions (Narrower) --}}
+            <div class="lg:col-span-4 space-y-6 sticky top-24">
+                
+                {{-- Status Card --}}
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Status Dokumen</h3>
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-blue-50 border border-blue-100">
+                        <div class="shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                <x-heroicon-s-clock class="w-6 h-6" />
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-blue-900 font-bold text-lg">Draft</p>
+                            <p class="text-blue-700/80 text-xs">Belum diajukan ke admin</p>
                         </div>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl border border-gray-100">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-800">Langkah Pengajuan</h3>
-                        <ul class="mt-4 space-y-4 text-sm">
-                            <li class="flex gap-3">
-                                <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-green-100 text-green-700 font-bold">1</span>
-                                <span class="text-gray-600">Periksa kembali <a href="{{ route('profile.edit') }}" class="font-medium text-[#1b3985] hover:underline">data profil</a> Anda.</span>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-green-100 text-green-700 font-bold">2</span>
-                                <span class="text-gray-600">Pastikan semua <a href="{{ route('student.portfolios.index') }}" class="font-medium text-[#1b3985] hover:underline">portofolio</a> yang ingin dicantumkan telah disetujui.</span>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-green-100 text-green-700 font-bold">3</span>
-                                <span class="text-gray-600">Periksa dokumen pada panel pratinjau.</span>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-gray-200 text-gray-700 font-bold">4</span>
-                                <span class="text-gray-600">Jika semua sudah benar, klik tombol "Ajukan SKPI".</span>
-                            </li>
-                        </ul>
+
+                {{-- Action Card --}}
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="text-sm font-bold text-slate-800 mb-1">Aksi Dokumen</h3>
+                        <p class="text-xs text-slate-500">Langkah sebelum mengajukan SKPI.</p>
                     </div>
-                    <div class="p-6 bg-gray-50/50 border-t border-gray-200 space-y-3">
-                        <form method="POST" action="{{ route('student.skpi.apply') }}" onsubmit="return confirm('Anda yakin ingin mengajukan SKPI sekarang? Pastikan semua data sudah benar.')">
+                    
+                    {{-- Steps Timeline --}}
+                    <div class="px-6 py-6">
+                        <ol class="relative border-l border-slate-200 space-y-6 ml-2">                  
+                            <li class="ml-6">
+                                <span class="absolute flex items-center justify-center w-6 h-6 bg-emerald-100 rounded-full -left-3 ring-4 ring-white">
+                                    <x-heroicon-s-check class="w-3.5 h-3.5 text-emerald-600" />
+                                </span>
+                                <h3 class="flex items-center mb-1 text-sm font-semibold text-slate-900">Cek Data Profil</h3>
+                                <p class="mb-2 text-xs font-normal text-slate-500">Pastikan Nama, NIM, dan TTL sesuai.</p>
+                                <a href="{{ route('profile.edit') }}" class="inline-flex items-center text-xs font-medium text-blue-600 hover:underline">
+                                    Edit Profil <x-heroicon-m-arrow-right class="w-3 h-3 ml-1" />
+                                </a>
+                            </li>
+                            <li class="ml-6">
+                                <span class="absolute flex items-center justify-center w-6 h-6 bg-emerald-100 rounded-full -left-3 ring-4 ring-white">
+                                    <x-heroicon-s-check class="w-3.5 h-3.5 text-emerald-600" />
+                                </span>
+                                <h3 class="mb-1 text-sm font-semibold text-slate-900">Kelengkapan Portofolio</h3>
+                                <p class="mb-2 text-xs font-normal text-slate-500">Hanya portofolio "Disetujui" yang akan tercetak.</p>
+                                <a href="{{ route('student.portfolios.index') }}" class="inline-flex items-center text-xs font-medium text-blue-600 hover:underline">
+                                    Lihat Portofolio <x-heroicon-m-arrow-right class="w-3 h-3 ml-1" />
+                                </a>
+                            </li>
+                            <li class="ml-6">
+                                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-4 ring-white">
+                                    <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                                </span>
+                                <h3 class="mb-1 text-sm font-semibold text-blue-700">Finalisasi & Ajukan</h3>
+                                <p class="text-xs font-normal text-slate-500">Klik tombol di bawah jika data sudah benar.</p>
+                            </li>
+                        </ol>
+                    </div>
+
+                    {{-- Action Buttons --}}
+                    <div class="bg-slate-50 p-6 space-y-3 border-t border-slate-100">
+                        <form method="POST" action="{{ route('student.skpi.apply') }}" 
+                              onsubmit="return confirm('Apakah Anda yakin data sudah benar? Pengajuan tidak dapat dibatalkan.');">
                             @csrf
-                            <button class="w-full inline-flex items-center justify-center rounded-md bg-[#1b3985] hover:bg-blue-800 text-white px-4 py-2.5 text-sm font-semibold shadow-sm transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428A1 1 0 009.026 16h1.948a1 1 0 00.754-.364l5-1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
-                                Ajukan SKPI
+                            <button type="submit" 
+                                    class="group w-full flex items-center justify-center gap-2 rounded-xl bg-[#1b3985] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/20 hover:bg-[#152e6b] hover:shadow-blue-900/30 hover:-translate-y-0.5 transition-all">
+                                <x-heroicon-m-paper-airplane class="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                                Ajukan SKPI Sekarang
                             </button>
                         </form>
-                        <a href="{{ route('student.skpi.download') }}" target="_blank" class="w-full inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 px-4 py-2.5 text-sm font-semibold shadow-sm hover:bg-gray-50 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                            Unduh PDF
+
+                        <a href="{{ route('student.skpi.download') }}" target="_blank" 
+                           class="w-full flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <x-heroicon-m-arrow-down-tray class="w-5 h-5" />
+                            Unduh PDF (Draft)
                         </a>
                     </div>
                 </div>
