@@ -96,6 +96,9 @@ Route::middleware(['auth', 'role:mahasiswa', 'maintenance.check', 'academic.comp
     Route::get('/dokumen-skpi', function () {
         return view('student.dokumen.index');
     })->name('documents.index');
+
+    // Announcements
+    Route::get('/pengumuman', [\App\Http\Controllers\Student\AnnouncementController::class, 'index'])->name('announcements.index');
 });
 
 // Verifikator & Admin Shared Routes (Portfolio Review)
