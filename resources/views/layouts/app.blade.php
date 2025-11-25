@@ -57,7 +57,7 @@
             </header>
         @endisset
 
-        <main class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-6 pb-24 md:pb-6">
+        <main class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-6 pb-32 md:pb-6">
             @auth
                                                     <div class="md:grid md:grid-cols-[15rem_1fr] md:gap-6">
                                                         <div class="col-span-1">
@@ -78,9 +78,8 @@
     {{-- ====================================================================== --}}
     @if (auth()->check() && auth()->user()->role === 'mahasiswa')
 
-        {{-- Mobile Bottom Navigation --}}
-        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/75 backdrop-blur-sm border-t border-gray-200 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] md:hidden">
-            <div class="relative flex items-center justify-around max-w-7xl mx-auto text-xs">
+        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-xl border-t border-slate-200 shadow-[0_-6px_20px_rgba(15,23,42,0.08)] md:hidden">
+            <div class="relative flex items-center justify-around max-w-7xl mx-auto text-[11px] font-semibold text-slate-500">
                 @php
                     $navItems = [
                         ['route' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'heroicon-o-home'],
@@ -93,14 +92,15 @@
 
                 @foreach ($navItems as $item)
                     @if ($item['route'] === 'placeholder')
-                        <div class="w-full"></div>
+                        <div class="w-16"></div>
                     @else
-                        <a href="{{ route($item['route']) }}" 
-                           class="flex flex-col items-center justify-center w-full pt-2 pb-1.5 transition-colors duration-200 {{ request()->routeIs($item['route'].'*') ? 'text-[#1b3985]' : 'text-gray-500 hover:text-[#1b3985]' }}">
-                            <div class="relative">
+                        @php $active = request()->routeIs($item['route'].'*'); @endphp
+                        <a href="{{ route($item['route']) }}"
+                           class="group flex flex-col items-center justify-center w-full py-2 transition">
+                            <div class="relative flex h-11 w-11 items-center justify-center rounded-2xl transition-all duration-200 {{ $active ? 'bg-blue-50 text-blue-700 shadow-inner shadow-blue-100' : 'text-slate-500 group-hover:text-blue-700 group-hover:bg-blue-50/70' }}">
                                 <x-dynamic-component :component="$item['icon']" class="w-6 h-6" />
-                                @if (request()->routeIs($item['route'].'*'))
-                                    <span class="absolute -top-1 -right-1 block h-1.5 w-1.5 rounded-full bg-[#1b3985]"></span>
+                                @if ($active)
+                                    <span class="absolute -bottom-1 h-1 w-6 rounded-full bg-blue-600/90"></span>
                                 @endif
                             </div>
                             <span class="mt-1">{{ $item['label'] }}</span>
@@ -110,55 +110,11 @@
             </div>
 
             <a href="{{ route('student.portfolios.create') }}" aria-label="Tambah Portfolio"
-               class="absolute left-1/2 top-0 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-[#fa7516] to-[#e5670c] text-white shadow-lg transition-transform hover:scale-110">
+               class="absolute left-1/2 top-0 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-[#1b3985] to-[#2b50a8] text-white shadow-xl shadow-blue-300/50 ring-4 ring-white transition-all hover:scale-110">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             </a>
         </nav>
 
-        {{-- Tombol Chatbot --}}
-        <button id="chatbot-toggle" aria-label="Kontak admin"
-            class="fixed bottom-20 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#F97316] text-white shadow-lg transition-transform hover:scale-110 md:bottom-6">
-            {{-- DIUBAH: Menggunakan ikon chat --}}
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-        </button>
-        <div id="chatbot-panel" class="fixed bottom-[140px] right-6 z-50 hidden w-80 max-w-[92vw] rounded-xl border border-gray-200 bg-white text-gray-800 shadow-2xl md:bottom-24">
-            <div class="relative p-4">
-                <div class="font-semibold text-[#0A2E73]">Kontak Admin SKPI</div>
-                <div class="mt-2 space-y-1 text-sm">
-                    <div>Admin: <a href="tel:081234567890" class="text-[#F97316] hover:underline">0812-3456-7890</a></div>
-                    <div>Helpdesk: <a href="mailto:helpdesk.ft@unib.ac.id" class="text-[#F97316] hover:underline">helpdesk.ft@unib.ac.id</a></div>
-                </div>
-                <div class="mt-3 flex gap-2">
-                    <button data-copy="081234567890" class="copy-btn rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-800 hover:bg-gray-200">Salin No</button>
-                    <a href="mailto:helpdesk.ft@unib.ac.id" class="rounded-lg bg-[#F97316] px-3 py-1.5 text-sm text-white hover:bg-[#FF7C1F]">Kirim Email</a>
-                </div>
-                <button id="chatbot-close" class="absolute right-2 top-2 text-gray-500 hover:text-gray-800" aria-label="Tutup">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-            </div>
-        </div>
-
-        {{-- Script untuk Chatbot Panel --}}
-        <script>
-            (function() {
-                const toggle = document.getElementById('chatbot-toggle');
-                const panel = document.getElementById('chatbot-panel');
-                const closeBtn = document.getElementById('chatbot-close');
-                if (!toggle || !panel || !closeBtn) return;
-                const show = () => panel.classList.remove('hidden');
-                const hide = () => panel.classList.add('hidden');
-                toggle.addEventListener('click', () => panel.classList.contains('hidden') ? show() : hide());
-                closeBtn.addEventListener('click', hide);
-                panel.addEventListener('click', (e) => {
-                    const btn = e.target.closest('.copy-btn');
-                    if (btn && navigator.clipboard) {
-                        navigator.clipboard.writeText(btn.getAttribute('data-copy'));
-                        btn.textContent = 'Disalin!';
-                        setTimeout(() => { btn.textContent = 'Salin No'; }, 1500);
-                    }
-                });
-            })();
-        </script>
     @endif
     {{-- ====================================================================== --}}
     {{-- END BAGIAN UNTUK MAHASISWA --}}
