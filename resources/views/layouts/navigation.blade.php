@@ -30,23 +30,10 @@
                 <div class="hidden sm:flex sm:items-center gap-4">
                     @php
                         $roleTop = Auth::user()->role ?? null;
-                        // Dummy notifications per role; replace with real data when available
-                        $notifications = [];
-                        if ($roleTop === 'mahasiswa') {
-                            $notifications = [
-                                ['title' => 'Belum ada portofolio baru.', 'time' => 'Baru saja'],
-                            ];
-                        } elseif ($roleTop === 'admin') {
-                            $notifications = [
-                                ['title' => 'Tidak ada portofolio pending saat ini.', 'time' => 'Hari ini'],
-                            ];
-                        } elseif ($roleTop === 'verifikator') {
-                            $notifications = [
-                                ['title' => 'Belum ada portofolio untuk diverifikasi.', 'time' => 'Hari ini'],
-                            ];
-                        }
-                        $notificationCount = count($notifications);
-                        $notificationsIndexRoute = match($roleTop) {
+                        $notifications = Auth::user()->unreadNotifications()->take(5)->get();
+                        $notificationCount = Auth::user()->unreadNotifications()->count();
+                        
+                        $notificationsIndexRoute = match ($roleTop) {
                             'mahasiswa' => route('student.notifications.index'),
                             'admin' => route('admin.notifications.index'),
                             'verifikator' => route('verifikator.notifications.index'),
@@ -68,16 +55,15 @@
                                 <div class="text-sm font-semibold text-gray-800">Notifikasi</div>
                                 <p class="text-xs text-gray-500">Peran: {{ ucfirst($roleTop ?? 'Pengguna') }}</p>
                             </div>
-                            <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
-                                @forelse ($notifications as $item)
-                                    <div class="px-4 py-3">
-                                        <div class="text-sm font-medium text-gray-800">{{ $item['title'] }}</div>
-                                        @if (!empty($item['time']))
-                                            <div class="text-xs text-gray-500">{{ $item['time'] }}</div>
-                                        @endif
-                                    </div>
+                            <div class="max-h-[60vh] overflow-y-auto divide-y divide-gray-100">
+                                @forelse ($notifications as $notification)
+                                    <x-notification-item :notification="$notification" />
                                 @empty
-                                    <div class="px-4 py-6 text-center text-sm text-gray-500">Belum ada notifikasi.</div>
+                                    <div class="px-4 py-6 text-center text-sm text-gray-500">
+                                        <x-heroicon-o-bell-slash class="w-10 h-10 mx-auto text-gray-400" />
+                                        <p class="mt-2 font-semibold">Tidak ada notifikasi baru</p>
+                                        <p class="mt-1 text-xs">Notifikasi yang sudah dibaca akan muncul di halaman Semua Notifikasi.</p>
+                                    </div>
                                 @endforelse
                             </div>
                             <div class="border-t border-gray-100">
@@ -165,13 +151,10 @@
                 @if (($notificationCount ?? 0) === 0)
                     <p class="text-sm text-gray-500">Belum ada notifikasi.</p>
                 @else
-                    <div class="mt-2 space-y-2">
-                        @foreach ($notifications as $item)
-                            <div class="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2">
-                                <div class="text-sm font-medium text-gray-800">{{ $item['title'] }}</div>
-                                @if (!empty($item['time']))
-                                    <div class="text-xs text-gray-500">{{ $item['time'] }}</div>
-                                @endif
+                    <div class="mt-2 space-y-1">
+                        @foreach ($notifications as $notification)
+                            <div class="rounded-lg border border-gray-100">
+                                <x-notification-item :notification="$notification" />
                             </div>
                         @endforeach
                     </div>

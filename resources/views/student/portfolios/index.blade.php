@@ -51,23 +51,63 @@
             </div>
         @else
             <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div class="border-b border-gray-200">
-                    <nav class="-mb-px flex space-x-6 px-6" aria-label="Tabs">
-                        <button @click="tab = 'semua'" :class="tab === 'semua' ? 'border-[#1b3985] text-[#1b3985]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">Semua <span class="ml-1.5 rounded-full bg-gray-200 text-gray-700 px-2 py-0.5 text-xs">{{ $stats['semua'] }}</span></button>
-                        <button @click="tab = 'verified'" :class="tab === 'verified' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">Disetujui <span class="ml-1.5 rounded-full bg-green-100 text-green-800 px-2 py-0.5 text-xs">{{ $stats['verified'] }}</span></button>
-                        <button @click="tab = 'pending'" :class="tab === 'pending' ? 'border-yellow-500 text-yellow-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">Menunggu <span class="ml-1.5 rounded-full bg-yellow-100 text-yellow-800 px-2 py-0.5 text-xs">{{ $stats['pending'] }}</span></button>
-                        <button @click="tab = 'rejected'" :class="tab === 'rejected' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">Ditolak <span class="ml-1.5 rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-xs">{{ $stats['rejected'] }}</span></button>
-                    </nav>
+                <div class="border-b border-gray-200 bg-white">
+                    <div class="px-6">
+                        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                            <button @click="tab = 'semua'"
+                                :class="tab === 'semua' ? 'border-[#1b3985] text-[#1b3985]' :
+                                    'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Semua
+                                <span
+                                    :class="tab === 'semua' ? 'bg-[#1b3985]/10 text-[#1b3985]' :
+                                        'bg-gray-100 text-gray-600'"
+                                    class="ml-1.5 rounded-full px-2.5 py-1 text-xs font-semibold">{{ $stats['semua'] }}</span>
+                            </button>
+                            <button @click="tab = 'verified'"
+                                :class="tab === 'verified' ? 'border-emerald-500 text-emerald-600' :
+                                    'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Disetujui
+                                <span
+                                    :class="tab === 'verified' ? 'bg-emerald-100 text-emerald-800' :
+                                        'bg-gray-100 text-gray-600'"
+                                    class="ml-1.5 rounded-full px-2.5 py-1 text-xs font-semibold">{{ $stats['verified'] }}</span>
+                            </button>
+                            <button @click="tab = 'pending'"
+                                :class="tab === 'pending' ? 'border-yellow-500 text-yellow-600' :
+                                    'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Menunggu
+                                <span
+                                    :class="tab === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                        'bg-gray-100 text-gray-600'"
+                                    class="ml-1.5 rounded-full px-2.5 py-1 text-xs font-semibold">{{ $stats['pending'] }}</span>
+                            </button>
+                            <button @click="tab = 'rejected'"
+                                :class="tab === 'rejected' ? 'border-rose-500 text-rose-600' :
+                                    'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Ditolak
+                                <span
+                                    :class="tab === 'rejected' ? 'bg-rose-100 text-rose-800' : 'bg-gray-100 text-gray-600'"
+                                    class="ml-1.5 rounded-full px-2.5 py-1 text-xs font-semibold">{{ $stats['rejected'] }}</span>
+                            </button>
+                        </nav>
+                    </div>
                 </div>
 
-                <div class="flow-root">
-                    <ul role="list" class="divide-y divide-gray-200">
-                        @foreach ($portfolios as $p)
-                            <li x-show="tab === 'semua' || tab === '{{ $p->status }}' || (tab === 'rejected' && ('{{ $p->status }}' === 'rejected' || '{{ $p->status }}' === 'requires_revision'))" x-cloak class="p-6 hover:bg-gray-50/50 transition-colors">
-                                @include('student.portfolios._portfolio-list-item', ['portfolio' => $p])
-                            </li>
-                        @endforeach
-                    </ul>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 bg-gray-50/50">
+                    @foreach ($portfolios as $p)
+                        <div x-show="tab === 'semua' || tab === '{{ $p->status }}' || (tab === 'rejected' && (['rejected', 'requires_revision'].includes('{{ $p->status }}')))"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100" x-cloak>
+                            @include('student.portfolios._portfolio-list-item', [
+                                'portfolio' => $p,
+                            ])
+                        </div>
+                    @endforeach
                 </div>
             </div>
         @endif
