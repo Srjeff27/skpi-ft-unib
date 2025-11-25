@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use App\Services\ActivityLogger;
 
 class StudentController extends Controller
 {
@@ -89,10 +90,11 @@ class StudentController extends Controller
         return redirect()->route('admin.students.index')->with('status','Mahasiswa diperbarui');
     }
 
-    public function destroy(User $student): RedirectResponse
+    public function destroy(Request $request, User $student): RedirectResponse
     {
         abort_unless($student->role==='mahasiswa', 404);
         $student->delete();
+        ActivityLogger::log($request->user(), 'admin.students.destroy', $student);
         return back()->with('status','Mahasiswa dihapus');
     }
 }

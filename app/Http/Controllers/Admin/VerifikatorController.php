@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use App\Services\ActivityLogger;
 
 class VerifikatorController extends Controller
 {
@@ -65,10 +66,11 @@ class VerifikatorController extends Controller
         return redirect()->route('admin.verifikators.index')->with('status','Verifikator diperbarui');
     }
 
-    public function destroy(User $verifikator): RedirectResponse
+    public function destroy(Request $request, User $verifikator): RedirectResponse
     {
         abort_unless($verifikator->role==='verifikator', 404);
         $verifikator->delete();
+        ActivityLogger::log($request->user(), 'admin.verifikators.destroy', $verifikator);
         return back()->with('status','Verifikator dihapus');
     }
 }

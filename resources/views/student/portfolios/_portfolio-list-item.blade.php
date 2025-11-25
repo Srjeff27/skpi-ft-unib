@@ -33,7 +33,10 @@
     ];
 @endphp
 
-<div class="group relative flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#1b3985]/30 hover:shadow-md sm:flex-row sm:items-center sm:justify-between">
+<div 
+    x-data="{ openMenu: false }"
+    :class="{ 'z-20 shadow-lg ring-1 ring-black/5': openMenu }"
+    class="group relative flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#1b3985]/30 hover:shadow-md sm:flex-row sm:items-center sm:justify-between">
     
     {{-- BAGIAN KIRI: Ikon & Informasi Utama --}}
     <div class="flex items-start gap-4">
@@ -100,19 +103,19 @@
         </div>
 
         {{-- Menu Dropdown (Posisi tetap relatif terhadap parent button) --}}
-        <div class="relative z-10" x-data="{ open: false }">
-            <button @click="open = !open" @click.away="open = false" class="rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#1b3985] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1b3985] focus:ring-offset-2">
+        <div class="relative z-20">
+            <button @click="openMenu = !openMenu" @click.away="openMenu = false" class="rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#1b3985] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1b3985] focus:ring-offset-2">
                 <x-heroicon-m-ellipsis-vertical class="h-5 w-5" />
             </button>
 
-            <div x-show="open" 
+            <div x-show="openMenu" 
                  x-transition:enter="transition ease-out duration-100"
                  x-transition:enter-start="opacity-0 scale-95"
                  x-transition:enter-end="opacity-100 scale-100"
                  x-transition:leave="transition ease-in duration-75"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="absolute right-0 top-full mt-1 w-48 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none divide-y divide-gray-100 z-30"
+                 class="absolute right-0 top-full mt-1 w-48 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none divide-y divide-gray-100 z-40"
                  style="display: none;">
                 
                 <div class="py-1">

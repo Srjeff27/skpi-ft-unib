@@ -14,7 +14,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-8" x-data="{ showDeleteModal: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {{-- Alerts --}}
@@ -186,6 +186,12 @@
                                     <span>Tolak (Reject)</span>
                                     <x-heroicon-s-x-circle class="w-5 h-5" />
                                 </button>
+                                <div class="pt-2">
+                                    <button @click="showDeleteModal = true" class="w-full flex items-center justify-center px-4 py-3 bg-red-50 text-red-700 rounded-xl border border-red-200 hover:bg-red-100 transition-colors font-semibold">
+                                        <x-heroicon-s-trash class="w-5 h-5 mr-2" />
+                                        Hapus Portofolio
+                                    </button>
+                                </div>
                             </div>
 
                             {{-- Form Approve --}}
@@ -235,14 +241,49 @@
                         </div>
                     @else
                         {{-- Pesan Jika Sudah Diproses --}}
-                        <div class="bg-gray-50 rounded-xl p-6 text-center border border-gray-200">
-                            <x-heroicon-o-lock-closed class="w-10 h-10 text-gray-400 mx-auto mb-3" />
-                            <h4 class="font-bold text-gray-900">Telah Diverifikasi</h4>
-                            <p class="text-sm text-gray-500 mt-1">Dokumen ini tidak dapat diubah lagi statusnya.</p>
+                        <div class="bg-gray-50 rounded-xl p-6 text-center border border-gray-200 space-y-4">
+                            <x-heroicon-o-lock-closed class="w-10 h-10 text-gray-400 mx-auto" />
+                            <div>
+                                <h4 class="font-bold text-gray-900">Telah Diverifikasi</h4>
+                                <p class="text-sm text-gray-500 mt-1">Dokumen ini tidak dapat diubah lagi statusnya.</p>
+                            </div>
+                            <button @click="showDeleteModal = true" class="w-full flex items-center justify-center mt-4 px-4 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors shadow-md shadow-red-200">
+                                <x-heroicon-s-trash class="w-5 h-5 mr-2" />
+                                Hapus Portofolio
+                            </button>
                         </div>
                     @endif
                 </div>
+            </div>
 
+            <!-- Modal Hapus Portofolio -->
+            <div x-show="showDeleteModal" x-cloak 
+                 x-transition:enter="transition ease-out duration-300" 
+                 x-transition:enter-start="opacity-0" 
+                 x-transition:enter-end="opacity-100" 
+                 x-transition:leave="transition ease-in duration-200" 
+                 x-transition:leave-start="opacity-100" 
+                 x-transition:leave-end="opacity-0" 
+                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                <div @click.away="showDeleteModal = false" class="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <x-heroicon-s-trash class="w-5 h-5 text-red-500" />
+                        Hapus Portofolio
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-1 mb-4">Anda akan menghapus portofolio <span class="font-bold">"{{ $portfolio->judul_kegiatan }}"</span> secara permanen. Tindakan ini tidak dapat diurungkan.</p>
+                    <form method="POST" action="{{ route('verifikator.portfolios.destroy', $portfolio) }}" class="space-y-4">
+                        @csrf
+                        @method('DELETE')
+                        <div>
+                            <label for="alasan_hapus" class="block text-sm font-medium text-gray-700">Alasan Penghapusan <span class="text-red-500">*</span></label>
+                            <textarea id="alasan_hapus" name="alasan_hapus" rows="3" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" placeholder="Jelaskan mengapa portofolio ini dihapus..."></textarea>
+                        </div>
+                        <div class="flex items-center justify-end gap-4 pt-4">
+                            <button type="button" @click="showDeleteModal = false" class="rounded-lg border border-gray-200 bg-white px-4 py-2 text-center text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50">Batal</button>
+                            <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-red-700">Ya, Hapus</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

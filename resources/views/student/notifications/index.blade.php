@@ -111,6 +111,13 @@
                                     </p>
                                 @endif
 
+                                @if (!empty($data['reason']))
+                                    <div class="mt-2 p-3 bg-red-50/50 border border-red-100 rounded-lg">
+                                        <p class="text-xs font-semibold text-red-800">Alasan:</p>
+                                        <p class="mt-1 text-sm text-red-700">{{ $data['reason'] }}</p>
+                                    </div>
+                                @endif
+
                                 {{-- Aksi Item --}}
                                 <div class="mt-3 flex items-center gap-4">
                                     @if ($isUnread)

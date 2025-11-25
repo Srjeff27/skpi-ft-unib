@@ -76,7 +76,7 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('status','User diperbarui');
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy(Request $request, User $user): RedirectResponse
     {
         $user->delete();
         ActivityLogger::log($request->user(), 'admin.users.destroy', $user);

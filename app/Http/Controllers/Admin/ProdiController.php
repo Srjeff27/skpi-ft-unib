@@ -49,8 +49,11 @@ class ProdiController extends Controller
         return redirect()->route('admin.prodis.index')->with('status','Prodi diperbarui');
     }
 
-    public function destroy(Prodi $prodi): RedirectResponse
+    public function destroy(Request $request, Prodi $prodi): RedirectResponse
     {
+        if ($prodi->users()->exists()) {
+            return back()->with('error', 'Prodi tidak dapat dihapus karena masih memiliki user (mahasiswa/verifikator).');
+        }
         $prodi->delete();
         ActivityLogger::log($request->user(), 'admin.prodis.destroy', $prodi);
         return back()->with('status','Prodi dihapus');

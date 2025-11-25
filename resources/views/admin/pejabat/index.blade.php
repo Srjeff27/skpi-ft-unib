@@ -87,9 +87,9 @@
                                             </x-dropdown-link>
                                             <form action="{{ route('admin.pejabat.destroy', $official) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus pejabat ini?')">
                                                 @csrf @method('DELETE')
-                                                <x-dropdown-link as="button" type="submit" class="text-red-600">
+                                                <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-red-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
                                                     Hapus
-                                                </x-dropdown-link>
+                                                </button>
                                             </form>
                                         </x-slot>
                                     </x-dropdown>

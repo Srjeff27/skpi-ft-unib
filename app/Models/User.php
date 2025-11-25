@@ -62,6 +62,16 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            // Set foreign keys to null on related portfolios to avoid constraint errors.
+            // The user's own portfolios will be cascade deleted by the database.
+            Portfolio::where('verified_by', $user->id)->update(['verified_by' => null]);
+            Portfolio::where('locked_by', $user->id)->update(['locked_by' => null]);
+        });
+    }
+
     // Relasi ke Prodi
     public function prodi()
     {

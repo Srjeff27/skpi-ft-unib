@@ -44,10 +44,10 @@
     </div>
 
     {{-- Tutorial Pop-up: ditampilkan saat pertama kali membuka halaman upload portofolio --}}
-    <div id="portfolio-tutorial" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div id="portfolio-tutorial" class="fixed inset-0 z-50 hidden items-center justify-center px-3 md:px-4">
         <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-enter-up">
-            <div class="bg-gradient-to-r from-[#1b3985] to-[#2b50a8] px-6 py-4 text-white flex items-center justify-between">
+        <div class="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-enter-up max-h-[90vh] md:max-h-none flex flex-col">
+            <div class="bg-gradient-to-r from-[#1b3985] to-[#2b50a8] px-4 md:px-6 py-4 text-white flex items-start md:items-center justify-between sticky top-0">
                 <div>
                     <p class="text-xs uppercase tracking-widest text-blue-100">Panduan Singkat</p>
                     <h3 class="text-xl font-bold">Cara Mengisi Formulir Portofolio</h3>
@@ -56,9 +56,9 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>
-            <div class="p-6 space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+            <div class="p-4 md:p-6 space-y-4 overflow-y-auto md:overflow-visible flex-1">
+                <div class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible">
+                    <div class="min-w-[260px] snap-start rounded-xl border border-slate-100 bg-slate-50/60 p-4 md:min-w-0">
                         <div class="flex items-start gap-3">
                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#e9efff] text-[#1b3985]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -69,7 +69,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+                    <div class="min-w-[260px] snap-start rounded-xl border border-slate-100 bg-slate-50/60 p-4 md:min-w-0">
                         <div class="flex items-start gap-3">
                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#fff4e6] text-[#e5670c]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 9.4L7.55 5.26a.55.55 0 00-.78.5v12.48c0 .4.41.67.78.5L16.5 14.5a.56.56 0 000-1l-4.74-2.25" /></svg>
@@ -80,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+                    <div class="min-w-[260px] snap-start rounded-xl border border-slate-100 bg-slate-50/60 p-4 md:min-w-0">
                         <div class="flex items-start gap-3">
                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#e6fbf3] text-[#0ea371]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5.25C3 4.56 3.56 4 4.25 4h15.5c.69 0 1.25.56 1.25 1.25v13.5c0 .69-.56 1.25-1.25 1.25H4.25A1.25 1.25 0 013 18.75V5.25z" /><path stroke-linecap="round" stroke-linejoin="round" d="M7 9h10M7 13h10M7 17h6" /></svg>
@@ -91,7 +91,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+                    <div class="min-w-[260px] snap-start rounded-xl border border-slate-100 bg-slate-50/60 p-4 md:min-w-0">
                         <div class="flex items-start gap-3">
                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#fbe8ef] text-[#d02973]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L2.34 18c-.77 1.333.192 3 1.732 3z" /></svg>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2 sticky bottom-0 bg-white md:static md:bg-transparent">
                     <div class="text-sm text-slate-500 flex items-center gap-2">
                         <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
                         Simpan data sebelum menutup halaman untuk menghindari isian hilang.

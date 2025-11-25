@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Notifications\PortfolioStatusNotification;
 use App\Services\ActivityLogger;
+use App\Notifications\PortfolioDeletedNotification;
 
 class PortfolioReviewController extends Controller
 {
@@ -87,5 +88,26 @@ class PortfolioReviewController extends Controller
         $portfolio->user->notify(new PortfolioStatusNotification($portfolio, 'pending', $request->string('catatan')->toString()));
         ActivityLogger::log($request->user(), 'verifikator.portfolios.request_edit', $portfolio, [ 'catatan' => $request->string('catatan')->toString() ]);
         return back()->with('status', 'Diminta perbaikan kepada mahasiswa.');
+    }
+
+    public function destroy(Request $request, Portfolio $portfolio): RedirectResponse
+    {
+        $data = $request->validate([
+            'alasan_hapus' => ['required','string','max:1000'],
+        ]);
+
+        $student = $portfolio->user;
+        $portfolioTitle = $portfolio->judul_kegiatan;
+        
+        // 1. Notify the student
+        $student->notify(new PortfolioDeletedNotification($portfolioTitle, $data['alasan_hapus']));
+
+        // 2. Log the activity
+        ActivityLogger::log($request->user(), 'verifikator.portfolios.destroy', $portfolio, [ 'alasan' => $data['alasan_hapus'] ]);
+        
+        // 3. Delete the portfolio
+        $portfolio->delete();
+
+        return redirect()->route('verifikator.portfolios.index')->with('status', 'Portofolio telah dihapus.');
     }
 }
