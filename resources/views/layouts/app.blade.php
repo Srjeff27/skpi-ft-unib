@@ -78,7 +78,7 @@
     {{-- ====================================================================== --}}
     @if (auth()->check() && auth()->user()->role === 'mahasiswa')
 
-        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-xl border-t border-slate-200 shadow-[0_-6px_20px_rgba(15,23,42,0.08)] md:hidden">
+        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-[0_-6px_20px_rgba(15,23,42,0.08)] md:hidden">
             <div class="relative flex items-center justify-around max-w-7xl mx-auto text-[11px] font-semibold text-slate-500">
                 @php
                     $navItems = [
