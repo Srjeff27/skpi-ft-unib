@@ -9,9 +9,25 @@
             'pending' => $portfolios->where('status', 'pending')->count(),
             'rejected' => $portfolios->whereIn('status', ['rejected', 'requires_revision'])->count(),
         ];
+        $successToast = session('status');
+        $errorToast = session('error') ?? ($errors->any() ? 'Gagal memuat data portofolio.' : null);
     @endphp
 
-    <div x-data="{ tab: 'semua' }" class="min-h-[80vh] flex flex-col space-y-8">
+    <div x-data="{
+            tab: 'semua',
+            toast: { show: false, type: 'success', title: '', message: '' },
+            openToast(type, title, message) {
+                this.toast = { show: true, type, title, message };
+                setTimeout(() => this.toast.show = false, 3500);
+            },
+            init() {
+                const successMsg = @js($successToast);
+                const errorMsg = @js($errorToast);
+                if (successMsg) this.openToast('success', 'Berhasil', successMsg);
+                else if (errorMsg) this.openToast('error', 'Gagal', errorMsg);
+            }
+        }" 
+        class="min-h-[80vh] flex flex-col space-y-8">
         
         {{-- 1. Header Section --}}
         <div class="relative rounded-2xl bg-gradient-to-br from-slate-900 via-[#1b3985] to-[#2b50a8] p-8 shadow-xl overflow-hidden group">
@@ -36,15 +52,6 @@
             <div class="absolute right-0 top-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-white/5 blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
             <div class="absolute left-0 bottom-0 -mb-10 -ml-10 h-40 w-40 rounded-full bg-blue-500/20 blur-2xl"></div>
         </div>
-
-        {{-- Flash Message --}}
-        @if (session('status'))
-            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-                class="flex items-center gap-3 p-4 text-sm font-medium text-emerald-800 bg-emerald-50 border border-emerald-100 rounded-xl shadow-sm animate-fade-in-down">
-                <svg class="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                {{ session('status') }}
-            </div>
-        @endif
 
         {{-- 2. Main Content --}}
         @if ($portfolios->isEmpty())
@@ -113,5 +120,34 @@
                 </div>
             </div>
         @endif
+
+        {{-- Toast Overlay --}}
+        <div x-show="toast.show"
+             x-transition.opacity
+             class="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6"
+             style="display: none;">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="toast.show = false"></div>
+            <div x-transition
+                 class="relative w-full max-w-sm rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200 p-5 sm:p-6">
+                <div class="flex items-start gap-3">
+                    <div :class="toast.type === 'success' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'"
+                         class="flex h-10 w-10 items-center justify-center rounded-full">
+                        <template x-if="toast.type === 'success'">
+                            <x-heroicon-s-check-circle class="w-6 h-6" />
+                        </template>
+                        <template x-if="toast.type === 'error'">
+                            <x-heroicon-s-exclamation-triangle class="w-6 h-6" />
+                        </template>
+                    </div>
+                    <div class="flex-1 space-y-1">
+                        <p class="text-sm font-semibold text-slate-900" x-text="toast.title"></p>
+                        <p class="text-sm text-slate-600 leading-relaxed" x-text="toast.message"></p>
+                    </div>
+                    <button @click="toast.show = false" class="text-slate-400 hover:text-slate-600">
+                        <x-heroicon-m-x-mark class="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </x-app-layout>

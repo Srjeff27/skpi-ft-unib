@@ -1,4 +1,9 @@
 <x-app-layout>
+    @php
+        $successToast = session('status');
+        $errorToast = session('error') ?? ($errors->any() ? ($errors->first('general') ?? 'Gagal menyimpan portofolio. Periksa kembali isian Anda.') : null);
+    @endphp
+
     <div x-data="tutorialHandler()" x-init="init()" class="max-w-4xl mx-auto space-y-8 pb-20">
         
         {{-- 1. Hero / Header Section --}}
@@ -147,9 +152,38 @@
                         Mulai Isi Formulir
                         <x-heroicon-m-arrow-right class="w-4 h-4" />
                     </button>
+            </div>
+        </div>
+
+        {{-- Toast Overlay --}}
+        <div x-show="toast.show"
+             x-transition.opacity
+             class="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6"
+             style="display: none;">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="toast.show = false"></div>
+            <div x-transition
+                 class="relative w-full max-w-sm rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200 p-5 sm:p-6">
+                <div class="flex items-start gap-3">
+                    <div :class="toast.type === 'success' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'"
+                         class="flex h-10 w-10 items-center justify-center rounded-full">
+                        <template x-if="toast.type === 'success'">
+                            <x-heroicon-s-check-circle class="w-6 h-6" />
+                        </template>
+                        <template x-if="toast.type === 'error'">
+                            <x-heroicon-s-exclamation-triangle class="w-6 h-6" />
+                        </template>
+                    </div>
+                    <div class="flex-1 space-y-1">
+                        <p class="text-sm font-semibold text-slate-900" x-text="toast.title"></p>
+                        <p class="text-sm text-slate-600 leading-relaxed" x-text="toast.message"></p>
+                    </div>
+                    <button @click="toast.show = false" class="text-slate-400 hover:text-slate-600">
+                        <x-heroicon-m-x-mark class="w-5 h-5" />
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
 
     <script>
         function tutorialHandler() {
@@ -157,10 +191,19 @@
                 show: false,
                 dontShowAgain: false,
                 storageKey: 'skpi_tutorial_dismissed',
+                toast: { show: false, type: 'success', title: '', message: '' },
+                openToast(type, title, message) {
+                    this.toast = { show: true, type, title, message };
+                    setTimeout(() => { this.toast.show = false; }, 4000);
+                },
                 init() {
                     if (!localStorage.getItem(this.storageKey)) {
                         setTimeout(() => this.show = true, 300); // Slight delay for smooth entrance
                     }
+                    const successMsg = @js($successToast);
+                    const errorMsg = @js($errorToast);
+                    if (successMsg) this.openToast('success', 'Berhasil', successMsg);
+                    else if (errorMsg) this.openToast('error', 'Gagal', errorMsg);
                 },
                 openTutorial() {
                     this.show = true;

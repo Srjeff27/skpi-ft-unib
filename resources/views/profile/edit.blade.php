@@ -1,8 +1,15 @@
 <x-app-layout>
-    @php
-        $user = auth()->user();
-        $isAcademicIncomplete = session('academic_incomplete') || ($user?->role === 'mahasiswa' && !$user?->isAcademicProfileComplete());
-    @endphp
+@php
+    $user = auth()->user();
+    $isAcademicIncomplete = session('academic_incomplete') || ($user?->role === 'mahasiswa' && !$user?->isAcademicProfileComplete());
+    $successToast = match (session('status')) {
+        'profile-updated' => 'Profil berhasil diperbarui.',
+        'password-updated' => 'Kata sandi berhasil diperbarui.',
+        'verification-link-sent' => 'Link verifikasi email telah dikirim ke email Anda.',
+        default => null,
+    };
+    $errorToast = session('error') ?? ($errors->any() ? 'Gagal menyimpan perubahan. Periksa kembali input Anda.' : null);
+@endphp
 
     <div x-data="{ 
             tab: window.location.hash ? window.location.hash.substring(1) : 'profile',
@@ -10,8 +17,20 @@
                 this.tab = newTab;
                 window.location.hash = newTab;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+            toast: { show: false, type: 'success', title: '', message: '' },
+            openToast(type, title, message) {
+                this.toast = { show: true, type, title, message };
+                setTimeout(() => { this.toast.show = false; }, 4000);
+            },
+            init() {
+                const successMsg = @js($successToast);
+                const errorMsg = @js($errorToast);
+                if (successMsg) this.openToast('success', 'Berhasil', successMsg);
+                else if (errorMsg) this.openToast('error', 'Gagal', errorMsg);
             }
         }" 
+        x-init="init()"
         class="min-h-screen pb-20 space-y-8">
         
         {{-- 1. Header Section --}}
@@ -171,6 +190,35 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
+        </div>
+
+        {{-- Toast Overlay --}}
+        <div x-show="toast.show"
+             x-transition.opacity
+             class="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6"
+             style="display: none;">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="toast.show = false"></div>
+            <div x-transition
+                 class="relative w-full max-w-sm rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200 p-5 sm:p-6">
+                <div class="flex items-start gap-3">
+                    <div :class="toast.type === 'success' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'"
+                         class="flex h-10 w-10 items-center justify-center rounded-full">
+                        <template x-if="toast.type === 'success'">
+                            <x-heroicon-s-check-circle class="w-6 h-6" />
+                        </template>
+                        <template x-if="toast.type === 'error'">
+                            <x-heroicon-s-exclamation-triangle class="w-6 h-6" />
+                        </template>
+                    </div>
+                    <div class="flex-1 space-y-1">
+                        <p class="text-sm font-semibold text-slate-900" x-text="toast.title"></p>
+                        <p class="text-sm text-slate-600 leading-relaxed" x-text="toast.message"></p>
+                    </div>
+                    <button @click="toast.show = false" class="text-slate-400 hover:text-slate-600">
+                        <x-heroicon-m-x-mark class="w-5 h-5" />
+                    </button>
                 </div>
             </div>
         </div>
