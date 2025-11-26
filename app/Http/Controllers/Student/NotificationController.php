@@ -44,4 +44,12 @@ class NotificationController extends Controller
         $request->user()->notifications()->delete();
         return back()->with('status','Semua notifikasi dihapus.');
     }
+
+    public function destroy(Request $request, string $notification): RedirectResponse
+    {
+        $n = $request->user()->notifications()->where('id', $notification)->firstOrFail();
+        $n->delete();
+
+        return back()->with('status', 'Notifikasi dihapus.');
+    }
 }

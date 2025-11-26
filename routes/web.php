@@ -91,6 +91,7 @@ Route::middleware(['auth', 'role:mahasiswa', 'maintenance.check', 'academic.comp
     Route::post('/notifikasi/{notification}/unread', [StudentNotificationController::class, 'markUnread'])->name('notifications.unread');
     Route::post('/notifikasi/read-all', [StudentNotificationController::class, 'markAllRead'])->name('notifications.read_all');
     Route::post('/notifikasi/delete-all', [StudentNotificationController::class, 'deleteAll'])->name('notifications.delete_all');
+    Route::delete('/notifikasi/{notification}', [StudentNotificationController::class, 'destroy'])->name('notifications.destroy');
 
     // Dokumen SKPI (placeholder)
     Route::get('/dokumen-skpi', function () {
