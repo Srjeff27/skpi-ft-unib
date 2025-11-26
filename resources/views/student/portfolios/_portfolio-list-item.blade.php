@@ -29,6 +29,8 @@
     };
 
     $isEditable = in_array($p->status, ['pending', 'requires_revision']);
+    $title = $p->nama_dokumen_id ?? $p->judul_kegiatan;
+    $formattedDate = \Carbon\Carbon::parse($p->tanggal_dokumen)->isoFormat('D MMM YYYY');
 @endphp
 
 <div class="group relative flex flex-col h-full bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden">
@@ -44,14 +46,14 @@
             </span>
             <span class="text-xs font-medium text-slate-400 flex items-center gap-1">
                 <x-heroicon-m-calendar class="w-3.5 h-3.5" />
-                {{ \Carbon\Carbon::parse($p->tanggal_dokumen)->isoFormat('D MMM YYYY') }}
+                {{ $formattedDate }}
             </span>
         </div>
 
         {{-- Body: Title & Organizer --}}
         <div class="flex-grow space-y-2">
-            <h3 class="text-lg font-bold text-slate-800 leading-snug group-hover:text-[#1b3985] transition-colors line-clamp-2" title="{{ $p->nama_dokumen_id }}">
-                {{ $p->nama_dokumen_id }}
+            <h3 class="text-lg font-bold text-slate-800 leading-snug group-hover:text-[#1b3985] transition-colors line-clamp-2" title="{{ $title }}">
+                {{ $title }}
             </h3>
             
             <div class="flex items-center gap-2 text-sm text-slate-500">
@@ -100,11 +102,17 @@
                     </a>
 
                     {{-- Delete --}}
-                    <form action="{{ route('student.portfolios.destroy', $p) }}" method="POST" 
-                          onsubmit="return confirm('Yakin ingin menghapus data ini?');" class="inline">
+                    <form id="delete-portfolio-{{ $p->id }}" action="{{ route('student.portfolios.destroy', $p) }}" method="POST" class="inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" 
+                        <button type="button" 
+                                @click="$dispatch('open-delete', { 
+                                    formId: 'delete-portfolio-{{ $p->id }}', 
+                                    name: @js($title),
+                                    badge: @js($p->kategori_portfolio),
+                                    meta: @js($p->penyelenggara),
+                                    date: @js($formattedDate)
+                                })"
                                 class="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
                                 title="Hapus Permanen">
                             <x-heroicon-m-trash class="w-4 h-4" />
