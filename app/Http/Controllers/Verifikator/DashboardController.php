@@ -22,9 +22,18 @@ class DashboardController extends Controller
         $verified = Portfolio::where('status', 'verified')
             ->whereHas('user', fn($q) => $q->where('prodi_id', $prodiId))
             ->count();
+        $rejected = Portfolio::where('status', 'rejected')
+            ->whereHas('user', fn($q) => $q->where('prodi_id', $prodiId))
+            ->count();
         $totalStudents = User::where('role', 'mahasiswa')
             ->where('prodi_id', $prodiId)
             ->count();
+
+        $statusDonut = [
+            ['label' => 'Verified', 'value' => $verified, 'color' => '#10B981'],
+            ['label' => 'Rejected', 'value' => $rejected, 'color' => '#F43F5E'],
+            ['label' => 'Pending', 'value' => $pending, 'color' => '#F59E0B'],
+        ];
         
         // Get recent pending portfolios for the verifier's prodi
         $recentPending = Portfolio::with('user')
@@ -34,7 +43,6 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('verifikator.dashboard', compact('pending', 'verified', 'totalStudents', 'recentPending'));
+        return view('verifikator.dashboard', compact('pending', 'verified', 'rejected', 'totalStudents', 'recentPending', 'statusDonut'));
     }
 }
-

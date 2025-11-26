@@ -18,6 +18,14 @@ class PortfolioReviewController extends Controller
     {
         $query = Portfolio::query()->with(['user.prodi']);
 
+        // Batasi ke prodi verifikator (kecuali jika role admin masuk area ini)
+        $user = $request->user();
+        $isAdmin = $user?->role === 'admin';
+        $prodiId = $user?->prodi_id;
+        if (!$isAdmin && $prodiId) {
+            $query->whereHas('user', fn($q) => $q->where('prodi_id', $prodiId));
+        }
+
         if ($request->filled('prodi_id')) {
             $query->whereHas('user', function ($q) use ($request) {
                 $q->where('prodi_id', $request->integer('prodi_id'));
@@ -44,12 +52,14 @@ class PortfolioReviewController extends Controller
 
     public function show(Portfolio $portfolio): View
     {
+        $this->authorize('view', $portfolio);
         $portfolio->load(['user.prodi','verifikator']);
         return view('verifikator.portfolios.show', compact('portfolio'));
     }
 
     public function approve(Request $request, Portfolio $portfolio): RedirectResponse
     {
+        $this->authorize('update', $portfolio);
         $portfolio->update([
             'status' => 'verified',
             'catatan_verifikator' => $request->string('catatan')->toString() ?: null,
@@ -63,6 +73,7 @@ class PortfolioReviewController extends Controller
 
     public function reject(Request $request, Portfolio $portfolio): RedirectResponse
     {
+        $this->authorize('update', $portfolio);
         $request->validate(['alasan' => ['required','string','max:1000']]);
         $portfolio->update([
             'status' => 'rejected',
@@ -77,6 +88,7 @@ class PortfolioReviewController extends Controller
 
     public function requestEdit(Request $request, Portfolio $portfolio): RedirectResponse
     {
+        $this->authorize('update', $portfolio);
         $request->validate(['catatan' => ['required','string','max:1000']]);
 
         $portfolio->update([

@@ -95,26 +95,24 @@
                             <x-heroicon-o-chart-pie class="w-5 h-5 text-slate-400" />
                             Komposisi Status
                         </h3>
-                        <div class="flex-1 flex flex-col items-center justify-center relative">
+                        @php $statusTotal = collect($statusDonut ?? [])->sum('value'); @endphp
+                        <div class="flex-1 flex flex-col items-center justify-center relative pt-4">
                             <div class="portfolio-status-donut h-48 w-48 relative z-10" data-series='@json($statusDonut ?? [])'></div>
-                            {{-- Centered Text Trick for Donut --}}
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span class="text-2xl font-bold text-slate-800" data-donut-value>0</span>
+                                <span class="text-xl font-bold text-slate-800" data-donut-value>{{ $statusTotal }}</span>
                                 <span class="text-[10px] uppercase tracking-wide text-slate-400">Total</span>
                             </div>
                         </div>
                         <div class="mt-6 space-y-3">
-                            @if(isset($statusDonut))
-                                @foreach ($statusDonut as $item)
-                                    <div class="flex items-center justify-between text-sm">
-                                        <div class="flex items-center gap-2">
-                                            <span class="h-3 w-3 rounded-full" style="background: {{ $item['color'] }}"></span>
-                                            <span class="text-slate-600">{{ $item['label'] }}</span>
-                                        </div>
-                                        <span class="font-semibold text-slate-800">{{ $item['value'] }}</span>
+                            @foreach ($statusDonut ?? [] as $item)
+                                <div class="flex items-center justify-between text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <span class="h-3 w-3 rounded-full" style="background: {{ $item['color'] }}"></span>
+                                        <span class="text-slate-600">{{ $item['label'] }}</span>
                                     </div>
-                                @endforeach
-                            @endif
+                                    <span class="font-semibold text-slate-800">{{ $item['value'] }}</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
 

@@ -41,6 +41,16 @@
                         };
                     @endphp
 
+                    @php
+                        $notificationQuery = Auth::user()->unreadNotifications();
+                        if ($roleTop === 'verifikator' && Auth::user()->prodi_id) {
+                            $allowedPortfolioIds = \App\Models\Portfolio::whereHas('user', fn($q) => $q->where('prodi_id', Auth::user()->prodi_id))->pluck('id');
+                            $notificationQuery = $notificationQuery->whereIn('data->portfolio_id', $allowedPortfolioIds);
+                        }
+                        $notificationCount = (clone $notificationQuery)->count();
+                        $notifications = $notificationQuery->take(5)->get();
+                    @endphp
+
                     <x-dropdown align="right" width="80">
                         <x-slot name="trigger">
                             <button class="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition hover:border-[#1b3985] hover:text-[#1b3985] focus:outline-none">

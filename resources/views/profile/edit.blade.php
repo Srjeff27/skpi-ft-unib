@@ -32,7 +32,22 @@
         }" 
         x-init="init()"
         class="min-h-screen pb-20 space-y-8">
-        
+
+        @php
+            $backRoute = match ($user->role) {
+                'admin' => route('admin.dashboard'),
+                'verifikator' => route('verifikator.dashboard'),
+                default => route('dashboard'),
+            };
+        @endphp
+
+        <div class="flex justify-start">
+            <a href="{{ $backRoute }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-[#1b3985] transition">
+                <x-heroicon-o-arrow-left class="h-4 w-4" />
+                {{ $user->role === 'mahasiswa' ? 'Kembali ke Beranda' : 'Kembali ke Dashboard' }}
+            </a>
+        </div>
+
         {{-- 1. Header Section --}}
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-[#1b3985] to-[#2b50a8] shadow-xl">
             <div class="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
