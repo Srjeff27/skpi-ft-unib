@@ -186,5 +186,6 @@
         </div>
         <style>body { overflow: hidden; }</style>
     @endif
+    @stack('scripts')
 </body>
 </html>

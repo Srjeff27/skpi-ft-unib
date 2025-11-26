@@ -132,7 +132,7 @@
                                         <span class="text-xs font-bold text-blue-600">{{ $data->total }}</span>
                                     </div>
                                     <div class="w-full bg-slate-100 rounded-full h-2">
-                                        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500" 
+                                        <div class="h-2 rounded-full transition-all duration-500 bg-[#1b3985]" 
                                              style="width: {{ ($data->total / $maxPrestasi) * 100 }}%"></div>
                                     </div>
                                 </div>
