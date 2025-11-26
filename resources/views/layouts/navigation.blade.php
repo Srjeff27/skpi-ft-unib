@@ -51,26 +51,28 @@
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <div class="px-4 py-3 border-b border-gray-100">
-                                <div class="text-sm font-semibold text-gray-800">Notifikasi</div>
-                                <p class="text-xs text-gray-500">Peran: {{ ucfirst($roleTop ?? 'Pengguna') }}</p>
-                            </div>
-                            <div class="max-h-[60vh] overflow-y-auto divide-y divide-gray-100">
-                                @forelse ($notifications as $notification)
-                                    <x-notification-item :notification="$notification" />
-                                @empty
-                                    <div class="px-4 py-6 text-center text-sm text-gray-500">
-                                        <x-heroicon-o-bell-slash class="w-10 h-10 mx-auto text-gray-400" />
-                                        <p class="mt-2 font-semibold">Tidak ada notifikasi baru</p>
-                                        <p class="mt-1 text-xs">Notifikasi yang sudah dibaca akan muncul di halaman Semua Notifikasi.</p>
-                                    </div>
-                                @endforelse
-                            </div>
-                            <div class="border-t border-gray-100">
-                                <a href="{{ $notificationsIndexRoute }}" class="flex items-center justify-between px-4 py-3 text-sm font-semibold text-[#1b3985] hover:bg-gray-50">
-                                    <span>Lihat semua notifikasi</span>
-                                    <x-heroicon-o-arrow-right class="h-4 w-4" />
-                                </a>
+                            <div class="bg-white text-gray-800 dark:bg-white dark:text-gray-800 shadow-xl ring-1 ring-gray-200/90 rounded-2xl overflow-hidden w-full min-w-[18rem] sm:min-w-[20rem]">
+                                <div class="px-4 py-3 bg-gradient-to-r from-blue-50 to-white">
+                                    <div class="text-sm font-semibold">Notifikasi</div>
+                                    <p class="text-xs text-gray-500">Peran: {{ ucfirst($roleTop ?? 'Pengguna') }}</p>
+                                </div>
+                                <div class="max-h-[60vh] overflow-y-auto divide-y divide-gray-100">
+                                    @forelse ($notifications as $notification)
+                                        <x-notification-item :notification="$notification" />
+                                    @empty
+                                        <div class="px-4 py-6 text-center text-sm text-gray-500">
+                                            <x-heroicon-o-bell-slash class="w-10 h-10 mx-auto text-gray-400" />
+                                            <p class="mt-2 font-semibold text-gray-700">Tidak ada notifikasi baru</p>
+                                            <p class="mt-1 text-xs text-gray-500">Notifikasi yang sudah dibaca akan muncul di halaman Semua Notifikasi.</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                                <div class="border-t border-gray-100 bg-white">
+                                    <a href="{{ $notificationsIndexRoute }}" class="flex items-center justify-between px-4 py-3 text-sm font-semibold text-[#1b3985] transition hover:bg-blue-50">
+                                        <span>Lihat semua notifikasi</span>
+                                        <x-heroicon-o-arrow-right class="h-4 w-4" />
+                                    </a>
+                                </div>
                             </div>
                         </x-slot>
                     </x-dropdown>
@@ -125,26 +127,28 @@
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <div class="px-4 py-3 border-b border-gray-100">
-                                <div class="text-sm font-semibold text-gray-800">Notifikasi</div>
-                                <p class="text-xs text-gray-500">Peran: {{ ucfirst($roleTop ?? 'Pengguna') }}</p>
-                            </div>
-                            <div class="max-h-[60vh] overflow-y-auto divide-y divide-gray-100">
-                                @forelse ($notifications as $notification)
-                                    <x-notification-item :notification="$notification" />
-                                @empty
-                                    <div class="px-4 py-6 text-center text-sm text-gray-500">
-                                        <x-heroicon-o-bell-slash class="w-10 h-10 mx-auto text-gray-400" />
-                                        <p class="mt-2 font-semibold">Tidak ada notifikasi baru</p>
-                                        <p class="mt-1 text-xs">Notifikasi yang sudah dibaca akan muncul di halaman Semua Notifikasi.</p>
-                                    </div>
-                                @endforelse
-                            </div>
-                            <div class="border-t border-gray-100">
-                                <a href="{{ $notificationsIndexRoute }}" class="flex items-center justify-between px-4 py-3 text-sm font-semibold text-[#1b3985] hover:bg-gray-50">
-                                    <span>Lihat semua notifikasi</span>
-                                    <x-heroicon-o-arrow-right class="h-4 w-4" />
-                                </a>
+                            <div class="bg-white text-gray-800 dark:bg-white dark:text-gray-800 shadow-xl ring-1 ring-gray-200/90 rounded-2xl overflow-hidden w-full min-w-[18rem] sm:min-w-[20rem]">
+                                <div class="px-4 py-3 bg-gradient-to-r from-blue-50 to-white">
+                                    <div class="text-sm font-semibold">Notifikasi</div>
+                                    <p class="text-xs text-gray-500">Peran: {{ ucfirst($roleTop ?? 'Pengguna') }}</p>
+                                </div>
+                                <div class="max-h-[60vh] overflow-y-auto divide-y divide-gray-100">
+                                    @forelse ($notifications as $notification)
+                                        <x-notification-item :notification="$notification" />
+                                    @empty
+                                        <div class="px-4 py-6 text-center text-sm text-gray-500">
+                                            <x-heroicon-o-bell-slash class="w-10 h-10 mx-auto text-gray-400" />
+                                            <p class="mt-2 font-semibold text-gray-700">Tidak ada notifikasi baru</p>
+                                            <p class="mt-1 text-xs text-gray-500">Notifikasi yang sudah dibaca akan muncul di halaman Semua Notifikasi.</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                                <div class="border-t border-gray-100 bg-white">
+                                    <a href="{{ $notificationsIndexRoute }}" class="flex items-center justify-between px-4 py-3 text-sm font-semibold text-[#1b3985] transition hover:bg-blue-50">
+                                        <span>Lihat semua notifikasi</span>
+                                        <x-heroicon-o-arrow-right class="h-4 w-4" />
+                                    </a>
+                                </div>
                             </div>
                         </x-slot>
                     </x-dropdown>
