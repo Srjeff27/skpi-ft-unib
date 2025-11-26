@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <form method="POST" action="{{ route('login') }}" class="space-y-6">
+    <form method="POST" action="{{ route('login') }}" class="space-y-6" x-data="{ show: false }">
         @csrf
 
         <div>
@@ -57,15 +57,19 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div>
+        <div x-data="{ show: false }">
             <x-input-label for="password" :value="__('Kata Sandi')" class="text-[#1b3985] font-semibold mb-1.5" />
             <div class="relative rounded-md shadow-sm">
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <x-heroicon-o-lock-closed class="h-5 w-5 text-gray-400" />
                 </div>
-                <x-text-input id="password" class="block w-full rounded-xl border-gray-300 pl-10 focus:border-[#fa7516] focus:ring-[#fa7516] sm:text-sm py-2.5 transition-colors" 
-                    type="password" name="password" required autocomplete="current-password" 
+                <x-text-input id="password" class="block w-full rounded-xl border-gray-300 pl-10 pr-10 focus:border-[#fa7516] focus:ring-[#fa7516] sm:text-sm py-2.5 transition-colors" 
+                    x-bind:type="show ? 'text' : 'password'" name="password" required autocomplete="current-password" 
                     placeholder="••••••••" />
+                <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-[#fa7516] transition">
+                    <x-heroicon-o-eye class="h-5 w-5" x-show="!show" />
+                    <x-heroicon-o-eye-slash class="h-5 w-5" x-show="show" />
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
