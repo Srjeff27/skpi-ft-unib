@@ -86,6 +86,33 @@
         </a>
     @break
 
+    @case('App\Notifications\NewPortfolioSubmittedNotification')
+        @php
+            $notificationData = $notification->data;
+            $portfolioId = $notificationData['portfolio_id'] ?? null;
+            $href = $portfolioId ? route('verifikator.portfolios.show', $portfolioId) : route('verifikator.portfolios.index');
+        @endphp
+        <a href="{{ $href }}" class="block p-3.5 transition-colors hover:bg-gray-50/50">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-indigo-50 text-indigo-500">
+                    <x-heroicon-s-document-plus class="w-6 h-6" />
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-gray-800 leading-snug">{{ $notificationData['title'] ?? 'Portofolio baru diajukan' }}</p>
+                    <p class="text-sm text-gray-500 mt-1 leading-snug">
+                        {{ Str::limit($notificationData['message'] ?? 'Portofolio baru menunggu verifikasi.', 80) }}
+                    </p>
+                    <p class="text-xs text-gray-400 mt-2">
+                        {{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}
+                    </p>
+                </div>
+                @if (!$notification->read_at)
+                    <div class="w-2.5 h-2.5 rounded-full bg-[#1b3985] mt-1 flex-shrink-0"></div>
+                @endif
+            </div>
+        </a>
+    @break
+
     @default
         <div class="p-3.5">
             <p class="text-sm text-gray-600">Notifikasi tidak dikenal.</p>

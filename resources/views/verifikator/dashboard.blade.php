@@ -1,4 +1,7 @@
 <x-app-layout>
+    @push('scripts')
+        <script src="{{ asset('js/portfolio-status-donut.js') }}"></script>
+    @endpush
     <div class="space-y-6">
         {{-- Header --}}
         <div>
@@ -74,6 +77,37 @@
                     <div class="text-sm">
                         <a href="{{ route('verifikator.students.index') }}" class="font-medium text-[#1b3985] hover:text-orange-500">Lihat semua</a>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Status Donut --}}
+        <div class="rounded-3xl bg-white p-5 sm:p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-gray-400">Statistics</p>
+                    <h3 class="text-lg font-semibold text-gray-800">Monthly activity</h3>
+                </div>
+                @php $statusTotal = collect($statusDonut)->sum('value'); @endphp
+                <div class="text-right">
+                    <div class="text-3xl font-bold text-gray-800" data-donut-value>{{ $statusTotal }}</div>
+                    <div class="text-xs text-gray-500">Average range</div>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+                <div class="relative h-56 w-56">
+                    <div class="portfolio-status-donut h-56 w-56" data-series='@json($statusDonut)' data-center-value="{{ $statusTotal }}"></div>
+                </div>
+                <div class="flex-1 space-y-3 text-sm text-gray-600 w-full">
+                    @foreach ($statusDonut as $item)
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="h-2.5 w-2.5 rounded-full" style="background: {{ $item['color'] }}"></span>
+                                <span class="font-semibold text-gray-800">{{ $item['label'] }}</span>
+                            </div>
+                            <span class="font-semibold text-gray-900">{{ $item['value'] }}</span>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
