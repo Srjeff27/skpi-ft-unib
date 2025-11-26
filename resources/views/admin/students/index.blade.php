@@ -1,130 +1,140 @@
 <x-app-layout>
-    <div class="space-y-6">
-        {{-- Header --}}
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div class="space-y-8">
+        
+        {{-- Header Section --}}
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800">Manajemen Mahasiswa</h2>
-                <p class="text-sm text-gray-500">Tambah, edit, dan kelola data mahasiswa.</p>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Data Mahasiswa</h2>
+                <p class="mt-1 text-sm text-slate-500">Kelola informasi, riwayat akademik, dan status mahasiswa.</p>
             </div>
             <div>
-                <a href="{{ route('admin.students.create') }}"
-                    class="inline-flex items-center gap-2 justify-center rounded-lg bg-[#1b3985] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#152c66] focus:outline-none focus:ring-2 focus:ring-[#1b3985] focus:ring-offset-2">
-                    <x-heroicon-o-plus class="h-4 w-4" />
-                    Tambah Mahasiswa
+                <a href="{{ route('admin.students.create') }}" 
+                   class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1b3985] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#152c66] hover:shadow-blue-900/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <x-heroicon-m-plus class="h-5 w-5" />
+                    <span>Tambah Baru</span>
                 </a>
             </div>
         </div>
 
         @if (session('status'))
-            <x-toast type="success" :message="session('status')" />
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" 
+                 class="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-emerald-700 shadow-sm">
+                <x-heroicon-s-check-circle class="h-5 w-5" />
+                <span class="text-sm font-medium">{{ session('status') }}</span>
+            </div>
         @endif
 
-        {{-- Filters and Search --}}
-        <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
-            <form method="GET">
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <input type="search" name="search" placeholder="Cari nama, email, atau NIM..." value="{{ request('search') }}"
-                        class="w-full rounded-lg border-gray-200 focus:border-[#1b3985] focus:ring-[#1b3985]">
-                    
-                    <select name="prodi_id" class="w-full rounded-lg border-gray-200 focus:border-[#1b3985] focus:ring-[#1b3985]">
+        {{-- Search & Filter Toolbar --}}
+        <div class="rounded-2xl border border-slate-200 bg-white p-1 shadow-sm">
+            <form method="GET" class="flex flex-col gap-2 lg:flex-row">
+                <div class="relative flex-1">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <x-heroicon-o-magnifying-glass class="h-5 w-5 text-slate-400" />
+                    </div>
+                    <input type="search" name="search" value="{{ request('search') }}" 
+                           placeholder="Cari nama, NIM, atau email..." 
+                           class="block w-full rounded-xl border-0 py-2.5 pl-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#1b3985]">
+                </div>
+
+                <div class="flex gap-2">
+                    <select name="prodi_id" class="block w-full rounded-xl border-0 py-2.5 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-inset focus:ring-[#1b3985] sm:w-48">
                         <option value="">Semua Prodi</option>
                         @foreach ($prodis as $p)
                             <option value="{{ $p->id }}" @selected(request('prodi_id') == $p->id)>{{ $p->nama_prodi }}</option>
                         @endforeach
                     </select>
 
-                    <select name="angkatan" class="w-full rounded-lg border-gray-200 focus:border-[#1b3985] focus:ring-[#1b3985]">
+                    <select name="angkatan" class="block w-full rounded-xl border-0 py-2.5 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-inset focus:ring-[#1b3985] sm:w-40">
                         <option value="">Semua Angkatan</option>
                         @foreach ($angkatanList as $a)
                             <option value="{{ $a }}" @selected(request('angkatan') == $a)>{{ $a }}</option>
                         @endforeach
                     </select>
 
-                    <button type="submit"
-                        class="inline-flex items-center gap-2 justify-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-200">
-                        <x-heroicon-o-magnifying-glass class="h-4 w-4" />
-                        Filter
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-slate-700 transition-colors hover:bg-slate-200 hover:text-slate-900">
+                        <x-heroicon-m-funnel class="h-5 w-5" />
                     </button>
                 </div>
             </form>
         </div>
 
-        {{-- Student List --}}
-        <div class="flow-root">
-            @if ($students->count() > 0)
-                <div class="divide-y divide-gray-100 rounded-xl border border-gray-100 bg-white shadow-sm">
-                    {{-- Table Header --}}
-                    <div class="hidden grid-cols-12 gap-4 bg-gray-50/75 px-4 py-2.5 text-xs font-semibold text-gray-500 md:grid">
-                        <div class="col-span-3">Nama</div>
-                        <div class="col-span-3">Email</div>
-                        <div class="col-span-2">NIM</div>
-                        <div class="col-span-2">Prodi</div>
-                        <div class="col-span-1">Angkatan</div>
-                        <div class="col-span-1"></div>
-                    </div>
-                    {{-- Table Body --}}
-                    <div class="divide-y divide-gray-100">
-                        @foreach ($students as $student)
-                            <div class="grid grid-cols-1 gap-4 px-4 py-4 text-sm md:grid-cols-12 md:gap-4 md:py-2">
-                                {{-- Column 1: Name & Avatar --}}
-                                <div class="flex items-center gap-3 md:col-span-3">
-                                    <img src="{{ $student->avatar_url }}" alt="Avatar" class="h-9 w-9 rounded-full object-cover">
-                                    <div>
-                                        <div class="font-medium text-gray-800">{{ $student->name }}</div>
-                                        <div class="text-gray-500 md:hidden">{{ $student->email }}</div>
-                                    </div>
-                                </div>
-                                {{-- Column 2: Email (hidden on mobile) --}}
-                                <div class="hidden items-center text-gray-600 md:col-span-3 md:flex">{{ $student->email }}</div>
-                                {{-- Column 3: NIM --}}
-                                <div class="md:col-span-2"><span class="font-medium text-gray-500 md:hidden">NIM: </span>{{ $student->nim }}</div>
-                                {{-- Column 4: Prodi --}}
-                                <div class="md:col-span-2"><span class="font-medium text-gray-500 md:hidden">Prodi: </span>{{ optional($student->prodi)->nama_prodi ?? '-' }}</div>
-                                {{-- Column 5: Angkatan --}}
-                                <div class="md:col-span-1"><span class="font-medium text-gray-500 md:hidden">Angkatan: </span>{{ $student->angkatan }}</div>
-                                {{-- Column 6: Actions --}}
-                                <div class="flex items-center justify-end md:col-span-1">
-                                    <x-dropdown align="right" width="48">
-                                        <x-slot name="trigger">
-                                            <button class="rounded-full p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                                                <x-heroicon-o-ellipsis-vertical class="h-5 w-5" />
-                                            </button>
-                                        </x-slot>
-                                        <x-slot name="content">
-                                            <x-dropdown-link :href="route('admin.students.edit', $student)">
-                                                Edit
-                                            </x-dropdown-link>
-                                            <form action="{{ route('admin.students.destroy', $student) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus mahasiswa ini?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-red-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        </x-slot>
-                                    </x-dropdown>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    @if ($students->hasPages())
-                        <div class="border-t p-4">
-                            {{ $students->links() }}
+        {{-- Content Table --}}
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            @forelse ($students as $student)
+                <div class="group flex flex-col gap-4 border-b border-slate-100 p-4 last:border-0 hover:bg-slate-50/50 sm:flex-row sm:items-center sm:justify-between transition-colors">
+                    
+                    {{-- Profile Info --}}
+                    <div class="flex items-center gap-4 sm:w-1/3">
+                        <div class="relative h-12 w-12 shrink-0">
+                            <img src="{{ $student->avatar_url }}" alt="{{ $student->name }}" class="h-full w-full rounded-full object-cover ring-2 ring-white shadow-sm">
                         </div>
-                    @endif
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-bold text-slate-900">{{ $student->name }}</p>
+                            <p class="truncate text-xs text-slate-500">{{ $student->email }}</p>
+                        </div>
+                    </div>
+
+                    {{-- Academic Info --}}
+                    <div class="flex flex-1 flex-col gap-2 sm:grid sm:grid-cols-3 sm:items-center sm:gap-4">
+                        {{-- NIM --}}
+                        <div class="flex items-center gap-2 text-sm text-slate-600 sm:justify-start">
+                            <x-heroicon-o-identification class="h-4 w-4 text-slate-400" />
+                            <span class="font-mono font-medium">{{ $student->nim }}</span>
+                        </div>
+
+                        {{-- Prodi Badge --}}
+                        <div class="sm:text-center">
+                            <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">
+                                {{ optional($student->prodi)->nama_prodi ?? '-' }}
+                            </span>
+                        </div>
+
+                        {{-- Angkatan --}}
+                        <div class="flex items-center gap-2 text-sm text-slate-500 sm:justify-end">
+                            <x-heroicon-o-academic-cap class="h-4 w-4 text-slate-400" />
+                            <span>Angkatan {{ $student->angkatan }}</span>
+                        </div>
+                    </div>
+
+                    {{-- Direct Actions (No Dropdown) --}}
+                    <div class="flex items-center justify-end gap-2 sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 mt-2 sm:mt-0 border-slate-100">
+                        {{-- Edit Button --}}
+                        <a href="{{ route('admin.students.edit', $student) }}" 
+                           class="rounded-lg p-2 text-slate-400 hover:bg-amber-50 hover:text-amber-600 transition-all group/edit"
+                           title="Edit Data">
+                            <x-heroicon-m-pencil-square class="h-5 w-5" />
+                        </a>
+
+                        {{-- Delete Button --}}
+                        <form action="{{ route('admin.students.destroy', $student) }}" method="POST" 
+                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus data mahasiswa ini? Data yang terkait juga akan terhapus.')"
+                              class="inline-flex">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-all group/delete"
+                                    title="Hapus Permanen">
+                                <x-heroicon-m-trash class="h-5 w-5" />
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            @else
-                {{-- Empty State --}}
-                <div class="text-center rounded-xl border-2 border-dashed border-gray-200 bg-white p-12">
-                    <x-heroicon-o-users class="mx-auto h-12 w-12 text-gray-400" />
-                    <h3 class="mt-2 text-sm font-semibold text-gray-900">Belum Ada Mahasiswa</h3>
-                    <p class="mt-1 text-sm text-gray-500">Mulai dengan menambahkan data mahasiswa baru.</p>
+            @empty
+                <div class="flex flex-col items-center justify-center py-16 text-center">
+                    <div class="rounded-full bg-slate-50 p-4 ring-1 ring-slate-100">
+                        <x-heroicon-o-users class="h-10 w-10 text-slate-400" />
+                    </div>
+                    <h3 class="mt-4 text-sm font-semibold text-slate-900">Tidak ada data mahasiswa</h3>
+                    <p class="mt-1 text-sm text-slate-500">Cobalah ubah filter pencarian atau tambahkan data baru.</p>
                     <div class="mt-6">
-                        <a href="{{ route('admin.students.create') }}"
-                            class="inline-flex items-center gap-2 rounded-md bg-[#1b3985] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#152c66]">
-                            <x-heroicon-o-plus class="h-4 w-4" />
-                            Tambah Mahasiswa
+                        <a href="{{ route('admin.students.create') }}" class="text-sm font-medium text-[#1b3985] hover:underline">
+                            Tambah Mahasiswa Baru &rarr;
                         </a>
                     </div>
+                </div>
+            @endforelse
+
+            @if ($students->hasPages())
+                <div class="bg-slate-50 border-t border-slate-200 px-4 py-3 sm:px-6">
+                    {{ $students->links() }}
                 </div>
             @endif
         </div>

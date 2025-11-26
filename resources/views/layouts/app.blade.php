@@ -43,7 +43,7 @@
         }
     @endphp
 
-    <div x-data="{ sidebarOpen: false }" class="min-h-screen flex flex-col">
+    <div x-data="{ isSidebarOpen: false }" class="min-h-screen flex flex-col">
         
         {{-- Top Navigation (Desktop) --}}
         @include('layouts.navigation')
