@@ -89,7 +89,7 @@
     {{-- ====================================================================== --}}
     @if (auth()->check() && $user->role === 'mahasiswa')
         <nav class="fixed bottom-0 left-0 right-0 z-40 md:hidden pb-safe bg-gradient-to-r from-[#1b3985] to-[#2b50a8] shadow-[0_-6px_24px_rgba(17,24,39,0.18)]">
-            <div class="relative flex items-center justify-between max-w-md mx-auto px-6 h-[70px]">
+            <div class="relative grid grid-cols-5 items-center max-w-xl mx-auto px-4 h-[72px] gap-2">
                 @php
                     $navs = [
                         ['route' => 'dashboard', 'label' => 'Home', 'icon' => 'heroicon-o-home'],
@@ -102,7 +102,7 @@
 
                 @foreach ($navs as $item)
                     @if (!$item['route'])
-                        <div class="w-12"></div>
+                        <div class="h-full w-full"></div>
                     @else
                         @php $isActive = request()->routeIs($item['route'].'*'); @endphp
                         <a href="{{ route($item['route']) }}" 
