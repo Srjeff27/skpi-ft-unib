@@ -67,93 +67,89 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 z-50"
-             style="display: none;" x-cloak>
+             class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center px-3 sm:px-6"
+             style="display: none;" x-cloak
+             @click.self="closeTutorial()">
             
-            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closeTutorial()"></div>
-
-            <div class="flex h-full items-center justify-center px-3 sm:px-6">
-                <div x-show="show"
-                     x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="opacity-0 translate-y-8 scale-95"
-                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                     class="relative w-full max-w-xl sm:max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[82vh] sm:max-h-[90vh]">
-                
-                    {{-- Modal Header --}}
-                    <div class="bg-gradient-to-r from-[#1b3985] to-[#2b50a8] px-4 py-4 sm:px-6 sm:py-5 flex items-center justify-between shrink-0">
-                        <div class="text-white">
-                            <p class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-blue-200/80 mb-0.5 sm:mb-1">Panduan Singkat</p>
-                            <h3 class="text-lg sm:text-xl font-bold leading-tight">Cara Pengisian Portofolio</h3>
-                        </div>
-                        <button @click="closeTutorial()" class="p-1.5 sm:p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors">
-                            <x-heroicon-m-x-mark class="w-5 h-5 sm:w-6 sm:h-6" />
-                        </button>
+            <div x-show="show"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-8 scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                 class="relative w-full max-w-xl sm:max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[82vh] sm:max-h-[90vh]">
+            
+                {{-- Modal Header --}}
+                <div class="bg-gradient-to-r from-[#1b3985] to-[#2b50a8] px-4 py-4 sm:px-6 sm:py-5 flex items-center justify-between shrink-0">
+                    <div class="text-white">
+                        <p class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-blue-200/80 mb-0.5 sm:mb-1">Panduan Singkat</p>
+                        <h3 class="text-lg sm:text-xl font-bold leading-tight">Cara Pengisian Portofolio</h3>
                     </div>
+                    <button @click="closeTutorial()" class="p-1.5 sm:p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors">
+                        <x-heroicon-m-x-mark class="w-5 h-5 sm:w-6 sm:h-6" />
+                    </button>
+                </div>
 
-                    {{-- Modal Content (Scrollable) --}}
-                    <div class="p-4 sm:p-6 overflow-y-auto custom-scrollbar">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                            {{-- Step 1 --}}
-                            <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-blue-50/50 border border-blue-100 hover:bg-blue-50 transition-colors">
-                                <div class="shrink-0 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                                    <x-heroicon-o-tag class="w-4 h-4 sm:w-5 sm:h-5" />
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-sm mb-0.5 sm:mb-1">Judul & Kategori</h4>
-                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Pilih kategori yang relevan (Lomba, Organisasi, dll). Judul harus ringkas namun jelas menggambarkan kegiatan.</p>
-                                </div>
+                {{-- Modal Content (Scrollable) --}}
+                <div class="p-4 sm:p-6 overflow-y-auto custom-scrollbar">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                        {{-- Step 1 --}}
+                        <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-blue-50/50 border border-blue-100 hover:bg-blue-50 transition-colors">
+                            <div class="shrink-0 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                                <x-heroicon-o-tag class="w-4 h-4 sm:w-5 sm:h-5" />
                             </div>
-
-                            {{-- Step 2 --}}
-                            <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-orange-50/50 border border-orange-100 hover:bg-orange-50 transition-colors">
-                                <div class="shrink-0 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600">
-                                    <x-heroicon-o-building-library class="w-4 h-4 sm:w-5 sm:h-5" />
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-sm mb-0.5 sm:mb-1">Penyelenggara & Nama Dokumen</h4>
-                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Isi nama penyelenggara resmi. Nama Dokumen (ID/EN) disesuaikan dengan teks pada sertifikat.</p>
-                                </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-0.5 sm:mb-1">Judul & Kategori</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Pilih kategori yang relevan (Lomba, Organisasi, dll). Judul harus ringkas namun jelas menggambarkan kegiatan.</p>
                             </div>
+                        </div>
 
-                            {{-- Step 3 --}}
-                            <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-emerald-50/50 border border-emerald-100 hover:bg-emerald-50 transition-colors">
-                                <div class="shrink-0 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-                                    <x-heroicon-o-calendar-days class="w-4 h-4 sm:w-5 sm:h-5" />
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-sm mb-0.5 sm:mb-1">Deskripsi & Tanggal</h4>
-                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Jelaskan peran/capaian Anda secara singkat. Tanggal harus sesuai dengan tanggal terbit sertifikat.</p>
-                                </div>
+                        {{-- Step 2 --}}
+                        <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-orange-50/50 border border-orange-100 hover:bg-orange-50 transition-colors">
+                            <div class="shrink-0 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                                <x-heroicon-o-building-library class="w-4 h-4 sm:w-5 sm:h-5" />
                             </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-0.5 sm:mb-1">Penyelenggara & Nama Dokumen</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Isi nama penyelenggara resmi. Nama Dokumen (ID/EN) disesuaikan dengan teks pada sertifikat.</p>
+                            </div>
+                        </div>
 
-                            {{-- Step 4 --}}
-                            <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-pink-50/50 border border-pink-100 hover:bg-pink-50 transition-colors">
-                                <div class="shrink-0 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-pink-100 text-pink-600">
-                                    <x-heroicon-o-link class="w-4 h-4 sm:w-5 sm:h-5" />
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-sm mb-0.5 sm:mb-1">Link Bukti Valid</h4>
-                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Gunakan link Google Drive (Setting: "Anyone with the link"). Pastikan file dapat dibuka oleh verifikator.</p>
-                                </div>
+                        {{-- Step 3 --}}
+                        <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-emerald-50/50 border border-emerald-100 hover:bg-emerald-50 transition-colors">
+                            <div class="shrink-0 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                                <x-heroicon-o-calendar-days class="w-4 h-4 sm:w-5 sm:h-5" />
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-0.5 sm:mb-1">Deskripsi & Tanggal</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Jelaskan peran/capaian Anda secara singkat. Tanggal harus sesuai dengan tanggal terbit sertifikat.</p>
+                            </div>
+                        </div>
+
+                        {{-- Step 4 --}}
+                        <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-pink-50/50 border border-pink-100 hover:bg-pink-50 transition-colors">
+                            <div class="shrink-0 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-pink-100 text-pink-600">
+                                <x-heroicon-o-link class="w-4 h-4 sm:w-5 sm:h-5" />
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-0.5 sm:mb-1">Link Bukti Valid</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Gunakan link Google Drive (Setting: "Anyone with the link"). Pastikan file dapat dibuka oleh verifikator.</p>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    {{-- Modal Footer --}}
-                    <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 shrink-0">
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" x-model="dontShowAgain" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer h-4 w-4">
-                            <span class="text-[11px] sm:text-xs font-medium text-slate-500 group-hover:text-slate-700 select-none">Jangan tampilkan lagi</span>
-                        </label>
-                        <button @click="closeTutorial()" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-5 py-2.5 text-sm font-bold shadow-lg shadow-orange-200 transition-all">
-                            Mulai Isi Formulir
-                            <x-heroicon-m-arrow-right class="w-4 h-4" />
-                        </button>
-                    </div>
+                {{-- Modal Footer --}}
+                <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 shrink-0">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" x-model="dontShowAgain" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer h-4 w-4">
+                        <span class="text-[11px] sm:text-xs font-medium text-slate-500 group-hover:text-slate-700 select-none">Jangan tampilkan lagi</span>
+                    </label>
+                    <button @click="closeTutorial()" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-5 py-2.5 text-sm font-bold shadow-lg shadow-orange-200 transition-all">
+                        Mulai Isi Formulir
+                        <x-heroicon-m-arrow-right class="w-4 h-4" />
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
 
     <script>
         function tutorialHandler() {
