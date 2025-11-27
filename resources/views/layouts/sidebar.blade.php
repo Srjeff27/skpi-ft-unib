@@ -73,9 +73,11 @@
                     <x-heroicon-o-arrow-left class="h-5 w-5 text-gray-400" /><span>Kembali ke Admin</span>
                 </a>
             @endif
-            <a href="{{ route('verifikator.dashboard') }}" class="{{ getLinkClass('verifikator.dashboard') }}">
-                <x-heroicon-o-home class="{{ getIconClass('verifikator.dashboard') }}" /><span>Dashboard</span>
-            </a>
+            @if ($role !== 'admin')
+                <a href="{{ route('verifikator.dashboard') }}" class="{{ getLinkClass('verifikator.dashboard') }}">
+                    <x-heroicon-o-home class="{{ getIconClass('verifikator.dashboard') }}" /><span>Dashboard</span>
+                </a>
+            @endif
             <a href="{{ route('verifikator.portfolios.index') }}" class="{{ getLinkClass('verifikator.portfolios.*') }}">
                 <x-heroicon-o-document-check class="{{ getIconClass('verifikator.portfolios.*') }}" /><span>Verifikasi Portofolio</span>
             </a>
