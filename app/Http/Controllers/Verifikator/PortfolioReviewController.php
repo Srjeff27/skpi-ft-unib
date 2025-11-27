@@ -42,6 +42,10 @@ class PortfolioReviewController extends Controller
             $query->where('status', $request->string('status'));
         }
 
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->integer('user_id'));
+        }
+
         $portfolios = $query->latest()->paginate(15)->withQueryString();
 
         $prodis = \App\Models\Prodi::orderBy('nama_prodi')->get(['id','nama_prodi']);
