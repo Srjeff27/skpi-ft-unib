@@ -90,8 +90,6 @@
                 </div>
 
                 <div class="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-                    <span>Error Code: 404</span>
-                    <span>SKPI System v1.0</span>
                 </div>
             </div>
         </div>
