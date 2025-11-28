@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use App\Models\Setting;
+use App\Services\ActivityLogger;
 
 class SystemSettingsController extends Controller
 {
@@ -44,6 +45,7 @@ class SystemSettingsController extends Controller
             'contact' => ['nullable','string'],
         ]);
         foreach ($validated as $k=>$v) Setting::set($k, $v);
+        ActivityLogger::log($request->user(), 'admin.settings.update_institution', null, $validated);
         return back()->with('status','Pengaturan institusi tersimpan.');
     }
 
@@ -56,6 +58,7 @@ class SystemSettingsController extends Controller
             'narasi_kkni_en' => ['nullable','string'],
         ]);
         foreach ($validated as $k=>$v) Setting::set($k, $v);
+        ActivityLogger::log($request->user(), 'admin.settings.update_narratives');
         return back()->with('status','Narasi SKPI tersimpan.');
     }
 
@@ -74,6 +77,12 @@ class SystemSettingsController extends Controller
         Setting::set('portfolio_open', $validated['portfolio_open'] ?? null);
         Setting::set('portfolio_close', $validated['portfolio_close'] ?? null);
         Setting::set('maintenance', (int) ($validated['maintenance'] ?? 0));
+        ActivityLogger::log($request->user(), 'admin.settings.update_general', null, [
+            'logo_updated' => $request->hasFile('logo'),
+            'portfolio_open' => $validated['portfolio_open'] ?? null,
+            'portfolio_close' => $validated['portfolio_close'] ?? null,
+            'maintenance' => (int) ($validated['maintenance'] ?? 0),
+        ]);
         return back()->with('status','Pengaturan umum tersimpan.');
     }
 }

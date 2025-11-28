@@ -108,7 +108,12 @@
                             <div class="pt-2">
                                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Bukti Pendukung</label>
                                 @if($portfolio->link_sertifikat)
-                                    <a href="{{ $portfolio->link_sertifikat }}" target="_blank" 
+                                    @php
+                                        $proofUrl = \Illuminate\Support\Str::startsWith($portfolio->link_sertifikat, ['http://','https://'])
+                                            ? $portfolio->link_sertifikat
+                                            : route('portfolios.proof', $portfolio);
+                                    @endphp
+                                    <a href="{{ $proofUrl }}" target="_blank" 
                                        class="group flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl hover:border-[#1b3985] hover:shadow-md transition-all duration-200">
                                         <div class="flex items-center gap-3">
                                             <div class="p-2 bg-blue-50 text-[#1b3985] rounded-lg group-hover:bg-[#1b3985] group-hover:text-white transition-colors">

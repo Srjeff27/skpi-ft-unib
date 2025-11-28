@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "89c00a3e9fafcb116b90d4d6af579206",
+    "content-hash": "44def81647bd51dbe7862ac1d27bb690",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -689,24 +689,24 @@
         },
         {
             "name": "dompdf/dompdf",
-            "version": "v2.0.0",
+            "version": "v2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "79573d8b8a141ec8a17312515de8740eed014fa9"
+                "reference": "c20247574601700e1f7c8dab39310fca1964dc52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/79573d8b8a141ec8a17312515de8740eed014fa9",
-                "reference": "79573d8b8a141ec8a17312515de8740eed014fa9",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/c20247574601700e1f7c8dab39310fca1964dc52",
+                "reference": "c20247574601700e1f7c8dab39310fca1964dc52",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-mbstring": "*",
                 "masterminds/html5": "^2.0",
-                "phenx/php-font-lib": "^0.5.4",
-                "phenx/php-svg-lib": "^0.3.3 || ^0.4.0",
+                "phenx/php-font-lib": ">=0.5.4 <1.0.0",
+                "phenx/php-svg-lib": ">=0.5.2 <1.0.0",
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
@@ -737,25 +737,17 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Ménager",
-                    "email": "fabien.menager@gmail.com"
-                },
-                {
-                    "name": "Brian Sweeney",
-                    "email": "eclecticgeek@gmail.com"
-                },
-                {
-                    "name": "Gabriel Bull",
-                    "email": "me@gabrielbull.com"
+                    "name": "The Dompdf Community",
+                    "homepage": "https://github.com/dompdf/dompdf/blob/master/AUTHORS.md"
                 }
             ],
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
             "support": {
                 "issues": "https://github.com/dompdf/dompdf/issues",
-                "source": "https://github.com/dompdf/dompdf/tree/v2.0.0"
+                "source": "https://github.com/dompdf/dompdf/tree/v2.0.8"
             },
-            "time": "2022-06-21T21:14:57+00:00"
+            "time": "2024-04-29T13:06:17+00:00"
         },
         {
             "name": "dragonmantank/cron-expression",
@@ -3336,21 +3328,21 @@
         },
         {
             "name": "phenx/php-svg-lib",
-            "version": "0.4.1",
+            "version": "0.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/php-svg-lib.git",
-                "reference": "4498b5df7b08e8469f0f8279651ea5de9626ed02"
+                "reference": "46b25da81613a9cf43c83b2a8c2c1bdab27df691"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/php-svg-lib/zipball/4498b5df7b08e8469f0f8279651ea5de9626ed02",
-                "reference": "4498b5df7b08e8469f0f8279651ea5de9626ed02",
+                "url": "https://api.github.com/repos/dompdf/php-svg-lib/zipball/46b25da81613a9cf43c83b2a8c2c1bdab27df691",
+                "reference": "46b25da81613a9cf43c83b2a8c2c1bdab27df691",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "php": "^7.1 || ^7.2 || ^7.3 || ^7.4 || ^8.0",
+                "php": "^7.1 || ^8.0",
                 "sabberworm/php-css-parser": "^8.4"
             },
             "require-dev": {
@@ -3364,7 +3356,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL-3.0"
+                "LGPL-3.0-or-later"
             ],
             "authors": [
                 {
@@ -3376,9 +3368,9 @@
             "homepage": "https://github.com/PhenX/php-svg-lib",
             "support": {
                 "issues": "https://github.com/dompdf/php-svg-lib/issues",
-                "source": "https://github.com/dompdf/php-svg-lib/tree/0.4.1"
+                "source": "https://github.com/dompdf/php-svg-lib/tree/0.5.4"
             },
-            "time": "2022-03-07T12:52:04+00:00"
+            "time": "2024-04-08T12:52:34+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -4934,16 +4926,16 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v7.3.4",
+            "version": "v7.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "c061c7c18918b1b64268771aad04b40be41dd2e6"
+                "reference": "db488a62f98f7a81d5746f05eea63a74e55bb7c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/c061c7c18918b1b64268771aad04b40be41dd2e6",
-                "reference": "c061c7c18918b1b64268771aad04b40be41dd2e6",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/db488a62f98f7a81d5746f05eea63a74e55bb7c4",
+                "reference": "db488a62f98f7a81d5746f05eea63a74e55bb7c4",
                 "shasum": ""
             },
             "require": {
@@ -4993,7 +4985,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v7.3.4"
+                "source": "https://github.com/symfony/http-foundation/tree/v7.3.7"
             },
             "funding": [
                 {
@@ -5013,7 +5005,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-16T08:38:17+00:00"
+            "time": "2025-11-08T16:41:12+00:00"
         },
         {
             "name": "symfony/http-kernel",

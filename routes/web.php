@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\CplController;
 use App\Http\Controllers\Admin\CetakSkpiController;
 use App\Http\Controllers\Admin\PejabatController;
 use App\Http\Controllers\Admin\SystemSettingsController;
+use App\Http\Controllers\PortfolioEvidenceController;
 use App\Http\Controllers\Auth\GoogleController;
 
 /*
@@ -71,6 +72,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return redirect()->route('student.documents.index');
         });
     });
+});
+
+// Bukti portofolio (akses terproteksi semua role login)
+Route::middleware('auth')->group(function () {
+    Route::get('/portofolio/{portfolio}/bukti', [PortfolioEvidenceController::class, 'show'])
+        ->name('portfolios.proof');
 });
 
 // Student Specific Routes (tidak perlu email verified)

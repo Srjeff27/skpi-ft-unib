@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use App\Services\ActivityLogger;
 
@@ -83,10 +84,11 @@ class UserController extends Controller
         return back()->with('status','User dihapus');
     }
 
-    public function resetPassword(User $user): RedirectResponse
+    public function resetPassword(Request $request, User $user): RedirectResponse
     {
-        $user->update(['password' => Hash::make('password123')]);
-        ActivityLogger::log($request->user(), 'admin.users.reset_password', $user);
-        return back()->with('status','Password direset menjadi password123');
+        $newPassword = Str::password(16);
+        $user->update(['password' => Hash::make($newPassword)]);
+        ActivityLogger::log($request->user(), 'admin.users.reset_password', $user, ['generated' => true]);
+        return back()->with('status','Password direset. Password sementara: '.$newPassword);
     }
 }

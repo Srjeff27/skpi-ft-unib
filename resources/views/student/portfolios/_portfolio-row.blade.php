@@ -87,7 +87,12 @@
     <div class="mt-5 px-5 py-4 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl flex items-center justify-between gap-4">
         
         {{-- Link Bukti (Selalu Ada) --}}
-        <a href="{{ $p->link_sertifikat }}" target="_blank" 
+        @php
+            $evidenceUrl = \Illuminate\Support\Str::startsWith($p->link_sertifikat, ['http://','https://'])
+                ? $p->link_sertifikat
+                : route('portfolios.proof', $p);
+        @endphp
+        <a href="{{ $evidenceUrl }}" target="_blank" 
            class="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline decoration-blue-300 underline-offset-4 transition-all">
             <x-heroicon-m-link class="w-4 h-4" />
             Lihat Bukti

@@ -85,7 +85,12 @@
             {{-- Action Buttons --}}
             <div class="flex items-center gap-1">
                 {{-- View Evidence --}}
-                <a href="{{ $p->link_sertifikat }}" target="_blank" 
+                @php
+                    $evidenceUrl = \Illuminate\Support\Str::startsWith($p->link_sertifikat, ['http://','https://'])
+                        ? $p->link_sertifikat
+                        : route('portfolios.proof', $p);
+                @endphp
+                <a href="{{ $evidenceUrl }}" target="_blank" 
                    class="p-2 rounded-lg text-slate-400 hover:text-[#1b3985] hover:bg-blue-50 transition-all"
                    title="Lihat Bukti">
                     <x-heroicon-m-link class="w-4 h-4" />

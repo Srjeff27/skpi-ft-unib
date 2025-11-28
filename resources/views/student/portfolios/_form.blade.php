@@ -173,26 +173,36 @@
     <div class="border-t border-slate-100"></div>
 
     {{-- Section 3: Bukti Pendukung --}}
-    <div>
-        <x-input-label for="link_sertifikat" value="Link Bukti Pendukung" class="mb-1.5 text-slate-700 font-semibold" />
-        <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <x-heroicon-o-link class="h-5 w-5 text-slate-400" />
+    <div class="space-y-4">
+        <div>
+            <x-input-label for="link_sertifikat" value="Link Bukti Pendukung" class="mb-1.5 text-slate-700 font-semibold" />
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <x-heroicon-o-link class="h-5 w-5 text-slate-400" />
+                </div>
+                <x-text-input id="link_sertifikat" name="link_sertifikat" type="url" 
+                    class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}"
+                    :value="old('link_sertifikat', $portfolio->link_sertifikat ?? '')" 
+                    :disabled="$isLocked"
+                    placeholder="https://drive.google.com/..." />
             </div>
-            <x-text-input id="link_sertifikat" name="link_sertifikat" type="url" 
-                class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}"
-                :value="old('link_sertifikat', $portfolio->link_sertifikat ?? '')" 
-                :disabled="$isLocked" required
-                placeholder="https://drive.google.com/..." />
+            <x-input-error :messages="$errors->get('link_sertifikat')" class="mt-1" />
         </div>
-        <x-input-error :messages="$errors->get('link_sertifikat')" class="mt-1" />
+
+        <div>
+            <x-input-label for="bukti_file" value="Upload Bukti (Opsional, PDF/JPG/PNG, maks 5MB)" class="mb-1.5 text-slate-700 font-semibold" />
+            <input id="bukti_file" name="bukti_file" type="file" accept=".pdf,.jpg,.jpeg,.png"
+                class="block w-full text-sm text-slate-700 border border-slate-200 rounded-lg cursor-pointer bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1b3985]"
+                @if($isLocked) disabled @endif>
+            <x-input-error :messages="$errors->get('bukti_file')" class="mt-1" />
+        </div>
         
         {{-- Info Box --}}
-        <div class="mt-3 flex gap-3 p-3 rounded-lg bg-blue-50 border border-blue-100 text-blue-800 text-xs">
+        <div class="mt-1 flex gap-3 p-3 rounded-lg bg-blue-50 border border-blue-100 text-blue-800 text-xs">
             <x-heroicon-s-information-circle class="h-5 w-5 shrink-0" />
             <div class="space-y-1">
-                <p class="font-semibold">Penting:</p>
-                <p>Pastikan link Google Drive atau penyimpanan cloud lainnya sudah diatur aksesnya menjadi <strong>"Anyone with the link" (Siapa saja yang memiliki link)</strong> agar verifikator dapat membuka dokumen.</p>
+                <p class="font-semibold">Pilih salah satu: link publik atau unggah file.</p>
+                <p>Jika memakai link cloud, pastikan aksesnya <strong>"Anyone with the link"</strong>. Jika mengunggah file, dokumen disimpan privat dan hanya dapat diakses saat login.</p>
             </div>
         </div>
     </div>

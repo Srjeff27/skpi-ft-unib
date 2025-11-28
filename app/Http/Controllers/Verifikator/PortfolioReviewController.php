@@ -108,6 +108,8 @@ class PortfolioReviewController extends Controller
 
     public function destroy(Request $request, Portfolio $portfolio): RedirectResponse
     {
+        $this->authorize('delete', $portfolio);
+
         $data = $request->validate([
             'alasan_hapus' => ['required','string','max:1000'],
         ]);

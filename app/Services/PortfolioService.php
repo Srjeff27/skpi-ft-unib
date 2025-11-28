@@ -38,9 +38,9 @@ class PortfolioService
         $data = $validatedData;
 
         if ($evidenceFile !== null) {
-            $path = $evidenceFile->store('certificates', 'public');
-            // simpan ke kolom baru link_sertifikat
-            $data['link_sertifikat'] = asset('storage/' . $path);
+            $path = $evidenceFile->store('certificates', 'local');
+            // Simpan path di kolom link_sertifikat untuk diunduh via controller terproteksi.
+            $data['link_sertifikat'] = $path;
             unset($data['bukti_file']);
         }
 
@@ -74,5 +74,4 @@ class PortfolioService
         return $data;
     }
 }
-
 

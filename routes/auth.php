@@ -26,12 +26,14 @@ Route::middleware('guest')->group(function () {
     // Admin login
     Route::get('admin/login', [\App\Http\Controllers\Admin\Auth\AuthenticatedSessionController::class, 'create'])
         ->name('admin.login');
-    Route::post('admin/login', [\App\Http\Controllers\Admin\Auth\AuthenticatedSessionController::class, 'store']);
+    Route::post('admin/login', [\App\Http\Controllers\Admin\Auth\AuthenticatedSessionController::class, 'store'])
+        ->middleware('throttle:login');
 
     // Verifikator login
     Route::get('verifikator/login', [\App\Http\Controllers\Verifikator\Auth\AuthenticatedSessionController::class, 'create'])
         ->name('verifikator.login');
-    Route::post('verifikator/login', [\App\Http\Controllers\Verifikator\Auth\AuthenticatedSessionController::class, 'store']);
+    Route::post('verifikator/login', [\App\Http\Controllers\Verifikator\Auth\AuthenticatedSessionController::class, 'store'])
+        ->middleware('throttle:login');
 
     // Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
     //     ->name('password.request');
