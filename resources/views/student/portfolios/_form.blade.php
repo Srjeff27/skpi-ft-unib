@@ -1,18 +1,19 @@
 @php
+    // Cek status apakah boleh diedit
     $isLocked = isset($portfolio) && !in_array($portfolio->status, ['pending', 'requires_revision']);
     
-    // Kelas CSS standar untuk input agar konsisten
+    // Style kelas CSS yang konsisten
     $inputClass = "w-full rounded-xl border-slate-300 shadow-sm focus:border-[#1b3985] focus:ring-[#1b3985] pl-10 py-2.5 text-sm transition-all placeholder:text-slate-400";
-    $disabledClass = "bg-slate-100 text-slate-500 cursor-not-allowed border-slate-200 focus:ring-0";
+    $disabledClass = "bg-slate-50 text-slate-500 cursor-not-allowed border-slate-200 focus:ring-0";
 @endphp
 
 <div class="space-y-8">
     
-    {{-- Section 1: Informasi Utama --}}
+    {{-- BAGIAN 1: INFORMASI KEGIATAN --}}
     <div class="space-y-6">
         {{-- Judul Kegiatan --}}
         <div>
-            <x-input-label for="judul_kegiatan" value="Judul Kegiatan" class="mb-1.5 text-slate-700 font-semibold" />
+            <x-input-label for="judul_kegiatan" value="Judul Kegiatan" class="mb-1.5 text-slate-800 font-bold" />
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <x-heroicon-o-bookmark class="h-5 w-5 text-slate-400" />
@@ -21,7 +22,7 @@
                     class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}"
                     :value="old('judul_kegiatan', $portfolio->judul_kegiatan ?? '')" 
                     :disabled="$isLocked" required
-                    placeholder="Contoh: Lomba Cipta Puisi Nasional FT Fair UNIB 2025" />
+                    placeholder="Contoh: Juara 1 Lomba Cipta Puisi Nasional 2025" />
             </div>
             <x-input-error :messages="$errors->get('judul_kegiatan')" class="mt-1" />
         </div>
@@ -29,14 +30,14 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Kategori --}}
             <div>
-                <x-input-label for="kategori_portfolio" value="Kategori Portofolio" class="mb-1.5 text-slate-700 font-semibold" />
+                <x-input-label for="kategori_portfolio" value="Kategori" class="mb-1.5 text-slate-800 font-bold" />
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <x-heroicon-o-tag class="h-5 w-5 text-slate-400" />
                     </div>
                     @if (($categories ?? collect())->count() > 0)
                         <select id="kategori_portfolio" name="kategori_portfolio" required {{ $isLocked ? 'disabled' : '' }}
-                            class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }} appearance-none">
+                            class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }} appearance-none cursor-pointer">
                             <option value="" disabled selected>Pilih Kategori...</option>
                             @foreach ($categories ?? collect() as $cat)
                                 <option value="{{ $cat }}" @selected(old('kategori_portfolio', $portfolio->kategori_portfolio ?? '') === $cat)>
@@ -52,7 +53,7 @@
                             class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}" 
                             :value="old('kategori_portfolio', $portfolio->kategori_portfolio ?? '')" 
                             :disabled="$isLocked"
-                            placeholder="Tuliskan kategori secara manual" />
+                            placeholder="Tuliskan kategori..." />
                     @endif
                 </div>
                 <x-input-error :messages="$errors->get('kategori_portfolio')" class="mt-1" />
@@ -60,7 +61,7 @@
 
             {{-- Penyelenggara --}}
             <div>
-                <x-input-label for="penyelenggara" value="Penyelenggara" class="mb-1.5 text-slate-700 font-semibold" />
+                <x-input-label for="penyelenggara" value="Penyelenggara" class="mb-1.5 text-slate-800 font-bold" />
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <x-heroicon-o-building-office-2 class="h-5 w-5 text-slate-400" />
@@ -76,44 +77,43 @@
         </div>
     </div>
 
-    {{-- Separator --}}
     <div class="border-t border-slate-100"></div>
 
-    {{-- Section 2: Detail Dokumen --}}
+    {{-- BAGIAN 2: DETAIL DOKUMEN --}}
     <div class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {{-- Nama Dokumen ID --}}
+            {{-- Nama Dokumen (ID) --}}
             <div>
-                <x-input-label for="nama_dokumen_id" class="mb-1.5 text-slate-700 font-semibold flex items-center gap-2">
-                    Nama Dokumen <span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">Bahasa Indonesia</span>
+                <x-input-label for="nama_dokumen_id" class="mb-1.5 text-slate-800 font-bold flex items-center gap-2">
+                    Nama Dokumen <span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-semibold">ID</span>
                 </x-input-label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <span class="font-bold text-slate-400 text-xs">ID</span>
                     </div>
                     <x-text-input id="nama_dokumen_id" name="nama_dokumen_id" 
-                        class="{{ $inputClass }}" 
+                        class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}"
                         :value="old('nama_dokumen_id', $portfolio->nama_dokumen_id ?? '')" 
                         :disabled="$isLocked" required
-                        placeholder="Contoh: Juara 1 Lomba Cipta Puisi" />
+                        placeholder="Sertifikat Juara 1..." />
                 </div>
                 <x-input-error :messages="$errors->get('nama_dokumen_id')" class="mt-1" />
             </div>
 
-            {{-- Nama Dokumen EN --}}
+            {{-- Nama Dokumen (EN) --}}
             <div>
-                <x-input-label for="nama_dokumen_en" class="mb-1.5 text-slate-700 font-semibold flex items-center gap-2">
-                    Nama Dokumen <span class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">Bahasa Inggris</span>
+                <x-input-label for="nama_dokumen_en" class="mb-1.5 text-slate-800 font-bold flex items-center gap-2">
+                    Nama Dokumen <span class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100 font-semibold">EN</span>
                 </x-input-label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <span class="font-bold text-slate-400 text-xs">EN</span>
                     </div>
                     <x-text-input id="nama_dokumen_en" name="nama_dokumen_en" 
-                        class="{{ $inputClass }}" 
+                        class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}"
                         :value="old('nama_dokumen_en', $portfolio->nama_dokumen_en ?? '')" 
                         :disabled="$isLocked" required
-                        placeholder="Example: 1st Place in a Poetry Contest" />
+                        placeholder="1st Place Certificate..." />
                 </div>
                 <x-input-error :messages="$errors->get('nama_dokumen_en')" class="mt-1" />
             </div>
@@ -121,16 +121,11 @@
 
         {{-- Deskripsi --}}
         <div>
-            <x-input-label for="deskripsi_kegiatan" value="Deskripsi Singkat" class="mb-1.5 text-slate-700 font-semibold" />
+            <x-input-label for="deskripsi_kegiatan" value="Deskripsi Singkat" class="mb-1.5 text-slate-800 font-bold" />
             <div class="relative">
                 <textarea id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="4" {{ $isLocked ? 'disabled' : '' }} required
                     class="block w-full rounded-xl border-slate-300 shadow-sm focus:border-[#1b3985] focus:ring-[#1b3985] p-3 text-sm transition-all placeholder:text-slate-400 {{ $isLocked ? $disabledClass : '' }}"
-                    placeholder="Jelaskan peran, capaian, dan relevansi kegiatan secara singkat...">{{ old('deskripsi_kegiatan', $portfolio->deskripsi_kegiatan ?? '') }}</textarea>
-                @if($isLocked)
-                    <div class="absolute top-3 right-3 text-slate-400">
-                        <x-heroicon-s-lock-closed class="h-4 w-4" />
-                    </div>
-                @endif
+                    placeholder="Jelaskan peran dan pencapaian Anda...">{{ old('deskripsi_kegiatan', $portfolio->deskripsi_kegiatan ?? '') }}</textarea>
             </div>
             <x-input-error :messages="$errors->get('deskripsi_kegiatan')" class="mt-1" />
         </div>
@@ -138,7 +133,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Tanggal Dokumen --}}
             <div>
-                <x-input-label for="tanggal_dokumen" value="Tanggal Sertifikat" class="mb-1.5 text-slate-700 font-semibold" />
+                <x-input-label for="tanggal_dokumen" value="Tanggal Sertifikat" class="mb-1.5 text-slate-800 font-bold" />
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <x-heroicon-o-calendar-days class="h-5 w-5 text-slate-400" />
@@ -153,7 +148,7 @@
 
             {{-- Nomor Dokumen --}}
             <div>
-                <x-input-label for="nomor_dokumen" value="Nomor Dokumen (Opsional)" class="mb-1.5 text-slate-700 font-semibold" />
+                <x-input-label for="nomor_dokumen" value="Nomor Dokumen (Opsional)" class="mb-1.5 text-slate-800 font-bold" />
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <x-heroicon-o-hashtag class="h-5 w-5 text-slate-400" />
@@ -162,47 +157,36 @@
                         class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}"
                         :value="old('nomor_dokumen', $portfolio->nomor_dokumen ?? '')" 
                         :disabled="$isLocked"
-                        placeholder="Contoh: 123/SK/FT/2024" />
+                        placeholder="Contoh: 123/SK/2025" />
                 </div>
-                <x-input-error :messages="$errors->get('nomor_dokumen')" class="mt-1" />
             </div>
         </div>
     </div>
 
-    {{-- Separator --}}
     <div class="border-t border-slate-100"></div>
 
-    {{-- Section 3: Bukti Pendukung --}}
-    <div class="space-y-4">
-        <div>
-            <x-input-label for="link_sertifikat" value="Link Bukti Pendukung" class="mb-1.5 text-slate-700 font-semibold" />
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <x-heroicon-o-link class="h-5 w-5 text-slate-400" />
-                </div>
-                <x-text-input id="link_sertifikat" name="link_sertifikat" type="url" 
-                    class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}"
-                    :value="old('link_sertifikat', $portfolio->link_sertifikat ?? '')" 
-                    :disabled="$isLocked"
-                    placeholder="https://drive.google.com/..." />
-            </div>
-            <x-input-error :messages="$errors->get('link_sertifikat')" class="mt-1" />
-        </div>
-
-        <div>
-            <x-input-label for="bukti_file" value="Upload Bukti (Opsional, PDF/JPG/PNG, maks 5MB)" class="mb-1.5 text-slate-700 font-semibold" />
-            <input id="bukti_file" name="bukti_file" type="file" accept=".pdf,.jpg,.jpeg,.png"
-                class="block w-full text-sm text-slate-700 border border-slate-200 rounded-lg cursor-pointer bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1b3985]"
-                @if($isLocked) disabled @endif>
-            <x-input-error :messages="$errors->get('bukti_file')" class="mt-1" />
-        </div>
+    {{-- BAGIAN 3: BUKTI DOKUMEN (LINK ONLY) --}}
+    <div>
+        <x-input-label for="link_sertifikat" value="Tautan Bukti Dokumen" class="mb-1.5 text-slate-800 font-bold" />
         
-        {{-- Info Box --}}
-        <div class="mt-1 flex gap-3 p-3 rounded-lg bg-blue-50 border border-blue-100 text-blue-800 text-xs">
-            <x-heroicon-s-information-circle class="h-5 w-5 shrink-0" />
-            <div class="space-y-1">
-                <p class="font-semibold">Pilih salah satu: link publik atau unggah file.</p>
-                <p>Jika memakai link cloud, pastikan aksesnya <strong>"Anyone with the link"</strong>. Jika mengunggah file, dokumen disimpan privat dan hanya dapat diakses saat login.</p>
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <x-heroicon-o-link class="h-5 w-5 text-slate-400" />
+            </div>
+            <x-text-input id="link_sertifikat" name="link_sertifikat" type="url" 
+                class="{{ $inputClass }} {{ $isLocked ? $disabledClass : '' }}"
+                :value="old('link_sertifikat', $portfolio->link_sertifikat ?? '')" 
+                :disabled="$isLocked" required
+                placeholder="https://drive.google.com/file/d/..." />
+        </div>
+        <x-input-error :messages="$errors->get('link_sertifikat')" class="mt-1" />
+
+        {{-- Helper Text --}}
+        <div class="mt-3 flex items-start gap-3 rounded-lg bg-blue-50 p-3 text-blue-900 ring-1 ring-blue-100">
+            <x-heroicon-m-information-circle class="h-5 w-5 shrink-0 text-blue-600 mt-0.5" />
+            <div class="text-xs leading-relaxed">
+                <p class="font-semibold">Penting:</p>
+                <p>Pastikan tautan yang Anda masukkan (Google Drive, Dropbox, dll) memiliki akses <strong>"Anyone with the link"</strong> atau <strong>"Publik"</strong> agar dapat dibuka oleh verifikator.</p>
             </div>
         </div>
     </div>
